@@ -1,0 +1,218 @@
+/* Create / edit silence rule form (prototype) */
+.silence-rule-form {
+  width: 100%;
+  max-width: none;
+}
+
+.silence-rule-form .pf-v6-c-form {
+  max-width: none;
+}
+
+/* PF v6 TextInput/TextArea use .pf-v6-c-form-control */
+.silence-rule-form .pf-v6-c-form-control.pf-m-textarea,
+.silence-rule-form textarea {
+  max-width: none;
+}
+
+.silence-rule-form .pf-v6-c-form-control.pf-m-textarea {
+  width: 100%;
+}
+
+/* Full-width inputs except fixed-width date/time/amount */
+.silence-rule-form .pf-v6-c-form-control:not(.silence-rule-form__input-date):not(.silence-rule-form__input-time):not(.silence-rule-form__input-amount):not(.pf-m-textarea) {
+  max-width: none;
+}
+
+.silence-rule-form .pf-v6-c-form__group {
+  margin-bottom: 24px !important;
+}
+
+.silence-rule-form .pf-v6-c-form__group-label,
+.silence-rule-form .pf-v6-c-form__group-label-text {
+  font-weight: 600 !important;
+}
+
+.silence-rule-form__required-star {
+  margin: 0 !important;
+  padding: 0 !important;
+  margin-inline-start: 0 !important;
+}
+
+.silence-rule-form__section-heading {
+  font-weight: 600;
+  margin-bottom: var(--pf-t--global--spacer--sm) !important;
+}
+
+.silence-rule-form__section--details > .silence-rule-form__section-heading {
+  margin-top: 24px;
+}
+
+.silence-rule-form__section--details,
+.silence-rule-form__section--duration {
+  padding-bottom: 32px;
+}
+
+.silence-rule-form__section--matchers,
+.silence-rule-form__section--comment {
+  padding-bottom: 32px;
+}
+
+/* From: label + date + time on one row; date/time fixed width */
+.silence-rule-form__from-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: var(--pf-t--global--spacer--md);
+}
+
+.silence-rule-form__from-label {
+  flex-shrink: 0;
+}
+
+.silence-rule-form__from-inputs {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.silence-rule-form .pf-v6-c-form-control.silence-rule-form__input-date {
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+  flex-shrink: 0;
+}
+
+.silence-rule-form .pf-v6-c-form-control.silence-rule-form__input-time {
+  width: 128px;
+  min-width: 128px;
+  max-width: 128px;
+  flex-shrink: 0;
+}
+
+/* Radio input + "For"/"Until" label + date/stepper row on one horizontal line */
+.silence-rule-form__duration-radio-row.pf-v6-c-radio {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--pf-t--global--spacer--md);
+  row-gap: var(--pf-t--global--spacer--sm);
+}
+
+.silence-rule-form__duration-radio-row .pf-v6-c-radio__input {
+  flex-shrink: 0;
+}
+
+.silence-rule-form__duration-radio-row .pf-v6-c-radio__label {
+  flex-shrink: 0;
+}
+
+.silence-rule-form__duration-radio-row .pf-v6-c-radio__body {
+  margin: 0 !important;
+  padding: 0 !important;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.silence-rule-form__for-duration {
+  margin: 0;
+  width: 100%;
+}
+
+/* For: single horizontal row, fixed control widths */
+.silence-rule-form__for-controls-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--pf-t--global--spacer--sm);
+}
+
+.silence-rule-form .pf-v6-c-form-control.silence-rule-form__input-amount {
+  width: 72px;
+  min-width: 72px;
+  max-width: 72px;
+  flex-shrink: 0;
+}
+
+.silence-rule-form .silence-rule-form__input-amount input {
+  text-align: center;
+}
+
+.silence-rule-form__select-unit-wrap {
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
+  flex-shrink: 0;
+}
+
+.silence-rule-form__select-unit-wrap .pf-v6-c-menu-toggle,
+.silence-rule-form__select-unit-toggle {
+  width: 100%;
+}
+
+/* Until: date + time same row, fixed widths (match From) */
+.silence-rule-form__until-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.silence-rule-form__matcher-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr min-content minmax(200px, 1.35fr);
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 24px;
+}
+
+.silence-rule-form__cell-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: end;
+  padding-bottom: 2px;
+}
+
+.silence-rule-form__cell-query {
+  align-self: end;
+  padding-bottom: 2px;
+}
+
+.silence-rule-form__query-inline-label {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.silence-rule-form__matcher-grid .pf-v6-c-form__group {
+  margin-bottom: 0 !important;
+}
+
+/* Full-width row; link flush to content left (not grid column–bound) */
+.silence-rule-form__add-row {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  margin-top: 2px;
+}
+
+.silence-rule-form__add-row .pf-v6-c-button {
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.silence-rule-form__comment-textarea {
+  margin-top: var(--pf-t--global--spacer--sm);
+  width: 100%;
+}
+
+.silence-rule-form__footer-actions {
+  margin-top: var(--pf-t--global--spacer--lg);
+  padding-top: var(--pf-t--global--spacer--lg);
+  border-top: 1px solid var(--pf-t--global--border--color--default);
+}

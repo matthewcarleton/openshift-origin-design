@@ -1,0 +1,927 @@
+/* Hide the "View task details" floating action button for this prototype */
+button[aria-label="View task details"] {
+  display: none !important;
+}
+
+/* Ensure notification drawer section buttons align badges/carets to right edge */
+.pf-v6-c-drawer__panel-body button[aria-label*="Alerts"],
+.pf-v6-c-drawer__panel-body button[aria-label*="Recommendations"] {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Notification drawer section alignment */
+.notification-section-button {
+  width: calc(100% + 48px) !important;
+  padding: 8px 24px !important;
+  margin-left: -24px !important;
+  margin-right: -24px !important;
+  text-align: left !important;
+  justify-content: flex-start !important;
+}
+
+.notification-section-button > div {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  gap: var(--pf-t--global--spacer--md) !important;
+}
+
+.notification-section-title {
+  font-weight: 400 !important;
+  font-size: 16px !important;
+  text-align: left !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  margin-right: var(--pf-t--global--spacer--md) !important;
+  display: inline-block !important;
+}
+
+.notification-section-right {
+  display: flex !important;
+  gap: var(--pf-t--global--spacer--sm) !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
+  margin-left: auto !important;
+  padding: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Empty state alignment in notification drawer */
+.pf-v6-c-drawer__panel-body .pf-v6-c-empty-state {
+  text-align: center !important;
+  padding: var(--pf-t--global--spacer--xl) 0 !important;
+}
+
+.pf-v6-c-drawer__panel-body .pf-v6-c-empty-state__header {
+  text-align: center !important;
+}
+
+.pf-v6-c-drawer__panel-body .pf-v6-c-empty-state__body {
+  text-align: center !important;
+}
+
+.pf-v6-c-drawer__panel-body .pf-v6-c-empty-state__footer {
+  text-align: center !important;
+}
+
+/* Ensure page container handles scrolling properly - prevent double scrollbars */
+.pf-v6-c-page__main-container {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/*
+ * OLS chrome dock: single fixed stacking context for chat + launcher (AgenticGlobalAiAssistant portals here).
+ * `documentElement`: --ols-ai-chat-top, --ols-ai-chrome-inline-end, --ols-ai-chrome-bottom (see TS).
+ * While chat is open, `.ols-ai-chrome-dock` may set `--ols-ai-prototype-drawer-h` for measured drawer height.
+ */
+.ols-ai-chrome-dock {
+  position: fixed !important;
+  z-index: 10000 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-end !important;
+  top: var(--ols-ai-chat-top, 76px) !important;
+  right: var(--ols-ai-chrome-inline-end, 24px) !important;
+  bottom: var(--ols-ai-chrome-bottom, 24px) !important;
+  left: auto !important;
+  width: max-content !important;
+  max-width: min(800px, 100vw) !important;
+  pointer-events: none !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+.ols-ai-chrome-dock--chat-open {
+  justify-content: flex-start !important;
+  width: min(800px, calc(100vw - (2 * var(--ols-ai-chrome-inline-end, 24px)))) !important;
+  min-width: 320px !important;
+  max-width: 800px !important;
+}
+
+/* Bottom block: 8px gap (when chat open) + launcher — measured with the dock for drawer height (TS). */
+.ols-ai-chrome-launcher-stack {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  /* Dock uses `pointer-events: none`; re-enable hits for launcher + gap host (gap row stays `none` in TS). */
+  pointer-events: auto !important;
+}
+
+/* Fixed-height row between chat and launcher (see `ols-ai-chrome-launcher-gap` in AgenticGlobalAiAssistant). */
+.ols-ai-chrome-launcher-gap {
+  flex-shrink: 0 !important;
+  align-self: stretch !important;
+  box-sizing: border-box !important;
+}
+
+.ols-ai-chrome-dock--chat-open .ols-prototype-ai-drawer {
+  flex: 0 0 auto !important;
+  height: var(--ols-ai-prototype-drawer-h, auto) !important;
+  margin-bottom: auto !important;
+}
+
+.ols-ai-chrome-dock .chatbot-toggle-sticky-host {
+  position: relative !important;
+  align-self: flex-end !important;
+  flex-shrink: 0 !important;
+  margin-top: 0 !important;
+  margin-right: 0 !important;
+  margin-bottom: 0 !important;
+  margin-left: 0 !important;
+  padding: 0 !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  z-index: 2 !important;
+}
+
+/* Launcher popper above the chat card (PF Tooltip portals to `body`). */
+.ols-launcher-floating-tooltip {
+  z-index: 10050 !important;
+}
+
+@media (max-width: 768px) {
+  .ols-ai-chrome-dock--chat-open {
+    width: min(800px, calc(100vw - (2 * var(--ols-ai-chrome-inline-end, 24px)))) !important;
+    min-width: 0 !important;
+    max-width: 800px !important;
+  }
+}
+
+/* Chat card: flex child inside `.ols-ai-chrome-dock` (not separately fixed). */
+.ols-prototype-ai-drawer {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  z-index: 1 !important;
+  /* Dock uses `pointer-events: none` so the page stays clickable; the card must opt back in. */
+  pointer-events: auto !important;
+  background-color: #ffffff !important;
+  border-radius: 16px !important;
+  box-shadow:
+    0 8px 24px rgba(3, 3, 3, 0.18),
+    0 2px 6px rgba(3, 3, 3, 0.08) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  transition:
+    opacity 0.2s ease-in-out,
+    transform 0.2s ease-in-out !important;
+  contain: layout style !important;
+  box-sizing: border-box !important;
+}
+
+/* Inner panel container - ensures proper containment */
+.ols-prototype-ai-drawer-inner {
+  position: relative !important;
+  height: 100% !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  flex: 1 !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+  contain: layout style !important;
+  box-sizing: border-box !important;
+}
+
+/*
+ * PF `.pf-chatbot` defaults to `position: fixed` + logical insets. Scope under `.ols-ai-chrome-dock` so it wins
+ * over `main.css` and the footer / MessageBar are not viewport-fixed.
+ */
+.ols-ai-chrome-dock .ols-prototype-ai-drawer .pf-chatbot.pf-chatbot--drawer {
+  position: absolute !important;
+  inset: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  inset-block-start: 0 !important;
+  inset-block-end: 0 !important;
+  inset-inline-start: 0 !important;
+  inset-inline-end: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  border-left: none !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+  z-index: 1 !important;
+}
+
+.ols-prototype-ai-drawer .pf-chatbot--drawer .pf-chatbot-container {
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+
+/* Override DrawerPanelContent styles when in portal */
+.ols-prototype-ai-drawer .pf-v6-c-drawer__panel {
+  position: static !important;
+  width: 100% !important;
+  height: 100% !important;
+  box-shadow: none !important;
+  border: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-drawer__panel-main {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  flex: 1 !important;
+  min-height: 0 !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-drawer__panel-body {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+/* Chatbot Welcome Action Cards - matching PatternFly compact chatbot demo */
+.chatbot-welcome-actions {
+  padding: 0 var(--pf-v5-global--spacer--md) var(--pf-v5-global--spacer--md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-v5-global--spacer--md);
+}
+
+.chatbot-action-card {
+  background-color: var(--pf-t--global--background--color--primary--default);
+  border: 1px solid var(--pf-t--global--border--color--default);
+  border-radius: var(--pf-v5-global--BorderRadius--sm);
+  padding: var(--pf-v5-global--spacer--md);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.chatbot-action-card:hover {
+  background-color: var(--pf-t--global--background--color--secondary--default);
+  border-color: var(--pf-t--global--color--interactive--default);
+}
+
+.chatbot-action-card:active {
+  background-color: var(--pf-t--global--background--color--tertiary--default);
+}
+
+/* Ensure Chatbot component takes full height and is visible */
+.ols-prototype-ai-drawer .pf-v6-c-chatbot,
+.ols-prototype-ai-drawer-inner .pf-v6-c-chatbot {
+  height: 100% !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  contain: layout style !important;
+  box-sizing: border-box !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-chatbot__header {
+  flex-shrink: 0 !important;
+  display: flex !important;
+  visibility: visible !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-chatbot__content,
+.ols-prototype-ai-drawer-inner .pf-v6-c-chatbot__content {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  contain: layout style !important;
+  box-sizing: border-box !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-chatbot__footer {
+  flex-shrink: 0 !important;
+  width: 100% !important;
+  display: flex !important;
+  visibility: visible !important;
+}
+
+/* Ensure MessageBox is visible */
+.ols-prototype-ai-drawer .pf-v6-c-chatbot__message-box {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  width: 100% !important;
+}
+
+/* MessageBox renders PF `JumpButton` (scroll to top/bottom) as siblings of the scroll region — hide for this prototype. */
+.ols-ai-chrome-dock .pf-chatbot__jump {
+  display: none !important;
+}
+
+/* Ensure MessageBar is visible */
+.ols-prototype-ai-drawer .pf-v6-c-message-bar {
+  display: flex !important;
+  visibility: visible !important;
+  width: 100% !important;
+}
+
+.ols-ai-chrome-dock .pf-chatbot__footer,
+.ols-ai-chrome-dock .pf-chatbot__message-bar,
+.ols-ai-chrome-dock .pf-v6-c-message-bar {
+  position: relative !important;
+}
+
+/* Welcome prompt: hide PF title/description row (starter cards only). */
+.ols-prototype-ai-drawer .lightspeed-welcome-prompt--prompts-only > [data-pf-content] {
+  display: none !important;
+}
+
+/* Fix ChatbotWelcomePrompt alignment and visibility */
+.ols-prototype-ai-drawer .pf-v6-c-chatbot__welcome-prompt {
+  text-align: left !important;
+  padding: var(--pf-v5-global--spacer--lg) var(--pf-v5-global--spacer--md) var(--pf-v5-global--spacer--md) !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-chatbot__welcome-prompt-title {
+  text-align: left !important;
+  margin-bottom: var(--pf-v5-global--spacer--sm) !important;
+  display: block !important;
+  visibility: visible !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-chatbot__welcome-prompt-description {
+  text-align: left !important;
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Ensure all chatbot content is visible */
+.ols-prototype-ai-drawer .pf-v6-c-chatbot * {
+  visibility: visible !important;
+}
+
+/* Ensure message avatars are visible and properly sized */
+.ols-prototype-ai-drawer .pf-v6-c-message__avatar,
+.ols-prototype-ai-drawer .pf-v6-c-avatar {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Launcher host: laid out inside `.ols-ai-chrome-dock` (relative + flex); not viewport-fixed here. */
+.chatbot-toggle-sticky-host {
+  margin: 0;
+  padding: 0;
+}
+
+.chatbot-toggle-button {
+  position: relative !important;
+  z-index: 1 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: none;
+}
+
+/*
+ * Floating launcher: 48×48 outer box, 12px radius, 2px border.
+ * Border: `--pf-t--color--gray--20` (#e0e0e0) — closest PF palette token to #E4E4E4 (see @patternfly/react-tokens).
+ */
+/*
+ * PF chatbot sets `.pf-v6-c-button.pf-chatbot__button { position: fixed; inset-inline-end: … }` which ignores
+ * the wrapper’s `right: 24px` and adds extra viewport offset. Clear fixed + logical insets so only the host positions.
+ */
+.chatbot-toggle-sticky-host .pf-v6-c-button.pf-chatbot__button {
+  box-sizing: border-box !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  background-color: #ffffff !important;
+  color: #151515 !important;
+  box-shadow:
+    0 4px 12px rgba(3, 3, 3, 0.16),
+    0 1px 3px rgba(3, 3, 3, 0.08) !important;
+  border: 2px solid var(--pf-t--color--gray--20) !important;
+  display: inline-flex !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  inset: auto !important;
+  inset-block-start: auto !important;
+  inset-block-end: auto !important;
+  inset-inline-start: auto !important;
+  inset-inline-end: auto !important;
+  /* Remove PF plain-button inset so the graphic is truly edge-to-edge inside the border. */
+  --pf-v6-c-button--PaddingBlockStart: 0 !important;
+  --pf-v6-c-button--PaddingBlockEnd: 0 !important;
+  --pf-v6-c-button--PaddingInlineStart: 0 !important;
+  --pf-v6-c-button--PaddingInlineEnd: 0 !important;
+  --pf-v6-c-button--Gap: 0 !important;
+  --pf-v6-c-button--MinWidth: 0 !important;
+}
+
+/* PF uses `display: contents` on the icon slot — override so the logo can size to the inner box. */
+.chatbot-toggle-sticky-host .pf-chatbot__button .pf-v6-c-button__icon {
+  display: flex !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  line-height: 0 !important;
+}
+
+/*
+ * ChatbotToggle passes `Icon isInline` → `.pf-v6-c-icon.pf-m-inline` is only 1em × 1em, which shrinks the OLS
+ * PNG inside the 48px launcher. Stretch the Icon shell and its content box to the full button face.
+ */
+.chatbot-toggle-sticky-host .pf-chatbot__button .pf-v6-c-button__icon > .pf-v6-c-icon {
+  --pf-v6-c-icon--Width: 100% !important;
+  --pf-v6-c-icon--Height: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  flex: 1 1 auto !important;
+  align-self: stretch !important;
+}
+
+.chatbot-toggle-sticky-host .pf-chatbot__button .pf-v6-c-button__icon > .pf-v6-c-icon > .pf-v6-c-icon__content {
+  display: flex !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  width: 100% !important;
+  height: 100% !important;
+  font-size: unset !important;
+}
+
+.chatbot-toggle-sticky-host .pf-chatbot__button.pf-chatbot__button--active {
+  background-color: #f5f5f5 !important;
+}
+
+.chatbot-toggle-sticky-host .pf-chatbot__button:hover {
+  background-color: #fafafa !important;
+}
+
+/* Logo fills inner box edge-to-edge (crop if needed); no margin/padding inside the control. */
+.chatbot-toggle-sticky-host .ols-floating-launcher__logo {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex: 1 1 auto !important;
+  flex-shrink: 0 !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  display: block !important;
+  pointer-events: none;
+}
+
+/* Open state: center the chevron in the same control. */
+.chatbot-toggle-sticky-host .pf-chatbot__button.pf-chatbot__button--active .pf-v6-c-button__icon {
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.chatbot-toggle-sticky-host .pf-chatbot__button.pf-chatbot__button--active svg {
+  width: var(--pf-t--global--spacer--lg, 1rem) !important;
+  height: var(--pf-t--global--spacer--lg, 1rem) !important;
+}
+
+/* Header / empty-state OLS mark (48×48) */
+.ols-prototype-ai-drawer .lightspeed-header-ols-logo {
+  width: 48px !important;
+  height: 48px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+.lightspeed-empty-intro .lightspeed-header-ols-logo {
+  width: 48px !important;
+  height: 48px !important;
+}
+
+/* Lightspeed header strip */
+.ols-prototype-ai-drawer .pf-chatbot__header {
+  background-color: #f0f0f0 !important;
+}
+
+.ols-prototype-ai-drawer .pf-chatbot__header__divider {
+  display: none;
+}
+
+.ols-prototype-ai-drawer .lightspeed-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.ols-prototype-ai-drawer .lightspeed-header-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* `Title` size="2xl" uses PatternFly `pf-m-2xl` heading scale (target ~24px); ellipsis when drawer is narrow. */
+.ols-prototype-ai-drawer .lightspeed-header-title .lightspeed-header-title-text.pf-v6-c-title {
+  margin: 0 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-weight: var(--pf-t--global--font--weight--heading--default, 400) !important;
+}
+
+.ols-prototype-ai-drawer .lightspeed-header-main {
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--pf-t--global--spacer--md, 1rem) !important;
+  min-width: 0 !important;
+}
+
+.ols-prototype-ai-drawer .lightspeed-header-mark {
+  display: inline-flex !important;
+  flex-shrink: 0 !important;
+}
+
+.ols-prototype-ai-drawer .pf-chatbot__content {
+  background-color: #ffffff !important;
+}
+
+/* Empty-state “Important” callout (purple accent, console-style) */
+.lightspeed-important-alert.pf-v6-c-alert {
+  --pf-v6-c-alert--BorderColor: #6f42c1;
+  background-color: #f3e8ff !important;
+  border-color: #6f42c1 !important;
+  margin-top: var(--pf-t--global--spacer--md);
+}
+
+.lightspeed-empty-intro {
+  padding: var(--pf-t--global--spacer--lg) var(--pf-t--global--spacer--md) 0;
+}
+
+.lightspeed-empty-intro .lightspeed-empty-mark {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--pf-t--global--spacer--md);
+}
+
+.lightspeed-footnote.pf-chatbot__footnote {
+  font-size: 12px;
+  color: #6a6e73;
+  text-align: center;
+  padding-top: 4px;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-message__avatar img,
+.ols-prototype-ai-drawer .pf-v6-c-avatar img {
+  width: 48px !important;
+  height: 48px !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-message__avatar svg,
+.ols-prototype-ai-drawer .pf-v6-c-avatar svg {
+  width: 48px !important;
+  height: 48px !important;
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Template page breadcrumb section - white background, 16px padding */
+.template-page-breadcrumb {
+  padding: 16px !important;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+}
+
+/* Template page heading section - white background, 24px padding */
+.template-page-heading {
+  padding: 24px !important;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+}
+
+/* Template page content section - gray background, 24px padding */
+.template-page-content {
+  padding: 24px !important;
+  background-color: #f5f5f5 !important;
+}
+
+/* Perses "edit mode" action bar (blue background section) */
+.perses-edit-mode-bar {
+  /* Use the exact PF palette token with a safe fallback */
+  background-color: var(--pf-v6-global--palette--blue-50, #E7F1FA);
+  padding: 16px 24px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 16px;
+}
+
+/* Exact spacing requirement: 28px gap between links and Save */
+.perses-edit-mode-links {
+  margin-right: 28px;
+}
+
+/* Edit bar label: regular text, 14px, #151515 */
+.perses-edit-mode-label {
+  color: #151515 !important;
+  font-size: 14px !important;
+  /* Match PatternFly label weight (semi-bold) */
+  font-weight: var(--pf-v6-global--FontWeight--semi-bold, 600) !important;
+  display: block;
+  margin: 0 0 4px 0 !important;
+}
+
+/* Chatbot code blocks: match reference (dark header, rounded top, language left, copy icon right). */
+.ols-prototype-ai-drawer .pf-v6-c-code-block,
+.ols-prototype-ai-drawer .pf-chatbot__message-code-block {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border-radius: var(--pf-t--global--border--radius--medium, 8px);
+  overflow: hidden;
+  /* Ensure full block renders: header + content (avoid bottom half clipped in built/deployed envs). */
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  /* Explicit background so content area matches local in built/deployed (GitHub) envs. */
+  background-color: var(--pf-t--color--gray--80, #393f44);
+}
+
+/* Code block content (bottom half): explicit background so it shows in built/deployed envs. */
+.ols-prototype-ai-drawer .pf-v6-c-code-block__content {
+  display: block !important;
+  min-height: 0;
+  flex-shrink: 0;
+  background-color: var(--pf-t--color--gray--80, #393f44);
+}
+
+/* Header: dark bar (#2F3134), rounded top corners, white label and icon. Full width so actions can align. */
+.ols-prototype-ai-drawer .pf-v6-c-code-block__header {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  width: 100%;
+  box-sizing: border-box;
+  padding-inline-start: var(--pf-t--global--spacer--md, 16px);
+  padding-inline-end: var(--pf-t--global--spacer--md, 16px);
+  padding-block-start: var(--pf-t--global--spacer--sm, 8px);
+  padding-block-end: var(--pf-t--global--spacer--sm, 8px);
+  background-color: #2F3134;
+  border-block-end: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Actions row: take full width so copy can sit at the end. */
+.ols-prototype-ai-drawer .pf-v6-c-code-block__actions {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  margin-inline-start: 0;
+}
+
+/* Language label: left, no grow/shrink. */
+.ols-prototype-ai-drawer .pf-v6-c-code-block__actions .pf-v6-c-code-block__actions-item:first-child {
+  flex: 0 0 auto;
+}
+
+/* Code block header: single actions item with language + copy (match chatbot CodeBlockMessage layout). */
+.ols-prototype-ai-drawer .pf-chatbot__message-code-block .pf-v6-c-code-block__actions-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Language label: PF-recommended weight for CodeBlock headers (semi-bold), white, uppercase format. */
+.ols-prototype-ai-drawer .pf-chatbot__code-block-language {
+  font-size: var(--pf-t--global--font--size--xs, 12px);
+  font-family: var(--pf-t--global--font--family--mono, monospace);
+  font-weight: var(--pf-t--global--font--weight--body--bold, 600);
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+/* Copy button in header: native button + inline SVG (class matches chatbot .pf-chatbot__button--copy). */
+.ols-prototype-ai-drawer .pf-v6-c-code-block__header .pf-v6-c-button,
+.ols-prototype-ai-drawer .pf-v6-c-code-block__header button,
+.ols-prototype-ai-drawer .pf-v6-c-code-block__header .pf-chatbot__button--copy,
+.ols-prototype-ai-drawer .pf-chatbot__code-block-copy-button {
+  color: #fff !important;
+  background: transparent !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 6px !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-code-block__header .pf-chatbot__button--copy svg,
+.ols-prototype-ai-drawer .pf-chatbot__code-block-copy-button svg {
+  color: #fff !important;
+  fill: #fff !important;
+  width: 1em !important;
+  height: 1em !important;
+  display: block !important;
+  flex-shrink: 0 !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-code-block__header .pf-v6-c-button:hover,
+.ols-prototype-ai-drawer .pf-v6-c-code-block__header button:hover,
+.ols-prototype-ai-drawer .pf-chatbot__code-block-copy-button:hover {
+  color: rgba(255, 255, 255, 0.9) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.ols-prototype-ai-drawer .pf-chatbot__code-block-copy-button:hover svg {
+  color: rgba(255, 255, 255, 0.9) !important;
+  fill: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Force copy icon visible on dark header: override PF icon color, ensure icon displays, SVG fill. */
+.ols-prototype-ai-drawer .pf-v6-c-code-block__header .pf-v6-c-button .pf-v6-c-button__icon,
+.ols-prototype-ai-drawer .pf-v6-c-code-block__header button .pf-v6-c-button__icon {
+  display: inline-flex !important;
+  color: #fff !important;
+  --pf-v6-c-button__icon--Color: #fff !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-code-block__header .pf-v6-c-button .pf-v6-c-button__icon svg,
+.ols-prototype-ai-drawer .pf-v6-c-code-block__header button .pf-v6-c-button__icon svg,
+.ols-prototype-ai-drawer .pf-v6-c-code-block__header .pf-v6-c-button svg,
+.ols-prototype-ai-drawer .pf-v6-c-code-block__header button svg {
+  fill: #fff !important;
+  width: 1em !important;
+  height: 1em !important;
+}
+
+/* Chatbot suggestion chips (quick responses) - brand interactive blue */
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-responses .pf-v6-c-button,
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-responses button,
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-response,
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-response .pf-v6-c-button,
+.ols-prototype-ai-drawer .pf-v6-c-chatbot__content .pf-v6-c-message .pf-v6-c-button:not(.pf-m-plain):not(.pf-m-link) {
+  background-color: var(--pf-t--global--background--color--primary--default) !important;
+  border: 1px solid var(--pf-t--global--border--color--interactive--default) !important;
+  color: var(--pf-t--global--text--color--brand--default) !important;
+  border-radius: 9999px !important;
+  font-weight: 500 !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-responses .pf-v6-c-button:hover,
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-responses button:hover,
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-response:hover,
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-response .pf-v6-c-button:hover,
+.ols-prototype-ai-drawer .pf-v6-c-chatbot__content .pf-v6-c-message .pf-v6-c-button:not(.pf-m-plain):not(.pf-m-link):hover {
+  background-color: var(--pf-t--global--background--color--secondary--default) !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-responses .pf-v6-c-button:active,
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-responses button:active,
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-response:active,
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-response .pf-v6-c-button:active,
+.ols-prototype-ai-drawer .pf-v6-c-chatbot__content .pf-v6-c-message .pf-v6-c-button:not(.pf-m-plain):not(.pf-m-link):active {
+  background-color: var(--pf-t--global--background--color--tertiary--default) !important;
+}
+
+/* Chatbot quick response chips are rendered as clickable PatternFly Labels. */
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable {
+  background-color: var(--pf-t--global--background--color--primary--default) !important;
+  border-color: var(--pf-t--global--border--color--interactive--default) !important;
+  color: var(--pf-t--global--text--color--brand--default) !important;
+  font-weight: 500 !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable .pf-v6-c-label__content,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable .pf-v6-c-label__text {
+  color: var(--pf-t--global--text--color--brand--default) !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable:hover {
+  background-color: var(--pf-t--global--background--color--secondary--default) !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable:focus-visible {
+  outline: 2px solid var(--pf-t--global--border--color--interactive--default) !important;
+  outline-offset: 2px !important;
+}
+
+/* Persisted clicked/selected state: both pills solid blue after click.
+   Override both outline (first pill) and filled (second pill) so they match. */
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-clicked,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-active,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-selected,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable[aria-pressed="true"],
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-filled.pf-m-clicked,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-filled[aria-pressed="true"],
+/* Explicitly override outline variant (Analyze root cause) so it’s solid blue like the other pill */
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-outline.pf-m-clickable.pf-m-clicked,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-outline.pf-m-clickable[aria-pressed="true"],
+/* Fallback: any quick-response label we mark as pressed gets solid blue */
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-response .pf-v6-c-label[aria-pressed="true"] {
+  background-color: #9FCCF7 !important;
+  border-color: #9FCCF7 !important;
+  color: var(--pf-t--global--text--color--default, #151515) !important;
+}
+
+/* Override PF outline CSS variables so outline pill (first pill) uses solid blue, not white */
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-outline[aria-pressed="true"],
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-outline.pf-m-clicked {
+  --pf-v6-c-label--BackgroundColor: #9FCCF7 !important;
+  --pf-v6-c-label--BorderColor: #9FCCF7 !important;
+  --pf-v6-c-label--Color: #151515 !important;
+  --pf-v6-c-label__icon--Color: #151515 !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-clicked .pf-v6-c-label__content,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-active .pf-v6-c-label__content,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-selected .pf-v6-c-label__content,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable[aria-pressed="true"] .pf-v6-c-label__content,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-clicked .pf-v6-c-label__text,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-active .pf-v6-c-label__text,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-selected .pf-v6-c-label__text,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable[aria-pressed="true"] .pf-v6-c-label__text,
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-response .pf-v6-c-label[aria-pressed="true"] .pf-v6-c-label__content,
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-response .pf-v6-c-label[aria-pressed="true"] .pf-v6-c-label__text {
+  color: var(--pf-t--global--text--color--default, #151515) !important;
+}
+
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-clicked:hover,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-active:hover,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-selected:hover,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable[aria-pressed="true"]:hover,
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-response .pf-v6-c-label[aria-pressed="true"]:hover {
+  background-color: #9FCCF7 !important;
+  border-color: #9FCCF7 !important;
+}
+
+/* Ensure the check icon inherits the selected (dark) color */
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-clicked .pf-v6-c-label__icon,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-active .pf-v6-c-label__icon,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable.pf-m-selected .pf-v6-c-label__icon,
+.ols-prototype-ai-drawer .pf-v6-c-label.pf-m-clickable[aria-pressed="true"] .pf-v6-c-label__icon,
+.ols-prototype-ai-drawer .pf-v6-c-message__quick-response .pf-v6-c-label[aria-pressed="true"] .pf-v6-c-label__icon {
+  color: var(--pf-t--global--text--color--default, #151515) !important;
+}

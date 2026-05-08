@@ -1,0 +1,52 @@
+/* Silence rules table toolbar (prototype) */
+.silence-rules-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid var(--pf-t--global--border--color--default);
+}
+
+.silence-rules-toolbar__left {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.silence-rules-toolbar__search {
+  flex: 1 1 200px;
+  min-width: 200px;
+  max-width: 420px;
+}
+
+.silence-rules-toolbar__bulk {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--pf-t--global--border--color--default);
+  border-radius: var(--pf-t--global--border--radius--medium, 6px);
+  overflow: hidden;
+  background: var(--pf-t--global--background--color--primary--default);
+}
+
+.silence-rules-toolbar__bulk-check {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.silence-rules-toolbar__bulk-sep {
+  width: 1px;
+  align-self: stretch;
+  background: var(--pf-t--global--border--color--default);
+}
+
+.silence-rules-toolbar__bulk .pf-v6-c-menu-toggle {
+  border-radius: 0;
+  border: 0;
+  align-self: stretch;
+}

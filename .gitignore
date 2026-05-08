@@ -6,6 +6,19 @@
 ehthumbs.db
 Thumbs.db
 _site/*
+
+# OME prototype — dependencies and build output (see ome-console/VENDOR.md)
+ome-console/node_modules/
+ome-console/dist/
+
+# OSAC demo — dependencies and build output (see osac-demo/VENDOR.md)
+osac-demo/node_modules/
+osac-demo/dist/
+
+# HPUX Prototypes (kuklas) — vendored app; see hpux-prototypes/VENDOR.md
+hpux-prototypes/node_modules/
+hpux-prototypes/dist/
+
 .jekyll-cache
 .sass-cache
 Gemfile.lock

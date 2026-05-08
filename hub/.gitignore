@@ -1,0 +1,33 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OME embed — built from ../ome-console via `npm run build:ome` (run before `npm run dev` if missing)
+public/ome-console/
+# OSAC embed — built from ../osac-demo via `npm run build:osac`
+public/osac-demo/
+public/hpux-prototypes/
+public/rhacs-ux-prototypes/
+# OCP 5 cluster update — built from ../ocp5-cluster-update-experience via `npm run build:ocp5-cluster-update`
+public/ocp5-cluster-update-experience/

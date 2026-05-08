@@ -1,0 +1,130 @@
+/* Scoped to Create alert rule wizard page only (prototype) */
+.create-alert-rule-page {
+  --carw-label-size: 0.875rem;
+  --carw-input-size: 1rem;
+  --carw-gutter: 1rem;
+  --carw-group-gap: 1.5rem;
+  --carw-label-input-gap: 0.5rem;
+}
+
+.create-alert-rule-page .pf-v6-c-form__group-label,
+.create-alert-rule-page .pf-v6-c-form__group-label-text {
+  text-align: left !important;
+  font-size: var(--carw-label-size) !important;
+}
+
+.create-alert-rule-page .pf-v6-c-form__helper-text,
+.create-alert-rule-page .pf-v6-c-helper-text {
+  font-size: var(--carw-label-size);
+  text-align: left;
+}
+
+.create-alert-rule-page .pf-v6-c-form__group {
+  margin-bottom: var(--carw-group-gap) !important;
+}
+
+.create-alert-rule-page .pf-v6-c-form__group .pf-v6-c-form__group-label + .pf-v6-c-form__group-control,
+.create-alert-rule-page .pf-v6-c-form__group-control {
+  margin-top: var(--carw-label-input-gap);
+}
+
+.create-alert-rule-page .pf-v6-c-text-input,
+.create-alert-rule-page .pf-v6-c-text-area,
+.create-alert-rule-page .pf-v6-c-menu-toggle,
+.create-alert-rule-page textarea {
+  font-size: var(--carw-input-size) !important;
+}
+
+.create-alert-rule-page .pf-v6-c-radio,
+.create-alert-rule-page .pf-v6-c-check {
+  align-items: flex-start !important;
+}
+
+.create-alert-rule-page .carw-radio-stack .pf-v6-c-radio,
+.create-alert-rule-page .carw-radio-stack .pf-v6-c-check {
+  margin-bottom: 0.75rem;
+}
+
+/* Target clusters: center “Select all in view” label with the checkbox (overrides page-wide check top-align) */
+.create-alert-rule-page .carw-cluster-filter-toolbar .pf-v6-c-check {
+  align-items: center !important;
+}
+
+.create-alert-rule-page .pf-v6-c-radio__label,
+.create-alert-rule-page .pf-v6-c-check__label {
+  text-align: left;
+  font-size: var(--carw-label-size);
+}
+
+.create-alert-rule-page .pf-v6-c-text-input:focus-within,
+.create-alert-rule-page .pf-v6-c-text-area:focus-within,
+.create-alert-rule-page .pf-v6-c-menu-toggle:focus-within {
+  outline: 2px solid #06c !important;
+  outline-offset: 2px;
+}
+
+.create-alert-rule-page .carw-promql-wrap textarea:focus {
+  outline: 2px solid #06c !important;
+  outline-offset: 2px;
+}
+
+/* Wizard shell: fill viewport column so height:100% resolves on the wizard */
+.create-alert-rule-page .carw-wizard-shell {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Wizard shell: scroll main, pin footer */
+.create-alert-rule-page .carw-wizard-shell .pf-v6-c-wizard {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+.create-alert-rule-page .carw-wizard-shell .pf-v6-c-wizard__outer-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Let PatternFly sizing drive the main region; only ensure scrolling works */
+.create-alert-rule-page .carw-wizard-shell .pf-v6-c-wizard__main {
+  min-height: 0;
+}
+
+.create-alert-rule-page .carw-wizard-shell .pf-v6-c-wizard__footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  background-color: var(--pf-t--global--background--color--primary--default);
+  border-top: 1px solid var(--pf-t--global--border--color--default);
+  box-shadow: 0 -2px 8px rgba(3, 3, 3, 0.06);
+}
+
+/*
+ * Do not override .pf-v6-c-wizard__nav position. PatternFly keeps the nav
+ * position:absolute so it sits in the padded lane; height:100% then does not
+ * compete with .pf-v6-c-wizard__main in the flex column. Using position:sticky
+ * here pulls the nav into normal flow so it + height:100% consumes all
+ * vertical space and collapses the main body to zero (blank wizard content).
+ */
+
+/* Cluster table sticky header inside scroll box */
+.create-alert-rule-page .carw-cluster-scroll {
+  max-height: min(52vh, 520px);
+  overflow: auto;
+  background-color: var(--pf-t--global--background--color--primary--default);
+  border: 1px solid var(--pf-t--global--border--color--default);
+  border-radius: 8px;
+}
+
+.create-alert-rule-page .carw-cluster-scroll thead th {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  background-color: var(--pf-t--global--background--color--primary--default);
+  box-shadow: 0 1px 0 var(--pf-t--global--border--color--default);
+}

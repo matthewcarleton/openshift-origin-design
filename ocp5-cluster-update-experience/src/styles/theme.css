@@ -1,0 +1,1359 @@
+@custom-variant dark (&:is(.dark *));
+@custom-variant no-glass (&:is(.no-glass *));
+@custom-variant high-contrast (&:is(.high-contrast *));
+@custom-variant high-contrast-dark (&:is(.high-contrast-dark *));
+
+/*
+ * PatternFly 6 palette + app shell — Unified Theme / tokens-palette + tokens-default + tokens-dark
+ * Figma: https://www.figma.com/design/qRn3S225WwGHIdgGZX0LTC/Unified-Theme--Design-Tokens--Styles---Specs
+ * Code: https://github.com/patternfly/patternfly/tree/main/src/patternfly/base/tokens
+ */
+:root {
+  --pf-color-white: #ffffff;
+  --pf-color-gray-10: #f2f2f2;
+  --pf-color-gray-20: #e0e0e0;
+  --pf-color-gray-30: #c7c7c7;
+  --pf-color-gray-40: #a3a3a3;
+  --pf-color-gray-60: #4d4d4d;
+  --pf-color-gray-70: #383838;
+  --pf-color-gray-80: #292929;
+  --pf-color-gray-90: #1f1f1f;
+  --pf-color-gray-95: #151515;
+  --pf-color-blue-10: #e0f0ff;
+  --pf-color-blue-20: #b9dafc;
+  --pf-color-blue-30: #92c5f9;
+  --pf-color-blue-50: #0066cc;
+  --pf-color-blue-60: #004d99;
+  --pf-color-red-50: #ee0000;
+
+  /* Shell (behind chrome); solid fallback when glass canvas layers are off */
+  --app-page-canvas: var(--pf-color-gray-20);
+  --app-page-canvas-no-glass: var(--pf-color-gray-10);
+  --app-masthead-bg: var(--pf-color-white);
+  --app-masthead-border: var(--pf-color-gray-30);
+  /* Console-like insets: sides + top + bottom (wider than 1rem so content clears shell edges) */
+  --ocs-app-page-pad-x: var(--pf-t--global--spacer--2xl, 2rem);
+  --ocs-app-page-pad-t: var(--pf-t--global--spacer--xl, 1.5rem);
+  --ocs-app-page-pad-b: var(--pf-t--global--spacer--lg, 1rem);
+}
+
+.dark {
+  --app-page-canvas: var(--pf-color-gray-95);
+  --app-page-canvas-no-glass: #0f0f0f;
+  --app-masthead-bg: var(--pf-color-gray-90);
+  --app-masthead-border: var(--pf-color-gray-70);
+  --ocs-app-page-pad-x: var(--pf-t--global--spacer--2xl, 2rem);
+  --ocs-app-page-pad-t: var(--pf-t--global--spacer--xl, 1.5rem);
+  --ocs-app-page-pad-b: var(--pf-t--global--spacer--lg, 1rem);
+}
+
+/**
+ * PatternFly 6 glass theme tokens (light / dark).
+ * Aligned with patternfly/patternfly tokens-glass.scss & tokens-glass-dark.scss
+ * (Figma Unified Theme → CSS export). See:
+ * https://github.com/patternfly/patternfly/tree/main/src/patternfly/base/tokens
+ */
+:root {
+  --pf-t--global--background--color--glass--primary--default: rgba(255, 255, 255, 0.5);
+  --pf-t--global--background--filter--glass--blur--primary: blur(16px);
+  --pf-t--global--border--radius--glass--default: 16px;
+  --pf-t--global--border--width--glass--default: 1px;
+  /* Resolved: --border--color--glass--default → --border--color--alt → glass primary background */
+  --pf-t--global--border--color--glass--default: rgba(255, 255, 255, 0.6);
+  /* Elevation ≈ PF --box-shadow--md (Y 4px, blur 10px, color--100) */
+  --pf-t--app-glass-elevation: 0 4px 10px 0 rgba(41, 41, 41, 0.15);
+}
+
+.dark {
+  --pf-t--global--background--color--glass--primary--default: rgba(41, 41, 41, 0.5);
+  --pf-t--global--background--filter--glass--blur--primary: blur(16px);
+  --pf-t--global--border--color--glass--default: rgba(41, 41, 41, 0.5);
+  --pf-t--app-glass-elevation: 0 4px 10px 0 rgba(0, 0, 0, 0.5);
+}
+
+/**
+ * Primary glass surfaces (sidebar shell, main content, menus).
+ * html.no-glass: solid panels matching prior prototype (no blur).
+ */
+.app-glass-panel {
+  border-radius: var(--pf-t--global--border--radius--glass--default);
+  border-width: var(--pf-t--global--border--width--glass--default);
+  border-style: solid;
+  border-color: var(--pf-t--global--border--color--glass--default);
+  box-shadow: var(--pf-t--app-glass-elevation);
+}
+
+html:not(.no-glass) .app-glass-panel {
+  background-color: var(--pf-t--global--background--color--glass--primary--default);
+  -webkit-backdrop-filter: var(--pf-t--global--background--filter--glass--blur--primary);
+  backdrop-filter: var(--pf-t--global--background--filter--glass--blur--primary);
+}
+
+html.no-glass .app-glass-panel {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: var(--pf-color-white);
+  border-color: var(--pf-color-gray-30);
+}
+
+html.no-glass.dark .app-glass-panel {
+  /* PF dark --background--color--primary--default → gray-80 */
+  background-color: var(--pf-color-gray-80);
+  border-color: var(--pf-color-gray-60);
+}
+
+/** Right-docked drawer: round inner edge only; shadow cast toward page content. */
+.app-glass-panel.app-glass-panel--edge-right {
+  border-radius: var(--pf-t--global--border--radius--glass--default) 0 0
+    var(--pf-t--global--border--radius--glass--default);
+  box-shadow: -4px 0 24px 0 rgba(41, 41, 41, 0.12);
+}
+
+html.dark:not(.no-glass) .app-glass-panel.app-glass-panel--edge-right {
+  box-shadow: -4px 0 24px 0 rgba(0, 0, 0, 0.4);
+}
+
+html.no-glass .app-glass-panel.app-glass-panel--edge-right {
+  box-shadow: -4px 0 24px 0 rgba(41, 41, 41, 0.12);
+}
+
+html.no-glass.dark .app-glass-panel.app-glass-panel--edge-right {
+  box-shadow: -4px 0 24px 0 rgba(0, 0, 0, 0.35);
+}
+
+/**
+ * Cluster Update — “Agent logs” slide-over: always opaque (no glass blur / no rgba shell).
+ * Matches solid LightSpeed surfaces for transcript readability and WCAG contrast.
+ */
+.ocs-update-details-panel {
+  /* Flexbox: allow column children with flex-1 + overflow-auto to scroll (default min-height: auto prevents this). */
+  min-height: 0;
+  max-height: 100dvh;
+  border-radius: var(--pf-t--global--border--radius--glass--default) 0 0
+    var(--pf-t--global--border--radius--glass--default);
+  border-width: var(--pf-t--global--border--width--glass--default);
+  border-style: solid;
+  box-shadow: -4px 0 24px 0 rgba(0, 0, 0, 0.35);
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+html:not(.dark) .ocs-update-details-panel {
+  background-color: var(--pf-color-white);
+  border-color: var(--pf-color-gray-30);
+}
+
+html.dark .ocs-update-details-panel {
+  background-color: var(--pf-color-gray-80);
+  border-color: var(--pf-color-gray-60);
+}
+
+/** Inset log stream (terminal-style) — opaque layer inside the panel shell. */
+.ocs-update-details-panel__log-well {
+  overflow-anchor: none;
+  background-color: var(--pf-color-gray-10);
+  color: #151515;
+  font-size: var(--pf-t--global--FontSize--sm);
+  line-height: 1.5;
+}
+
+html.dark .ocs-update-details-panel__log-well {
+  /* Explicit light-on-dark for WCAG contrast on near-black (inverse token can read too dim). */
+  background-color: #0f0f0f;
+  color: #e8e8e8;
+}
+
+html.dark .ocs-update-details-panel__log-well .ocs-update-details-panel__log-ts {
+  color: #a8a8a8;
+}
+
+html:not(.dark) .ocs-update-details-panel__log-well .ocs-update-details-panel__log-ts {
+  color: #6a6e73;
+}
+
+/** Log level token matches body (single readable white / dark gray). */
+html.dark .ocs-update-details-panel__log-well .ocs-update-details-panel__log-level {
+  color: #e8e8e8;
+}
+
+html:not(.dark) .ocs-update-details-panel__log-well .ocs-update-details-panel__log-level {
+  color: #151515;
+}
+
+/** Panel chrome — title + subtitle + toolbar match (white on dark shell). */
+html.dark .ocs-update-details-panel .ocs-update-details-panel__title {
+  color: #fff !important;
+}
+
+html.dark .ocs-update-details-panel .ocs-update-details-panel__subtitle {
+  color: #e0e0e0 !important;
+}
+
+html.dark .ocs-update-details-panel .ocs-update-details-panel__toolbar-label {
+  color: #fff;
+}
+
+/** Agent still streaming — no spinner; subtle animated dots (a11y-friendly motion). */
+html.dark .ocs-update-details-panel__agent-status {
+  display: flex;
+  align-items: center;
+  gap: var(--pf-t--global--spacer--sm);
+  font-family: var(--pf-t--global--FontFamily--text);
+  font-size: var(--pf-t--global--FontSize--sm);
+  color: #e8e8e8;
+}
+
+html:not(.dark) .ocs-update-details-panel__agent-status {
+  display: flex;
+  align-items: center;
+  gap: var(--pf-t--global--spacer--sm);
+  font-family: var(--pf-t--global--FontFamily--text);
+  font-size: var(--pf-t--global--FontSize--sm);
+  color: #151515;
+}
+
+html.dark .ocs-update-details-panel__agent-status {
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+html:not(.dark) .ocs-update-details-panel__agent-status {
+  border-top: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+
+.ocs-update-details-panel__agent-dots span {
+  display: inline-block;
+  width: 0.35rem;
+  height: 0.35rem;
+  margin: 0 0.1rem;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+  animation: ocs-agent-dot-pulse 1.2s ease-in-out infinite;
+}
+
+.ocs-update-details-panel__agent-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.ocs-update-details-panel__agent-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes ocs-agent-dot-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ocs-update-details-panel__agent-dots span {
+    animation: none;
+    opacity: 0.85;
+  }
+}
+
+/** Cluster Update agent modals — align title + body copy (white on dark chrome; dark text on light). */
+html.dark .ocs-cluster-update-modal.pf-v6-c-modal-box {
+  background-color: var(--pf-color-gray-80);
+  color: #f5f5f5;
+}
+
+html.dark .ocs-cluster-update-modal.pf-v6-c-modal-box .pf-v6-c-modal-box__title-text {
+  color: #fff !important;
+}
+
+html.dark .ocs-cluster-update-modal.pf-v6-c-modal-box .pf-v6-c-modal-box__body {
+  color: #f5f5f5;
+}
+
+html:not(.dark) .ocs-cluster-update-modal.pf-v6-c-modal-box .pf-v6-c-modal-box__title-text {
+  color: var(--pf-t--global--text--color--regular);
+}
+
+html:not(.dark) .ocs-cluster-update-modal.pf-v6-c-modal-box .pf-v6-c-modal-box__body {
+  color: var(--pf-t--global--text--color--regular);
+}
+
+/** Schedule update window — compact PatternFly DatePicker / TimePicker / FormSelect row. */
+.ocs-schedule-modal-fields {
+  width: 100%;
+}
+
+.ocs-schedule-modal-field {
+  flex: 0 1 auto;
+  max-width: min(100%, 14rem);
+}
+
+.ocs-schedule-modal-field--timezone {
+  max-width: min(100%, 22rem);
+}
+
+/** Agent logs slide-over — light theme chrome matches body copy contrast. */
+html:not(.dark) .ocs-update-details-panel .ocs-update-details-panel__title {
+  color: var(--pf-t--global--text--color--regular) !important;
+}
+
+html:not(.dark) .ocs-update-details-panel .ocs-update-details-panel__subtitle {
+  color: var(--pf-t--global--text--color--subtle) !important;
+}
+
+html:not(.dark) .ocs-update-details-panel .ocs-update-details-panel__toolbar-label {
+  color: var(--pf-t--global--text--color--regular);
+}
+
+/** Compact floating surfaces (menus): smaller radius than default glass token. */
+.app-glass-panel.app-glass-panel--radius-sm {
+  border-radius: 8px;
+}
+
+/* Custom Scrollbar Styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+}
+
+.dark * {
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.dark *::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dark *::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+/*
+ * Tailwind / shadcn bridge — values mapped to PF6 semantic colors (text--regular/subtle, borders, brand).
+ */
+:root {
+  --font-size: 16px;
+  --background: var(--pf-color-gray-10);
+  --foreground: var(--pf-color-gray-95);
+  --card: var(--pf-color-white);
+  --card-foreground: var(--pf-color-gray-95);
+  --popover: var(--pf-color-white);
+  --popover-foreground: var(--pf-color-gray-95);
+  --primary: var(--pf-color-blue-50);
+  --primary-foreground: var(--pf-color-white);
+  --secondary: var(--pf-color-gray-10);
+  --secondary-foreground: var(--pf-color-gray-95);
+  --muted: var(--pf-color-gray-10);
+  --muted-foreground: var(--pf-color-gray-60);
+  --accent: var(--pf-color-gray-20);
+  --accent-foreground: var(--pf-color-gray-95);
+  --destructive: var(--pf-color-red-50);
+  --destructive-foreground: var(--pf-color-white);
+  --border: var(--pf-color-gray-30);
+  --input: transparent;
+  --input-background: var(--pf-color-gray-10);
+  --switch-background: var(--pf-color-gray-30);
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: var(--pf-color-blue-50);
+  --chart-1: var(--pf-color-blue-50);
+  --chart-2: #009596;
+  --chart-3: #8476d1;
+  --chart-4: #f0ab00;
+  --chart-5: #3e8635;
+  /* PF --border--radius--medium */
+  --radius: 1rem;
+  --sidebar: var(--pf-color-gray-10);
+  --sidebar-foreground: var(--pf-color-gray-95);
+  --sidebar-primary: var(--pf-color-blue-50);
+  --sidebar-primary-foreground: var(--pf-color-white);
+  --sidebar-accent: var(--pf-color-gray-20);
+  --sidebar-accent-foreground: var(--pf-color-gray-95);
+  --sidebar-border: var(--pf-color-gray-30);
+  --sidebar-ring: var(--pf-color-blue-50);
+}
+
+.dark {
+  --background: var(--pf-color-gray-95);
+  --foreground: var(--pf-color-white);
+  --card: var(--pf-color-gray-80);
+  --card-foreground: var(--pf-color-white);
+  --popover: var(--pf-color-gray-80);
+  --popover-foreground: var(--pf-color-white);
+  --primary: var(--pf-color-blue-50);
+  --primary-foreground: var(--pf-color-white);
+  --secondary: var(--pf-color-gray-80);
+  --secondary-foreground: var(--pf-color-white);
+  --muted: var(--pf-color-gray-80);
+  --muted-foreground: var(--pf-color-gray-30);
+  --accent: var(--pf-color-gray-70);
+  --accent-foreground: var(--pf-color-white);
+  --destructive: #f56e6e;
+  --destructive-foreground: var(--pf-color-white);
+  --border: var(--pf-color-gray-60);
+  --input: var(--pf-color-gray-70);
+  --ring: var(--pf-color-blue-20);
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: var(--pf-color-blue-20);
+  --chart-2: #63c5ce;
+  --chart-3: #b2a3e0;
+  --chart-4: #fbbf24;
+  --chart-5: #7cc674;
+  --sidebar: var(--pf-color-gray-90);
+  --sidebar-foreground: var(--pf-color-white);
+  --sidebar-primary: var(--pf-color-blue-20);
+  --sidebar-primary-foreground: var(--pf-color-gray-95);
+  --sidebar-accent: var(--pf-color-gray-80);
+  --sidebar-accent-foreground: var(--pf-color-white);
+  --sidebar-border: var(--pf-color-gray-60);
+  --sidebar-ring: var(--pf-color-blue-20);
+}
+
+/* High Contrast Light Theme */
+.high-contrast {
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+  --secondary: #f0f0f0;
+  --secondary-foreground: #000000;
+  --muted: #f0f0f0;
+  --muted-foreground: #000000;
+  --accent: #e0e0e0;
+  --accent-foreground: #000000;
+  --destructive: #c00000;
+  --destructive-foreground: #ffffff;
+  --border: #000000;
+  --input: transparent;
+  --input-background: #ffffff;
+  --switch-background: #d0d0d0;
+  --ring: #000000;
+  --chart-1: #0066cc;
+  --chart-2: #00994d;
+  --chart-3: #990066;
+  --chart-4: #cc6600;
+  --chart-5: #6600cc;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #000000;
+  --sidebar-primary: #000000;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f0f0f0;
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: #000000;
+  --sidebar-ring: #000000;
+}
+
+/* High Contrast Dark Theme */
+.high-contrast-dark {
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #000000;
+  --card-foreground: #ffffff;
+  --popover: #000000;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #ffffff;
+  --muted: #1a1a1a;
+  --muted-foreground: #ffffff;
+  --accent: #1a1a1a;
+  --accent-foreground: #ffffff;
+  --destructive: #ff4444;
+  --destructive-foreground: #ffffff;
+  --border: #ffffff;
+  --input: #1a1a1a;
+  --ring: #ffffff;
+  --chart-1: #4dabf7;
+  --chart-2: #51cf66;
+  --chart-3: #ff6b6b;
+  --chart-4: #ffd43b;
+  --chart-5: #a78bfa;
+  --sidebar: #000000;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #ffffff;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #1a1a1a;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #ffffff;
+  --sidebar-ring: #ffffff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family:
+      "Red Hat Text",
+      "RedHatText",
+      "Helvetica Neue",
+      Helvetica,
+      Arial,
+      sans-serif;
+  }
+
+  /**
+  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
+  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
+  */
+
+  html {
+    font-size: var(--font-size);
+  }
+
+  h1 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h4 {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  label {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  button {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  input {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+/**
+ * OpenShift LightSpeed inline drawer: page column + scrollable transcript.
+ * PatternFly layout utilities cover most shell flex; these handle flex-min + overflow clipping.
+ */
+.ols-chatbot__main {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.ols-chatbot__message-list {
+  flex: 1 1 0%;
+  min-height: 0;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.ols-chatbot__assistant-pre {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/**
+ * LightSpeed drawer transcript: bind PF content + heading colors to theme foreground on the panel surface.
+ * Fixes low contrast when tokens do not align with inline drawer / glass backgrounds.
+ */
+.ols-chatbot-panel {
+  color: var(--pf-t--global--text--color--regular);
+  --pf-v6-c-content--Color: var(--pf-t--global--text--color--regular);
+  --pf-v6-c-content--small--Color: var(--pf-t--global--text--color--subtle);
+}
+
+.ols-chatbot-panel .pf-v6-c-title {
+  color: var(--pf-t--global--text--color--regular);
+}
+
+.ols-chatbot-panel .pf-v6-c-content strong {
+  color: var(--pf-t--global--text--color--regular);
+}
+
+.ols-chatbot-panel .pf-v6-c-button.pf-m-plain {
+  color: var(--pf-t--global--text--color--regular);
+}
+
+.ols-chatbot-panel .pf-v6-c-drawer__close .pf-v6-c-button {
+  color: var(--pf-t--global--text--color--regular);
+}
+
+/**
+ * App shell: dark theme mimics OpenShift console chrome; light theme uses PatternFly default surfaces + text.
+ * Theme follows `html.dark` from {@link applyThemeToDocument}.
+ */
+
+/* —— Dark theme —— */
+html.dark .ocs-console-page.pf-v6-c-page {
+  --pf-v6-c-masthead--BackgroundColor: var(--pf-color-gray-95);
+  --pf-v6-c-masthead--BorderColor: var(--pf-color-gray-80);
+  /* Unset solid column fill: PF uses background-color: var(--pf-v6-c-page__sidebar--BackgroundColor) */
+  --pf-v6-c-page__sidebar--BackgroundColor: transparent;
+  --pf-v6-c-page__sidebar--xl--BackgroundColor: transparent;
+  --pf-v6-c-page__sidebar--BackdropFilter: none;
+  --pf-v6-c-page__sidebar--xl--BackdropFilter: none;
+}
+
+html.dark .ocs-console-masthead.pf-v6-c-masthead {
+  --pf-v6-c-masthead--BorderColor: var(--pf-color-gray-80);
+}
+
+html.dark .ocs-console-masthead .pf-v6-c-masthead__main,
+html.dark .ocs-console-masthead .pf-v6-c-masthead__content {
+  color: var(--pf-color-white);
+}
+
+html.dark .ocs-console-masthead .pf-v6-c-button.pf-m-plain {
+  color: var(--pf-color-white);
+}
+
+html.dark .ocs-console-masthead .pf-v6-c-button.pf-m-plain:hover {
+  color: var(--pf-color-white);
+  --pf-v6-c-button--BackgroundColor: rgba(255, 255, 255, 0.12);
+}
+
+/* —— Light theme —— (reset shell to PatternFly light tokens; do not inherit dark chrome) */
+html:not(.dark) .ocs-console-page.pf-v6-c-page {
+  --pf-v6-c-masthead--BackgroundColor: var(--pf-t--global--background--color--secondary--default);
+  --pf-v6-c-masthead--BorderColor: var(--pf-t--global--border--color--default);
+  /* Unset solid column fill: PF uses background-color: var(--pf-v6-c-page__sidebar--BackgroundColor) */
+  --pf-v6-c-page__sidebar--BackgroundColor: transparent;
+  --pf-v6-c-page__sidebar--xl--BackgroundColor: transparent;
+  --pf-v6-c-page__sidebar--BackdropFilter: none;
+  --pf-v6-c-page__sidebar--xl--BackdropFilter: none;
+}
+
+/* Nav scroll area: PF Page has no default fill on sidebar-body */
+.ocs-console-page.pf-v6-c-page .pf-v6-c-page__sidebar-body {
+  background-color: var(--pf-t--global--background--color--primary--default);
+}
+
+html:not(.dark) .ocs-console-masthead .pf-v6-c-masthead__main,
+html:not(.dark) .ocs-console-masthead .pf-v6-c-masthead__content {
+  color: var(--pf-t--global--text--color--regular);
+}
+
+html:not(.dark) .ocs-console-masthead .pf-v6-c-button.pf-m-plain {
+  color: var(--pf-t--global--text--color--regular);
+}
+
+html:not(.dark) .ocs-console-masthead .pf-v6-c-button.pf-m-plain:hover {
+  color: var(--pf-t--global--text--color--regular);
+  --pf-v6-c-button--BackgroundColor: var(--pf-t--global--background--color--action--plain--alt--hover);
+}
+
+.ocs-masthead-brand-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.ocs-masthead-brand-link:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+/** Fedora SVG + stacked wordmark (see `MastheadFedoraMark`). */
+.ocs-masthead-brand-lockup {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--pf-t--global--spacer--sm);
+  min-height: 2.25rem;
+}
+
+.ocs-masthead-brand-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0;
+}
+
+.ocs-masthead-logo-hat {
+  display: block;
+  flex-shrink: 0;
+  height: 2rem;
+  width: auto;
+}
+
+.ocs-masthead-brand-rh,
+.ocs-masthead-brand-ocp {
+  line-height: 1.15;
+}
+
+html.dark .ocs-console-masthead .ocs-masthead-brand-rh,
+html.dark .ocs-console-masthead .ocs-masthead-brand-ocp {
+  color: #ffffff;
+}
+
+html:not(.dark) .ocs-console-masthead .ocs-masthead-brand-rh,
+html:not(.dark) .ocs-console-masthead .ocs-masthead-brand-ocp {
+  color: #000000;
+}
+
+.ocs-masthead-brand-rh {
+  font-weight: var(--pf-t--global--font--weight--heading--bold);
+  font-size: var(--pf-t--global--font--size--body--default);
+}
+
+.ocs-masthead-brand-ocp {
+  font-weight: var(--pf-t--global--font--weight--body--default);
+  font-size: var(--pf-t--global--font--size--body--default);
+}
+
+html.dark .ocs-masthead-user-toggle.pf-v6-c-menu-toggle {
+  color: var(--pf-color-white);
+}
+
+html:not(.dark) .ocs-masthead-user-toggle.pf-v6-c-menu-toggle {
+  color: var(--pf-t--global--text--color--regular);
+}
+
+.ocs-masthead-cluster-switch-label {
+  white-space: nowrap;
+}
+
+.ocs-masthead-cluster-switch.pf-v6-c-switch {
+  flex-wrap: nowrap;
+  align-items: center;
+  --pf-v6-c-switch__label--FontSize: var(--pf-t--global--font--size--body--default);
+}
+
+html.dark .ocs-masthead-cluster-switch.pf-v6-c-switch {
+  --pf-v6-c-switch__label--Color: var(--pf-color-white);
+}
+
+html:not(.dark) .ocs-masthead-cluster-switch.pf-v6-c-switch {
+  --pf-v6-c-switch__label--Color: var(--pf-t--global--text--color--regular);
+}
+
+.ocs-masthead-cluster-switch .pf-v6-c-switch__label {
+  white-space: nowrap;
+}
+
+.ocs-masthead-toolbar-cluster-switch {
+  flex-shrink: 0;
+}
+
+.ocs-masthead-toolbar-group.pf-v6-c-toolbar__group {
+  align-items: center;
+}
+
+.ocs-masthead-toolbar-item.pf-v6-c-toolbar__item {
+  display: flex;
+  align-items: center;
+  align-self: center;
+}
+
+.ocs-masthead-toolbar-item .pf-v6-c-button.pf-m-plain {
+  height: 2.25rem;
+  min-width: 2.25rem;
+  padding-inline: var(--pf-t--global--spacer--sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ocs-masthead-toolbar-notifications .pf-v6-c-badge {
+  align-self: center;
+}
+
+.ocs-lightspeed-fab.pf-v6-c-button.pf-m-plain {
+  position: fixed;
+  z-index: var(--pf-t--global--z-index--2xl);
+  bottom: var(--pf-t--global--spacer--lg);
+  right: var(--pf-t--global--spacer--lg);
+  padding: 0;
+  line-height: 0;
+  border: none;
+  box-shadow: none;
+  background-color: transparent;
+  --pf-v6-c-button--BorderWidth: 0;
+}
+
+.ocs-lightspeed-fab.pf-v6-c-button.pf-m-plain:hover {
+  --pf-v6-c-button--m-plain--hover--BackgroundColor: transparent;
+}
+
+.ocs-lightspeed-fab__icon {
+  display: block;
+  height: auto;
+  max-height: 3rem;
+  width: auto;
+  border: none;
+  vertical-align: middle;
+}
+
+/**
+ * Glass Page shell: `pf-v6-c-page__sidebar-main` is an inset “card” with horizontal
+ * margins. Those gutters are outside the frosted surface (parent column is transparent
+ * in glass), so they read as a hard frame on both the start and end edges of the nav.
+ * Pin the card to the sidebar column on both sides; canvas still from html/body
+ * (see global.css). Main content keeps its own page inset.
+ */
+:where(.pf-v6-theme-glass):not(.no-glass) .ocs-console-page .pf-v6-c-page__sidebar-main {
+  --pf-v6-c-page__sidebar-main--MarginInlineStart--glass: 0;
+  --pf-v6-c-page__sidebar-main--MarginInlineEnd--glass: 0;
+  --pf-v6-c-page__sidebar-main--xl--MarginInlineStart--glass: 0;
+  --pf-v6-c-page__sidebar-main--xl--MarginInlineEnd--glass: 0;
+}
+
+html.dark .ocs-console-sidebar .pf-v6-c-nav {
+  --pf-v6-c-nav__link--Color: rgba(255, 255, 255, 0.82);
+  --pf-v6-c-nav__link--hover--Color: var(--pf-color-white);
+  --pf-v6-c-nav__link--hover--BackgroundColor: rgba(255, 255, 255, 0.08);
+  --pf-v6-c-nav__link--m-current--Color: var(--pf-color-white);
+  --pf-v6-c-nav__link--m-current--BackgroundColor: rgba(255, 255, 255, 0.14);
+  --pf-v6-c-nav__section-title--Color: rgba(255, 255, 255, 0.65);
+  /**
+   * Left accent bar is `.pf-v6-c-nav__item::before` using `--pf-v6-c-nav__item--accent--color`.
+   * PF maps that to `--pf-t--global--color--brand--accent--default`, which is Red Hat red in dark — not the cyan tab underline.
+   * Align with primary interactive / tab emphasis via link color.
+   */
+  --pf-v6-c-nav__item--accent--color: var(--pf-t--global--text--color--link--default);
+}
+
+html:not(.dark) .ocs-console-sidebar .pf-v6-c-nav {
+  /* Let PatternFly nav tokens follow light theme; only ensure section title matches. */
+  --pf-v6-c-nav__section-title--Color: var(--pf-t--global--text--color--subtle);
+  --pf-v6-c-nav__item--accent--color: var(--pf-t--global--text--color--link--default);
+}
+
+/**
+ * Active nav link outline (`::after` border): keep consistent with accent bar + tab underline (link token, not RH brand-accent red).
+ */
+.ocs-console-sidebar .pf-v6-c-nav .pf-v6-c-nav__link.pf-m-current,
+.ocs-console-sidebar .pf-v6-c-nav .pf-v6-c-nav__link.pf-m-current:hover {
+  --pf-v6-c-nav__link--BorderColor: var(--pf-t--global--text--color--link--default);
+}
+
+.ocs-console-sidebar .pf-v6-c-nav__section-title {
+  font-size: var(--pf-t--global--font--size--body--default);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/**
+ * Expand/collapse carets: PatternFly uses RhMicronsCaretDown + 180° when open. If another layer
+ * shortens the rotation, the “open” state can read as left (⟨) instead of up (^). Force the
+ * full 180° with a stable origin so open always reads as up, closed as down.
+ */
+.ocs-console-page
+  .pf-v6-c-nav__link[aria-expanded="true"]
+  .pf-v6-c-nav__toggle-icon,
+.ocs-console-page .pf-v6-c-card.pf-m-expanded .pf-v6-c-card__header-toggle-icon,
+.ocs-console-page
+  .pf-v6-c-accordion__item.pf-m-expanded
+  .pf-v6-c-accordion__toggle-icon,
+.ocs-console-page
+  .pf-v6-c-expandable-section.pf-m-expanded
+  .pf-v6-c-expandable-section__toggle-icon {
+  transform: rotate(180deg) !important;
+  transform-origin: 50% 50%;
+}
+
+/* Installed Operators — @patternfly/react-data-view (HPUX-1429) */
+.ocs-io-dataview [data-ouia-component-id="installed-operators-dv-toolbar"] {
+  width: 100%;
+}
+
+.ocs-io-filters-mid__group.pf-v6-c-toolbar__group {
+  flex-wrap: wrap;
+  row-gap: var(--pf-t--global--spacer--sm);
+  column-gap: var(--pf-t--global--spacer--md);
+  align-items: center;
+}
+
+@media (min-width: 75rem) {
+  .ocs-io-dv-toolbar-align.pf-v6-c-toolbar .pf-v6-c-toolbar__content .pf-v6-c-toolbar__content-section {
+    flex-wrap: nowrap;
+  }
+
+  .ocs-io-filters-mid__group.pf-v6-c-toolbar__group {
+    flex-wrap: nowrap;
+  }
+}
+
+/* Align filters left; actions + compact pagination on the right (Data View / list toolbar pattern) */
+.ocs-io-dv-toolbar-align.pf-v6-c-toolbar .pf-v6-c-toolbar__content .pf-v6-c-toolbar__content-section {
+  align-items: center;
+  row-gap: var(--pf-t--global--spacer--sm);
+  column-gap: var(--pf-t--global--spacer--md);
+}
+/* With actions embedded in the filter strip, 2nd toolbar child is top pagination. */
+.ocs-io-dv-toolbar-align.pf-v6-c-toolbar .pf-v6-c-toolbar__item:nth-child(2) {
+  margin-inline-start: auto;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+/* react-data-view DataViewToolbar sets pagination item to 100% width; keep it on the first row, right-aligned */
+.ocs-io-dv-toolbar-align.pf-v6-c-toolbar .pf-v6-c-toolbar__item.pf-m-pagination,
+.ocs-io-dv-toolbar-align.pf-v6-c-toolbar .pf-v6-c-toolbar__item.pf-m-pagination > div {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  flex-basis: auto !important;
+  max-width: 100%;
+}
+
+.ocs-operator-table-sort.pf-v6-c-button.pf-m-plain {
+  font-weight: var(--pf-t--global--font--weight--heading--bold);
+  color: inherit;
+  padding-inline: var(--pf-t--global--spacer--xs);
+  column-gap: var(--pf-t--global--spacer--xs);
+}
+
+/* Non-sortable column title — same type metrics as .ocs-operator-table-sort, no control affordance */
+.ocs-operator-table-header-static.pf-v6-c-button.pf-m-plain {
+  pointer-events: none;
+  cursor: default;
+  user-select: none;
+  background: transparent;
+}
+.ocs-operator-table-header-static.pf-v6-c-button.pf-m-plain:where(:focus, :hover) {
+  background: transparent;
+}
+
+.ocs-operator-table-sort-icon--idle {
+  opacity: 0.45;
+}
+
+.ocs-operator-table-sort-icon--active {
+  opacity: 1;
+  color: var(--pf-t--global--text--color--link--default, #06c);
+}
+
+/**
+ * Installed operators table: sortable headers use plain buttons; PF focus/hover can add a pill
+ * background that changes measured width and shifts columns. Keep one stable surface and a
+ * fixed end slot for the sort glyph (asc/desc) so switching the active sort column does not
+ * relayout the grid.
+ */
+.ocs-io-operator-table .ocs-operator-table-sort.pf-v6-c-button .pf-v6-c-button__icon {
+  display: inline-flex;
+  width: 1.125em;
+  min-width: 1.125em;
+  height: 1.125em;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  margin-inline: 0;
+  padding: 0;
+  box-sizing: content-box;
+}
+.ocs-io-operator-table .ocs-operator-table-sort.pf-v6-c-button .pf-v6-c-button__icon svg,
+.ocs-io-operator-table .ocs-operator-table-sort-glyph {
+  display: block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  transform-origin: 50% 50%;
+  transition: transform 0.12s ease, opacity 0.12s ease, color 0.12s ease;
+}
+/* Same glyph for asc/desc: rotate preserves bbox (replaces two different pficons that could subpixel‑shift) */
+.ocs-io-operator-table .ocs-operator-table-sort-glyph {
+  vertical-align: middle;
+}
+/**
+ * Cluster extension: sorted pages swap rows with "—" vs "OLM v1 managed" — with `table-layout: auto`
+ * the column’s intrinsic max changes and the whole table shifts. Lock the column to one width.
+ */
+.ocs-io-operator-table th.ocs-io-col-cluster-ext,
+.ocs-io-operator-table td.ocs-io-col-cluster-ext {
+  width: 12.5rem;
+  min-width: 12.5rem;
+  max-width: 12.5rem;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+.ocs-io-operator-table td.ocs-io-col-cluster-ext {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ocs-io-operator-table th.ocs-io-col-cluster-ext .ocs-operator-table-sort.pf-v6-c-button {
+  max-width: 100%;
+  justify-content: flex-start;
+}
+.ocs-io-operator-table th.ocs-io-col-cluster-ext .ocs-operator-table-sort.pf-v6-c-button .pf-v6-c-button__text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: start;
+}
+.ocs-io-operator-table .ocs-operator-table-sort.pf-v6-c-button.pf-m-plain {
+  --pf-v6-c-button--MinWidth: 0;
+  min-width: 0;
+  border-radius: 0;
+  /* Avoid pill-shaped hit area (border-radius--pill) changing inline size when :focus or .pf-m-hovered */
+  --pf-v6-c-button--BorderRadius: 0;
+  --pf-v6-c-button--hover--ScaleX: 1;
+  --pf-v6-c-button--hover--ScaleY: 1;
+  --pf-v6-c-button--m-clicked--ScaleX: 1;
+  --pf-v6-c-button--m-clicked--ScaleY: 1;
+}
+.ocs-io-operator-table .ocs-operator-table-sort.pf-v6-c-button.pf-m-plain {
+  --pf-v6-c-button--m-clicked--BackgroundColor: transparent;
+  --pf-v6-c-button--BackgroundColor: transparent;
+  --pf-v6-c-button--hover--BackgroundColor: transparent;
+  background: transparent;
+}
+.ocs-io-operator-table .ocs-operator-table-sort.pf-v6-c-button.pf-m-plain:where(
+    :hover,
+    :focus,
+    :focus-within
+  ) {
+  --pf-v6-c-button--BackgroundColor: transparent;
+  --pf-v6-c-button--hover--BackgroundColor: transparent;
+  background: transparent;
+}
+.ocs-io-operator-table .ocs-operator-table-sort.pf-v6-c-button.pf-m-plain:where(:active, .pf-m-clicked) {
+  --pf-v6-c-button--m-clicked--BackgroundColor: transparent;
+  --pf-v6-c-button--BackgroundColor: transparent;
+  background: transparent;
+}
+.ocs-io-operator-table .ocs-operator-table-sort.pf-v6-c-button.pf-m-plain:where(
+    :focus-visible
+  ) {
+  outline: 2px solid var(--pf-t--global--color--status--active--on-light, #6a6e73);
+  outline-offset: 1px;
+  --pf-v6-c-button--BackgroundColor: transparent;
+  --pf-v6-c-button--hover--BackgroundColor: transparent;
+  box-shadow: none;
+}
+html:not(.dark) .ocs-io-operator-table .ocs-operator-table-sort.pf-v6-c-button.pf-m-plain:where(
+    :focus-visible
+  ) {
+  outline-color: var(
+    --pf-t--global--active--text--on-secondary,
+    var(--pf-t--global--border--color--default)
+  );
+}
+html.dark .ocs-io-operator-table .ocs-operator-table-sort.pf-v6-c-button.pf-m-plain:where(
+    :focus-visible
+  ) {
+  outline-color: var(--pf-t--global--border--color--hover, #a3a3a3);
+}
+
+/* Support phase pills — text-only outline labels; trigger must not clip outline */
+.ocs-io-support-phase-popover-btn.pf-v6-c-button.pf-m-plain {
+  overflow: visible;
+}
+
+/*
+ * Plain Popover trigger inherits button text color (often primary/on-dark white).
+ * Pin Label outline token so label text matches semantic color.
+ */
+.ocs-io-support-phase-pill.pf-v6-c-label .pf-v6-c-label__text {
+  color: var(--pf-v6-c-label--Color);
+}
+
+/** Off-screen samples for Installed Operators support-phase pill width measurement. */
+.ocs-io-support-phase-pill-measure-shell {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  visibility: hidden;
+  pointer-events: none;
+  width: max-content;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-t--global--spacer--xs);
+}
+
+/** Installed Operators: equal pill width = measured max intrinsic width (see `--ocs-io-support-phase-pill-width` on table). */
+.ocs-io-operator-table[data-io-phase-pills-sized] .ocs-io-support-phase-pill.pf-v6-c-label {
+  --pf-v6-c-label--MaxWidth: 100%;
+  --pf-v6-c-label__content--MaxWidth: 100%;
+  --pf-v6-c-label__text--MaxWidth: 100%;
+  --pf-v6-c-label__content--Gap: 0.125rem;
+  display: inline-flex;
+  width: var(--ocs-io-support-phase-pill-width);
+  min-width: var(--ocs-io-support-phase-pill-width);
+  max-width: var(--ocs-io-support-phase-pill-width);
+  box-sizing: border-box;
+  justify-content: flex-start;
+}
+.ocs-io-operator-table[data-io-phase-pills-sized] .ocs-io-support-phase-pill.pf-v6-c-label > .pf-v6-c-label__content {
+  justify-content: flex-start;
+  min-width: 0;
+  width: 100%;
+}
+.ocs-io-operator-table[data-io-phase-pills-sized] .ocs-io-support-phase-pill.pf-v6-c-label .pf-v6-c-label__text {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ocs-io-operator-table[data-io-phase-pills-sized] .ocs-io-support-phase-pill.pf-v6-c-label .pf-v6-c-label__icon {
+  flex-shrink: 0;
+}
+
+/* Support phase column header — inline help + lifecycle doc links */
+.ocs-io-support-phase-col-help-trigger.pf-v6-c-button.pf-m-plain {
+  line-height: 1;
+  color: var(--pf-t--global--text--color--subtle, var(--pf-t--global--text--color--secondary));
+}
+.ocs-io-support-phase-col-help-popover-body .pf-v6-c-button.pf-m-link.pf-m-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pf-t--global--spacer--xs);
+}
+
+/**
+ * All pages: main column aligns with nav; single chrome inset (no top stack); glass gap unchanged.
+ */
+html .ocs-console-page.pf-v6-c-page {
+  --pf-v6-c-page__main-section--PaddingBlockStart: 0;
+  --pf-v6-c-page__main-section--PaddingBlockEnd: 0;
+  /* Unset filled strip backgrounds: main content, tabs row, and breadcrumb strip. */
+  --pf-v6-c-page__main-section--BackgroundColor: transparent;
+  --pf-v6-c-page__main-section--m-secondary--BackgroundColor: transparent;
+  --pf-v6-c-page__main-tabs--BackgroundColor: transparent;
+  --pf-v6-c-page__main-breadcrumb--BackgroundColor: transparent;
+}
+
+/**
+ * PF Tabs active underline uses `--pf-t--global--color--brand--accent--default` (RH red) by default.
+ * Match sidebar / console tab accent: link token (cyan-blue), not brand-accent red.
+ */
+html .ocs-console-page.pf-v6-c-page .pf-v6-c-tabs {
+  --pf-v6-c-tabs__item--m-current__link--after--BorderColor: var(--pf-t--global--text--color--link--default);
+}
+
+/** Home / stub PageSection, or any full-width app section without Breadcrumbs. */
+.ocs-app-page-chrome.pf-v6-c-page__main-section {
+  padding-block-start: var(--ocs-app-page-pad-t);
+  padding-inline: var(--ocs-app-page-pad-x);
+  padding-block-end: var(--ocs-app-page-pad-b);
+}
+
+/**
+ * Breadcrumb+body pages: outer wrapper insets the strip + main; inner PF main-section
+ * and breadcrumb padding is disabled so insets are not doubled. Matches Overview padding.
+ */
+.ocs-app-page-outer {
+  box-sizing: border-box;
+  min-height: 0;
+  width: 100%;
+  padding-block-start: var(--ocs-app-page-pad-t);
+  padding-inline: var(--ocs-app-page-pad-x);
+  padding-block-end: var(--ocs-app-page-pad-b);
+}
+
+.ocs-app-page-outer--end-3xl {
+  padding-block-end: 3rem;
+}
+
+.ocs-app-page-outer--pb-0 {
+  padding-block-end: 0;
+}
+
+.ocs-app-page-outer .pf-v6-c-page__main-section,
+.ocs-app-page-outer.pf-v6-c-page__main-section {
+  --pf-v6-c-page__main-section--PaddingBlockStart: 0;
+  --pf-v6-c-page__main-section--PaddingBlockEnd: 0;
+  --pf-v6-c-page__main-section--PaddingInlineStart: 0;
+  --pf-v6-c-page__main-section--PaddingInlineEnd: 0;
+  padding: 0;
+}
+
+.ocs-app-page-outer .pf-v6-c-page__main-breadcrumb {
+  --pf-v6-c-page__main-breadcrumb--PaddingBlockStart: 0;
+  --pf-v6-c-page__main-breadcrumb--PaddingBlockEnd: 0;
+  --pf-v6-c-page__main-breadcrumb--PaddingInlineStart: 0;
+  --pf-v6-c-page__main-breadcrumb--PaddingInlineEnd: 0;
+  padding: 0;
+  margin: 0;
+  margin-bottom: var(--pf-t--global--spacer--md);
+}
+
+.ols-legal-header-notice {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--pf-t--global--border--color--default);
+  padding: var(--pf-t--global--spacer--sm) var(--pf-t--global--spacer--md);
+  background-color: var(
+    --pf-t--global--background--color--secondary--default,
+    rgba(0, 0, 0, 0.03)
+  );
+}
+
+html.dark .ols-legal-header-notice {
+  border-bottom-color: var(--pf-t--global--border--color--default);
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.ols-legal-header-notice .pf-v6-c-content,
+.ols-legal-header-notice p {
+  color: var(--pf-t--global--text--color--subtle) !important;
+  line-height: 1.45;
+}
+
+.ols-legal-header-notice .pf-v6-c-title {
+  color: var(--pf-t--global--text--color--regular) !important;
+  margin: 0 !important;
+}
+
+.ols-legal-composer {
+  padding: var(--pf-t--global--spacer--sm) var(--pf-t--global--spacer--md);
+  max-height: 10.5rem;
+  overflow-y: auto;
+  background: var(--pf-t--global--background--color--secondary--default, rgba(0, 0, 0, 0.02));
+}
+
+.ls-composer-notice__title {
+  margin: 0 !important;
+}
+
+html.dark .ols-legal-composer {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* LLM accuracy reminder — high-visibility inline banner (legal / summit demo) */
+.ols-legal-ai-accuracy-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0;
+  max-width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: var(--pf-t--global--font--size--body--default, 0.875rem);
+  line-height: 1.45;
+  font-weight: 500;
+  color: var(--pf-t--global--text--color--regular) !important;
+  background-color: var(
+    --pf-t--global--color--status--warning--200,
+    var(--pf-t--color-yellow-50, #fdf6e0)
+  );
+  border: 1px solid var(--pf-t--global--color--status--warning--100, #f0ab00);
+  border-left-width: 4px;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.ols-legal-ai-accuracy-banner--compact {
+  padding: 0.35rem 0.55rem;
+  font-size: var(--pf-t--global--font--size--body--sm, 0.8125rem);
+  line-height: 1.4;
+}
+
+.ols-legal-ai-accuracy-banner__icon {
+  flex-shrink: 0;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: 0.1em;
+  color: var(--pf-t--global--icon--color--status--warning--default, #c58c00) !important;
+  fill: currentColor;
+}
+
+.ols-legal-ai-accuracy-banner__text {
+  flex: 1;
+  min-width: 0;
+}
+
+html.dark .ols-legal-ai-accuracy-banner {
+  background-color: rgba(197, 140, 0, 0.18) !important;
+  border-color: rgba(240, 171, 0, 0.55) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}

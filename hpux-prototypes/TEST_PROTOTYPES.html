@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Prototype Discovery</title>
+</head>
+<body>
+    <h1>Prototype Discovery Test</h1>
+    <button onclick="testDiscovery()">Test Discovery</button>
+    <pre id="output"></pre>
+    
+    <script>
+        function testDiscovery() {
+            const output = document.getElementById('output');
+            output.textContent = 'Check the browser console (F12) for detailed logs...';
+            
+            console.log('=== MANUAL DISCOVERY TEST ===');
+            console.log('1. Check if require.context exists:', typeof require);
+            
+            try {
+                const ctx = require.context('../src/app/prototypes', true, /prototype\.config\.(ts|tsx|js)$/);
+                console.log('2. Found configs:', ctx.keys());
+                console.log('3. Count:', ctx.keys().length);
+                
+                ctx.keys().forEach(key => {
+                    console.log('  - Config file:', key);
+                });
+            } catch (e) {
+                console.error('ERROR:', e);
+            }
+        }
+    </script>
+</body>
+</html>
+

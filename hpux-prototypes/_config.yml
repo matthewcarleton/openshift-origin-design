@@ -1,0 +1,20 @@
+# Disable Jekyll processing completely
+plugins: []
+markdown: kramdown
+highlighter: rouge
+exclude:
+  - README.md
+  - README.md.bak
+  - node_modules
+  - package.json
+  - package-lock.json
+  - webpack.*
+  - tsconfig.json
+  - eslint.config.js
+  - jest.config.cjs
+  - stylePaths.js
+  - src
+  - ai-documentation
+  - BASELINE.md
+  - DEPLOYMENT.md
+  - NAVIGATION_ARCHITECTURE.md

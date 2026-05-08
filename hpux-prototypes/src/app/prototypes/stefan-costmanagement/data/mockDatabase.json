@@ -1,0 +1,1864 @@
+{
+  "company": {
+    "name": "CloudTech Solutions Inc.",
+    "industry": "SaaS Platform Provider",
+    "totalMonthlyCost": 485000,
+    "currency": "USD"
+  },
+  "dateRange": {
+    "current": "2024-10-01",
+    "startOfMonth": "2024-10-01",
+    "today": "2024-10-24"
+  },
+  "openshift": {
+    "totalCost": 195000,
+    "monthOverMonthChange": 3.2,
+    "clusters": [
+      {
+        "id": "prod-us-east-001",
+        "name": "prod-us-east",
+        "displayName": "Production US East",
+        "status": "active",
+        "version": "4.14.3",
+        "nodeCount": 250,
+        "cost": 85000,
+        "monthOverMonthChange": 2.1,
+        "region": "us-east-1",
+        "provider": "aws",
+        "costModelId": "standard-ocp-model",
+        "operatorVersion": "costmanagement-metrics-operator:4.1.0",
+        "integrationId": "206487",
+        "awsIntegrationId": "210794",
+        "cpuCapacity": 10392,
+        "memoryCapacityGiB": 40178.58,
+        "storageCapacityGiB": 15300,
+        "cpuUsagePercent": 78,
+        "memoryUsagePercent": 82,
+        "storageUsagePercent": 96
+      },
+      {
+        "id": "prod-eu-west-001",
+        "name": "prod-eu-west",
+        "displayName": "Production EU West",
+        "status": "active",
+        "version": "4.14.2",
+        "nodeCount": 180,
+        "cost": 65000,
+        "monthOverMonthChange": 1.8,
+        "region": "eu-west-1",
+        "provider": "aws",
+        "costModelId": "standard-ocp-model",
+        "operatorVersion": "costmanagement-metrics-operator:4.1.0",
+        "cpuCapacity": 7488,
+        "memoryCapacityGiB": 28920,
+        "storageCapacityGiB": 11000,
+        "cpuUsagePercent": 72,
+        "memoryUsagePercent": 76,
+        "storageUsagePercent": 88
+      },
+      {
+        "id": "staging-us-central-001",
+        "name": "staging-us-central",
+        "displayName": "Staging US Central",
+        "status": "active",
+        "version": "4.14.3",
+        "nodeCount": 45,
+        "cost": 28000,
+        "monthOverMonthChange": -2.5,
+        "region": "us-central1",
+        "provider": "gcp",
+        "costModelId": "standard-ocp-model",
+        "operatorVersion": "costmanagement-metrics-operator:4.0.9",
+        "cpuCapacity": 1872,
+        "memoryCapacityGiB": 7230,
+        "storageCapacityGiB": 2750,
+        "cpuUsagePercent": 58,
+        "memoryUsagePercent": 62,
+        "storageUsagePercent": 75
+      },
+      {
+        "id": "dev-us-west-001",
+        "name": "dev-us-west",
+        "displayName": "Development US West",
+        "status": "active",
+        "version": "4.13.12",
+        "nodeCount": 30,
+        "cost": 17000,
+        "monthOverMonthChange": -8.3,
+        "region": "us-west-2",
+        "provider": "azure",
+        "costModelId": "dev-environment-model",
+        "operatorVersion": "costmanagement-metrics-operator:4.0.9",
+        "cpuCapacity": 1248,
+        "memoryCapacityGiB": 4820,
+        "storageCapacityGiB": 1830,
+        "cpuUsagePercent": 45,
+        "memoryUsagePercent": 52,
+        "storageUsagePercent": 68
+      }
+    ],
+    "nodes": [
+      {
+        "id": "node-prod-us-east-001",
+        "name": "ip-10-0-134-89.us-east-2.compute.internal",
+        "clusterId": "prod-us-east-001",
+        "provider": "aws",
+        "instanceType": "m5.4xlarge",
+        "nodeType": "worker",
+        "architecture": "x86_64",
+        "cost": 2800,
+        "cpuCapacity": 16,
+        "memoryCapacityGiB": 64,
+        "monthOverMonthChange": -2.1
+      },
+      {
+        "id": "node-prod-us-east-002",
+        "name": "ip-10-0-154-218.us-east-2.compute.internal",
+        "clusterId": "prod-us-east-001",
+        "provider": "aws",
+        "instanceType": "m5.4xlarge",
+        "nodeType": "worker",
+        "cost": 2750,
+        "cpuCapacity": 16,
+        "memoryCapacityGiB": 64,
+        "monthOverMonthChange": -1.8,
+        "architecture": "x86_64"
+      },
+      {
+        "id": "node-prod-us-east-003",
+        "name": "ip-10-0-140-237.us-east-2.compute.internal",
+        "clusterId": "prod-us-east-001",
+        "provider": "aws",
+        "instanceType": "m5.2xlarge",
+        "nodeType": "worker",
+        "cost": 1400,
+        "cpuCapacity": 8,
+        "memoryCapacityGiB": 32,
+        "monthOverMonthChange": 0.5,
+        "architecture": "x86_64"
+      },
+      {
+        "id": "node-prod-us-east-004",
+        "name": "ip-10-0-146-132.us-east-2.compute.internal",
+        "clusterId": "prod-us-east-001",
+        "provider": "aws",
+        "instanceType": "m5.2xlarge",
+        "nodeType": "worker",
+        "cost": 1380,
+        "cpuCapacity": 8,
+        "memoryCapacityGiB": 32,
+        "monthOverMonthChange": -0.3,
+        "architecture": "x86_64"
+      },
+      {
+        "id": "node-prod-us-east-005",
+        "name": "ip-10-0-139-88.us-east-2.compute.internal",
+        "clusterId": "prod-us-east-001",
+        "provider": "aws",
+        "instanceType": "m5.xlarge",
+        "nodeType": "master",
+        "architecture": "ARM64",
+        "cost": 700,
+        "cpuCapacity": 4,
+        "memoryCapacityGiB": 16,
+        "monthOverMonthChange": 0.0
+      },
+      {
+        "id": "node-prod-eu-west-001",
+        "name": "ip-172-31-45-123.eu-west-1.compute.internal",
+        "clusterId": "prod-eu-west-001",
+        "provider": "aws",
+        "instanceType": "m5.2xlarge",
+        "nodeType": "worker",
+        "cost": 2100,
+        "cpuCapacity": 8,
+        "memoryCapacityGiB": 32,
+        "monthOverMonthChange": 1.2,
+        "architecture": "x86_64"
+      },
+      {
+        "id": "node-prod-eu-west-002",
+        "name": "ip-172-31-67-234.eu-west-1.compute.internal",
+        "clusterId": "prod-eu-west-001",
+        "provider": "aws",
+        "instanceType": "m5.2xlarge",
+        "nodeType": "worker",
+        "cost": 2050,
+        "cpuCapacity": 8,
+        "memoryCapacityGiB": 32,
+        "monthOverMonthChange": 0.8,
+        "architecture": "x86_64"
+      },
+      {
+        "id": "node-prod-eu-west-003",
+        "name": "ip-172-31-89-345.eu-west-1.compute.internal",
+        "clusterId": "prod-eu-west-001",
+        "provider": "aws",
+        "instanceType": "m5.xlarge",
+        "nodeType": "worker",
+        "cost": 1050,
+        "cpuCapacity": 4,
+        "memoryCapacityGiB": 16,
+        "monthOverMonthChange": -1.5,
+        "architecture": "x86_64"
+      },
+      {
+        "id": "node-prod-eu-west-004",
+        "name": "ip-172-31-12-456.eu-west-1.compute.internal",
+        "clusterId": "prod-eu-west-001",
+        "provider": "aws",
+        "instanceType": "m5.xlarge",
+        "nodeType": "master",
+        "cost": 700,
+        "cpuCapacity": 4,
+        "memoryCapacityGiB": 16,
+        "monthOverMonthChange": 0.0,
+        "architecture": "x86_64"
+      },
+      {
+        "id": "node-staging-us-central-001",
+        "name": "gke-staging-default-pool-a1b2c3d4",
+        "clusterId": "staging-us-central-001",
+        "provider": "gcp",
+        "instanceType": "n1-standard-8",
+        "nodeType": "worker",
+        "cost": 950,
+        "cpuCapacity": 8,
+        "memoryCapacityGiB": 30,
+        "monthOverMonthChange": -3.2,
+        "architecture": "x86_64"
+      },
+      {
+        "id": "node-staging-us-central-002",
+        "name": "gke-staging-default-pool-e5f6g7h8",
+        "clusterId": "staging-us-central-001",
+        "provider": "gcp",
+        "instanceType": "n1-standard-8",
+        "nodeType": "worker",
+        "cost": 920,
+        "cpuCapacity": 8,
+        "memoryCapacityGiB": 30,
+        "monthOverMonthChange": -2.8,
+        "architecture": "x86_64"
+      },
+      {
+        "id": "node-staging-us-central-003",
+        "name": "gke-staging-default-pool-i9j0k1l2",
+        "clusterId": "staging-us-central-001",
+        "provider": "gcp",
+        "instanceType": "n1-standard-4",
+        "nodeType": "worker",
+        "cost": 480,
+        "cpuCapacity": 4,
+        "memoryCapacityGiB": 15,
+        "monthOverMonthChange": -2.1,
+        "architecture": "ARM64"
+      },
+      {
+        "id": "node-staging-us-central-004",
+        "name": "gke-staging-master-pool-m3n4o5p6",
+        "clusterId": "staging-us-central-001",
+        "provider": "gcp",
+        "instanceType": "n1-standard-4",
+        "nodeType": "master",
+        "cost": 480,
+        "cpuCapacity": 4,
+        "memoryCapacityGiB": 15,
+        "monthOverMonthChange": 0.0,
+        "architecture": "x86_64"
+      },
+      {
+        "id": "node-dev-us-west-001",
+        "name": "aks-agentpool-12345678-vmss000000",
+        "clusterId": "dev-us-west-001",
+        "provider": "azure",
+        "instanceType": "Standard_D8s_v3",
+        "nodeType": "worker",
+        "cost": 650,
+        "cpuCapacity": 8,
+        "memoryCapacityGiB": 32,
+        "monthOverMonthChange": -10.2,
+        "architecture": "x86_64"
+      },
+      {
+        "id": "node-dev-us-west-002",
+        "name": "aks-agentpool-12345678-vmss000001",
+        "clusterId": "dev-us-west-001",
+        "provider": "azure",
+        "instanceType": "Standard_D8s_v3",
+        "nodeType": "worker",
+        "cost": 620,
+        "cpuCapacity": 8,
+        "memoryCapacityGiB": 32,
+        "monthOverMonthChange": -9.8,
+        "architecture": "x86_64"
+      },
+      {
+        "id": "node-dev-us-west-003",
+        "name": "aks-agentpool-12345678-vmss000002",
+        "clusterId": "dev-us-west-001",
+        "provider": "azure",
+        "instanceType": "Standard_D4s_v3",
+        "nodeType": "worker",
+        "cost": 310,
+        "cpuCapacity": 4,
+        "memoryCapacityGiB": 16,
+        "monthOverMonthChange": -7.5,
+        "architecture": "s390x"
+      },
+      {
+        "id": "node-dev-us-west-004",
+        "name": "aks-master-pool-87654321-vmss000000",
+        "clusterId": "dev-us-west-001",
+        "provider": "azure",
+        "instanceType": "Standard_D4s_v3",
+        "nodeType": "master",
+        "cost": 310,
+        "cpuCapacity": 4,
+        "memoryCapacityGiB": 16,
+        "monthOverMonthChange": 0.0,
+        "architecture": "x86_64"
+      }
+    ],
+    "projects": [
+      {
+        "id": "proj-001",
+        "name": "frontend-prod",
+        "clusterId": "prod-us-east-001",
+        "cost": 12500,
+        "cpuUsage": 892.5,
+        "memoryUsageGiB": 1825.3,
+        "storageUsageGiB": 245.8,
+        "tags": {
+          "environment": "production",
+          "team": "frontend",
+          "costCenter": "engineering"
+        }
+      },
+      {
+        "id": "proj-002",
+        "name": "backend-api-prod",
+        "clusterId": "prod-us-east-001",
+        "cost": 18700,
+        "cpuUsage": 1345.8,
+        "memoryUsageGiB": 2890.6,
+        "storageUsageGiB": 412.3,
+        "tags": {
+          "environment": "production",
+          "team": "backend",
+          "costCenter": "engineering"
+        }
+      },
+      {
+        "id": "proj-003",
+        "name": "payment-service-prod",
+        "clusterId": "prod-us-east-001",
+        "cost": 8900,
+        "cpuUsage": 645.2,
+        "memoryUsageGiB": 1234.8,
+        "storageUsageGiB": 189.5,
+        "tags": {
+          "environment": "production",
+          "team": "backend",
+          "costCenter": "engineering"
+        }
+      },
+      {
+        "id": "proj-004",
+        "name": "worker-unallocated",
+        "clusterId": "prod-us-east-001",
+        "cost": 38200,
+        "cpuUsage": 2845.6,
+        "memoryUsageGiB": 5823.4,
+        "storageUsageGiB": 892.1,
+        "tags": {
+          "environment": "production",
+          "team": "platform"
+        }
+      },
+      {
+        "id": "proj-005",
+        "name": "platform-unallocated",
+        "clusterId": "prod-us-east-001",
+        "cost": 4200,
+        "cpuUsage": 312.8,
+        "memoryUsageGiB": 645.2,
+        "storageUsageGiB": 98.3,
+        "tags": {
+          "environment": "production",
+          "team": "platform"
+        }
+      },
+      {
+        "id": "proj-006",
+        "name": "openshift-monitoring",
+        "clusterId": "prod-us-east-001",
+        "cost": 2500,
+        "cpuUsage": 185.4,
+        "memoryUsageGiB": 412.7,
+        "storageUsageGiB": 67.2,
+        "tags": {
+          "environment": "production",
+          "team": "platform"
+        }
+      },
+      {
+        "id": "proj-007",
+        "name": "customer-portal",
+        "clusterId": "prod-eu-west-001",
+        "cost": 15800,
+        "cpuUsage": 1124.5,
+        "memoryUsageGiB": 2345.8,
+        "storageUsageGiB": 345.6,
+        "tags": {
+          "environment": "production",
+          "team": "frontend",
+          "costCenter": "engineering"
+        }
+      },
+      {
+        "id": "proj-008",
+        "name": "mobile-api",
+        "clusterId": "prod-eu-west-001",
+        "cost": 11200,
+        "cpuUsage": 823.4,
+        "memoryUsageGiB": 1678.9,
+        "storageUsageGiB": 234.5,
+        "tags": {
+          "environment": "production",
+          "team": "mobile",
+          "costCenter": "engineering"
+        }
+      },
+      {
+        "id": "proj-009",
+        "name": "analytics-prod",
+        "clusterId": "prod-eu-west-001",
+        "cost": 18500,
+        "cpuUsage": 1356.7,
+        "memoryUsageGiB": 2789.3,
+        "storageUsageGiB": 567.8,
+        "tags": {
+          "environment": "production",
+          "team": "data",
+          "costCenter": "engineering"
+        }
+      },
+      {
+        "id": "proj-010",
+        "name": "worker-unallocated",
+        "clusterId": "prod-eu-west-001",
+        "cost": 16800,
+        "cpuUsage": 1245.8,
+        "memoryUsageGiB": 2456.7,
+        "storageUsageGiB": 423.4,
+        "tags": {
+          "environment": "production",
+          "team": "platform"
+        }
+      },
+      {
+        "id": "proj-011",
+        "name": "frontend-staging",
+        "clusterId": "staging-us-central-001",
+        "cost": 8500,
+        "cpuUsage": 634.2,
+        "memoryUsageGiB": 1234.5,
+        "storageUsageGiB": 178.9,
+        "tags": {
+          "environment": "staging",
+          "team": "frontend",
+          "costCenter": "engineering"
+        }
+      },
+      {
+        "id": "proj-012",
+        "name": "backend-api-staging",
+        "clusterId": "staging-us-central-001",
+        "cost": 9800,
+        "cpuUsage": 723.5,
+        "memoryUsageGiB": 1456.8,
+        "storageUsageGiB": 212.3,
+        "tags": {
+          "environment": "staging",
+          "team": "backend",
+          "costCenter": "engineering"
+        }
+      },
+      {
+        "id": "proj-013",
+        "name": "integration-tests",
+        "clusterId": "staging-us-central-001",
+        "cost": 4200,
+        "cpuUsage": 312.8,
+        "memoryUsageGiB": 645.3,
+        "storageUsageGiB": 89.4,
+        "tags": {
+          "environment": "staging",
+          "team": "qa",
+          "costCenter": "engineering"
+        }
+      },
+      {
+        "id": "proj-014",
+        "name": "worker-unallocated",
+        "clusterId": "staging-us-central-001",
+        "cost": 5500,
+        "cpuUsage": 412.3,
+        "memoryUsageGiB": 823.4,
+        "storageUsageGiB": 134.5,
+        "tags": {
+          "environment": "staging",
+          "team": "platform"
+        }
+      },
+      {
+        "id": "proj-015",
+        "name": "dev-team-alpha",
+        "clusterId": "dev-us-west-001",
+        "cost": 5800,
+        "cpuUsage": 423.5,
+        "memoryUsageGiB": 867.9,
+        "storageUsageGiB": 123.4,
+        "tags": {
+          "environment": "development",
+          "team": "frontend",
+          "costCenter": "engineering"
+        }
+      },
+      {
+        "id": "proj-016",
+        "name": "dev-team-beta",
+        "clusterId": "dev-us-west-001",
+        "cost": 4200,
+        "cpuUsage": 312.8,
+        "memoryUsageGiB": 634.5,
+        "storageUsageGiB": 89.7,
+        "tags": {
+          "environment": "development",
+          "team": "backend",
+          "costCenter": "engineering"
+        }
+      },
+      {
+        "id": "proj-017",
+        "name": "experimental-features",
+        "clusterId": "dev-us-west-001",
+        "cost": 3500,
+        "cpuUsage": 256.4,
+        "memoryUsageGiB": 523.8,
+        "storageUsageGiB": 67.8,
+        "tags": {
+          "environment": "development",
+          "team": "research",
+          "costCenter": "research"
+        }
+      },
+      {
+        "id": "proj-018",
+        "name": "worker-unallocated",
+        "clusterId": "dev-us-west-001",
+        "cost": 3500,
+        "cpuUsage": 256.4,
+        "memoryUsageGiB": 512.3,
+        "storageUsageGiB": 78.9,
+        "tags": {
+          "environment": "development",
+          "team": "platform"
+        }
+      }
+    ]
+  },
+  "aws": {
+    "totalCost": 145000,
+    "monthOverMonthChange": 5.8,
+    "accounts": [
+      {
+        "id": "aws-prod-123456789012",
+        "name": "aws-production",
+        "displayName": "AWS Production Account",
+        "accountNumber": "123456789012",
+        "cost": 115000,
+        "usageDateCost": 115000,
+        "invoiceMonthCost": 114650,
+        "crossOverAmount": 350,
+        "hasCrossOver": true,
+        "crossOverDirection": "to-next-month",
+        "crossOverNote": "Usage from Oct 29-31 appears on Nov invoice",
+        "crossOverPeriod": {
+          "usageDates": [
+            "2024-10-29",
+            "2024-10-30",
+            "2024-10-31"
+          ],
+          "invoiceMonth": "2024-11",
+          "daysInThreshold": 3
+        },
+        "monthOverMonthChange": 4.2,
+        "costModelId": "aws-enterprise-discount",
+        "services": [
+          {
+            "name": "Amazon Elastic Compute Cloud",
+            "code": "EC2",
+            "cost": 45000,
+            "regions": [
+              {
+                "name": "us-east-1",
+                "cost": 25000
+              },
+              {
+                "name": "us-west-2",
+                "cost": 12000
+              },
+              {
+                "name": "eu-west-1",
+                "cost": 8000
+              }
+            ]
+          },
+          {
+            "name": "Amazon Relational Database Service",
+            "code": "RDS",
+            "cost": 28000,
+            "regions": [
+              {
+                "name": "us-east-1",
+                "cost": 18000
+              },
+              {
+                "name": "eu-west-1",
+                "cost": 10000
+              }
+            ]
+          },
+          {
+            "name": "Amazon Simple Storage Service",
+            "code": "S3",
+            "cost": 15000,
+            "regions": [
+              {
+                "name": "us-east-1",
+                "cost": 8000
+              },
+              {
+                "name": "us-west-2",
+                "cost": 4000
+              },
+              {
+                "name": "eu-west-1",
+                "cost": 3000
+              }
+            ]
+          },
+          {
+            "name": "Amazon Elastic Kubernetes Service",
+            "code": "EKS",
+            "cost": 12000,
+            "regions": [
+              {
+                "name": "us-east-1",
+                "cost": 7000
+              },
+              {
+                "name": "us-west-2",
+                "cost": 5000
+              }
+            ]
+          },
+          {
+            "name": "AWS Lambda",
+            "code": "Lambda",
+            "cost": 6500,
+            "regions": [
+              {
+                "name": "us-east-1",
+                "cost": 4000
+              },
+              {
+                "name": "us-west-2",
+                "cost": 1500
+              },
+              {
+                "name": "eu-west-1",
+                "cost": 1000
+              }
+            ]
+          },
+          {
+            "name": "Amazon CloudFront",
+            "code": "CloudFront",
+            "cost": 5200,
+            "regions": [
+              {
+                "name": "Global",
+                "cost": 5200
+              }
+            ]
+          },
+          {
+            "name": "Amazon ElastiCache",
+            "code": "ElastiCache",
+            "cost": 3300,
+            "regions": [
+              {
+                "name": "us-east-1",
+                "cost": 2000
+              },
+              {
+                "name": "eu-west-1",
+                "cost": 1300
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "aws-analytics-987654321098",
+        "name": "aws-analytics",
+        "displayName": "AWS Analytics Account",
+        "accountNumber": "987654321098",
+        "cost": 30000,
+        "usageDateCost": 29850,
+        "invoiceMonthCost": 30000,
+        "crossOverAmount": 150,
+        "hasCrossOver": true,
+        "crossOverDirection": "from-prev-month",
+        "crossOverNote": "Usage from Sept 28-30 appears on Oct invoice",
+        "crossOverPeriod": {
+          "usageDates": [
+            "2024-09-28",
+            "2024-09-29",
+            "2024-09-30"
+          ],
+          "invoiceMonth": "2024-10",
+          "daysInThreshold": 3
+        },
+        "monthOverMonthChange": 12.5,
+        "costModelId": "aws-enterprise-discount",
+        "services": [
+          {
+            "name": "Amazon Simple Storage Service",
+            "code": "S3",
+            "cost": 8500,
+            "regions": [
+              {
+                "name": "us-east-1",
+                "cost": 8500
+              }
+            ]
+          },
+          {
+            "name": "Amazon Redshift",
+            "code": "Redshift",
+            "cost": 12000,
+            "regions": [
+              {
+                "name": "us-east-1",
+                "cost": 12000
+              }
+            ]
+          },
+          {
+            "name": "Amazon EMR",
+            "code": "EMR",
+            "cost": 5500,
+            "regions": [
+              {
+                "name": "us-east-1",
+                "cost": 5500
+              }
+            ]
+          },
+          {
+            "name": "Amazon Athena",
+            "code": "Athena",
+            "cost": 2500,
+            "regions": [
+              {
+                "name": "us-east-1",
+                "cost": 2500
+              }
+            ]
+          },
+          {
+            "name": "AWS Glue",
+            "code": "Glue",
+            "cost": 1500,
+            "regions": [
+              {
+                "name": "us-east-1",
+                "cost": 1500
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "gcp": {
+    "totalCost": 95000,
+    "monthOverMonthChange": 15.2,
+    "accounts": [
+      {
+        "id": "gcp-prod-cloudtech-prod",
+        "name": "gcp-production",
+        "displayName": "GCP Production",
+        "billingAccountId": "01AB23-CD45EF-67890G",
+        "cost": 65000,
+        "usageDateCost": 65000,
+        "invoiceMonthCost": 64760,
+        "crossOverAmount": 240,
+        "hasCrossOver": true,
+        "crossOverDirection": "to-next-month",
+        "crossOverNote": "Usage from Oct 29-31 appears on Nov invoice",
+        "crossOverPeriod": {
+          "usageDates": [
+            "2024-10-29",
+            "2024-10-30",
+            "2024-10-31"
+          ],
+          "invoiceMonth": "2024-11",
+          "daysInThreshold": 3
+        },
+        "monthOverMonthChange": 8.3,
+        "costModelId": "gcp-committed-use",
+        "projects": [
+          {
+            "id": "cloudtech-prod-web",
+            "name": "cloudtech-prod-web",
+            "displayName": "Production Web Services",
+            "cost": 35000,
+            "tags": {
+              "environment": "production",
+              "team": "frontend",
+              "costCenter": "engineering"
+            },
+            "services": [
+              {
+                "name": "Compute Engine",
+                "code": "compute",
+                "cost": 18000,
+                "regions": [
+                  {
+                    "name": "us-central1",
+                    "cost": 11000
+                  },
+                  {
+                    "name": "europe-west1",
+                    "cost": 7000
+                  }
+                ]
+              },
+              {
+                "name": "Cloud Load Balancing",
+                "code": "loadbalancing",
+                "cost": 4500,
+                "regions": [
+                  {
+                    "name": "us-central1",
+                    "cost": 2500
+                  },
+                  {
+                    "name": "europe-west1",
+                    "cost": 2000
+                  }
+                ]
+              },
+              {
+                "name": "Cloud Storage",
+                "code": "storage",
+                "cost": 8500,
+                "regions": [
+                  {
+                    "name": "us-central1",
+                    "cost": 5000
+                  },
+                  {
+                    "name": "europe-west1",
+                    "cost": 3500
+                  }
+                ]
+              },
+              {
+                "name": "Cloud CDN",
+                "code": "cdn",
+                "cost": 4000,
+                "regions": [
+                  {
+                    "name": "Global",
+                    "cost": 4000
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "cloudtech-prod-api",
+            "name": "cloudtech-prod-api",
+            "displayName": "Production API Services",
+            "cost": 22000,
+            "tags": {
+              "environment": "production",
+              "team": "backend",
+              "costCenter": "engineering"
+            },
+            "services": [
+              {
+                "name": "Google Kubernetes Engine",
+                "code": "gke",
+                "cost": 12000,
+                "regions": [
+                  {
+                    "name": "us-central1",
+                    "cost": 8000
+                  },
+                  {
+                    "name": "europe-west1",
+                    "cost": 4000
+                  }
+                ]
+              },
+              {
+                "name": "Cloud SQL",
+                "code": "cloudsql",
+                "cost": 7000,
+                "regions": [
+                  {
+                    "name": "us-central1",
+                    "cost": 4500
+                  },
+                  {
+                    "name": "europe-west1",
+                    "cost": 2500
+                  }
+                ]
+              },
+              {
+                "name": "Cloud Functions",
+                "code": "functions",
+                "cost": 3000,
+                "regions": [
+                  {
+                    "name": "us-central1",
+                    "cost": 2000
+                  },
+                  {
+                    "name": "europe-west1",
+                    "cost": 1000
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "cloudtech-prod-data",
+            "name": "cloudtech-prod-data",
+            "displayName": "Production Data Services",
+            "cost": 8000,
+            "tags": {
+              "environment": "production",
+              "team": "data",
+              "costCenter": "engineering"
+            },
+            "services": [
+              {
+                "name": "BigQuery",
+                "code": "bigquery",
+                "cost": 6500,
+                "regions": [
+                  {
+                    "name": "us-central1",
+                    "cost": 6500
+                  }
+                ]
+              },
+              {
+                "name": "Cloud Storage",
+                "code": "storage",
+                "cost": 1500,
+                "regions": [
+                  {
+                    "name": "us-central1",
+                    "cost": 1500
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "gcp-ml-cloudtech-ml",
+        "name": "gcp-ml-research",
+        "displayName": "GCP ML Research",
+        "billingAccountId": "01AB23-CD45EF-67890G",
+        "cost": 30000,
+        "usageDateCost": 29880,
+        "invoiceMonthCost": 30000,
+        "crossOverAmount": 120,
+        "hasCrossOver": true,
+        "crossOverDirection": "from-prev-month",
+        "crossOverNote": "Usage from Sept 28-30 appears on Oct invoice",
+        "crossOverPeriod": {
+          "usageDates": [
+            "2024-09-28",
+            "2024-09-29",
+            "2024-09-30"
+          ],
+          "invoiceMonth": "2024-10",
+          "daysInThreshold": 3
+        },
+        "monthOverMonthChange": 34.7,
+        "costModelId": "gcp-committed-use",
+        "projects": [
+          {
+            "id": "cloudtech-ml-training",
+            "name": "cloudtech-ml-training",
+            "displayName": "ML Model Training",
+            "cost": 22000,
+            "tags": {
+              "environment": "research",
+              "team": "ml-research",
+              "costCenter": "research"
+            },
+            "services": [
+              {
+                "name": "Compute Engine",
+                "code": "compute",
+                "cost": 16000,
+                "regions": [
+                  {
+                    "name": "us-central1",
+                    "cost": 16000
+                  }
+                ],
+                "note": "GPU instances"
+              },
+              {
+                "name": "Vertex AI",
+                "code": "vertexai",
+                "cost": 4000,
+                "regions": [
+                  {
+                    "name": "us-central1",
+                    "cost": 4000
+                  }
+                ]
+              },
+              {
+                "name": "Cloud Storage",
+                "code": "storage",
+                "cost": 2000,
+                "regions": [
+                  {
+                    "name": "us-central1",
+                    "cost": 2000
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "cloudtech-ml-inference",
+            "name": "cloudtech-ml-inference",
+            "displayName": "ML Model Inference",
+            "cost": 8000,
+            "tags": {
+              "environment": "production",
+              "team": "ml-research",
+              "costCenter": "research"
+            },
+            "services": [
+              {
+                "name": "Vertex AI",
+                "code": "vertexai",
+                "cost": 5500,
+                "regions": [
+                  {
+                    "name": "us-central1",
+                    "cost": 5500
+                  }
+                ]
+              },
+              {
+                "name": "BigQuery",
+                "code": "bigquery",
+                "cost": 2500,
+                "regions": [
+                  {
+                    "name": "us-central1",
+                    "cost": 2500
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "azure": {
+    "totalCost": 50000,
+    "monthOverMonthChange": 2.1,
+    "accounts": [
+      {
+        "id": "azure-ent-12345678-1234-1234-1234-123456789012",
+        "name": "azure-enterprise",
+        "displayName": "Azure Enterprise",
+        "subscriptionId": "12345678-1234-1234-1234-123456789012",
+        "cost": 35000,
+        "usageDateCost": 35000,
+        "invoiceMonthCost": 34825,
+        "crossOverAmount": 175,
+        "hasCrossOver": true,
+        "crossOverDirection": "to-next-month",
+        "crossOverNote": "Usage from Oct 29-31 appears on Nov invoice",
+        "crossOverPeriod": {
+          "usageDates": [
+            "2024-10-29",
+            "2024-10-30",
+            "2024-10-31"
+          ],
+          "invoiceMonth": "2024-11",
+          "daysInThreshold": 3
+        },
+        "monthOverMonthChange": 3.5,
+        "costModelId": "azure-reserved-instances",
+        "services": [
+          {
+            "name": "Virtual Machines",
+            "code": "VirtualMachines",
+            "cost": 15000,
+            "regions": [
+              {
+                "name": "East US",
+                "cost": 9000
+              },
+              {
+                "name": "West Europe",
+                "cost": 6000
+              }
+            ]
+          },
+          {
+            "name": "Azure Kubernetes Service",
+            "code": "AKS",
+            "cost": 8500,
+            "regions": [
+              {
+                "name": "East US",
+                "cost": 5500
+              },
+              {
+                "name": "West Europe",
+                "cost": 3000
+              }
+            ]
+          },
+          {
+            "name": "Azure SQL Database",
+            "code": "SQLDatabase",
+            "cost": 6000,
+            "regions": [
+              {
+                "name": "East US",
+                "cost": 4000
+              },
+              {
+                "name": "West Europe",
+                "cost": 2000
+              }
+            ]
+          },
+          {
+            "name": "Blob Storage",
+            "code": "BlobStorage",
+            "cost": 3500,
+            "regions": [
+              {
+                "name": "East US",
+                "cost": 2000
+              },
+              {
+                "name": "West Europe",
+                "cost": 1500
+              }
+            ]
+          },
+          {
+            "name": "Azure Functions",
+            "code": "Functions",
+            "cost": 2000,
+            "regions": [
+              {
+                "name": "East US",
+                "cost": 1200
+              },
+              {
+                "name": "West Europe",
+                "cost": 800
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "azure-backup-87654321-4321-4321-4321-210987654321",
+        "name": "azure-backup-dr",
+        "displayName": "Azure Backup & DR",
+        "subscriptionId": "87654321-4321-4321-4321-210987654321",
+        "cost": 15000,
+        "usageDateCost": 14920,
+        "invoiceMonthCost": 15000,
+        "crossOverAmount": 80,
+        "hasCrossOver": true,
+        "crossOverDirection": "from-prev-month",
+        "crossOverNote": "Usage from Sept 28-30 appears on Oct invoice",
+        "crossOverPeriod": {
+          "usageDates": [
+            "2024-09-28",
+            "2024-09-29",
+            "2024-09-30"
+          ],
+          "invoiceMonth": "2024-10",
+          "daysInThreshold": 3
+        },
+        "monthOverMonthChange": -1.2,
+        "costModelId": "azure-reserved-instances",
+        "services": [
+          {
+            "name": "Backup",
+            "code": "Backup",
+            "cost": 7000,
+            "regions": [
+              {
+                "name": "Central US",
+                "cost": 4000
+              },
+              {
+                "name": "North Europe",
+                "cost": 3000
+              }
+            ]
+          },
+          {
+            "name": "Site Recovery",
+            "code": "SiteRecovery",
+            "cost": 4500,
+            "regions": [
+              {
+                "name": "Central US",
+                "cost": 2500
+              },
+              {
+                "name": "North Europe",
+                "cost": 2000
+              }
+            ]
+          },
+          {
+            "name": "Blob Storage",
+            "code": "BlobStorage",
+            "cost": 3500,
+            "regions": [
+              {
+                "name": "Central US",
+                "cost": 2000
+              },
+              {
+                "name": "North Europe",
+                "cost": 1500
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "costModels": [
+    {
+      "id": "standard-ocp-model",
+      "name": "Standard OpenShift Model",
+      "description": "Base CPU/memory/storage rates for OpenShift",
+      "sourceType": "OpenShift Container Platform",
+      "currency": "USD",
+      "markupRate": 0,
+      "isDiscount": false,
+      "lastModified": "2 days ago",
+      "createdDate": "2024-08-15"
+    },
+    {
+      "id": "aws-enterprise-discount",
+      "name": "AWS Enterprise Discount",
+      "description": "Enterprise agreement with 10% markup",
+      "sourceType": "Amazon Web Services",
+      "currency": "USD",
+      "markupRate": 10,
+      "isDiscount": false,
+      "lastModified": "1 week ago",
+      "createdDate": "2024-07-20"
+    },
+    {
+      "id": "gcp-committed-use",
+      "name": "GCP Committed Use",
+      "description": "Committed use discount of 15%",
+      "sourceType": "Google Cloud Platform",
+      "currency": "USD",
+      "markupRate": 15,
+      "isDiscount": true,
+      "lastModified": "3 days ago",
+      "createdDate": "2024-08-01"
+    },
+    {
+      "id": "azure-reserved-instances",
+      "name": "Azure Reserved Instances",
+      "description": "Reserved instance discount of 8%",
+      "sourceType": "Microsoft Azure",
+      "currency": "USD",
+      "markupRate": 8,
+      "isDiscount": true,
+      "lastModified": "1 month ago",
+      "createdDate": "2024-06-10"
+    },
+    {
+      "id": "dev-environment-model",
+      "name": "Dev Environment Model",
+      "description": "Lower rates for development resources",
+      "sourceType": "OpenShift Container Platform",
+      "currency": "USD",
+      "markupRate": 5,
+      "isDiscount": true,
+      "lastModified": "2 weeks ago",
+      "createdDate": "2024-09-01"
+    }
+  ],
+  "tags": [
+    {
+      "id": "tag-001",
+      "key": "environment",
+      "values": [
+        "production",
+        "staging",
+        "development"
+      ],
+      "enabled": true,
+      "integrations": [
+        "OpenShift",
+        "AWS",
+        "GCP",
+        "Azure"
+      ]
+    },
+    {
+      "id": "tag-002",
+      "key": "team",
+      "values": [
+        "frontend",
+        "backend",
+        "platform",
+        "data",
+        "ml-research",
+        "mobile",
+        "qa"
+      ],
+      "enabled": true,
+      "integrations": [
+        "OpenShift",
+        "GCP"
+      ]
+    },
+    {
+      "id": "tag-003",
+      "key": "costCenter",
+      "values": [
+        "engineering",
+        "research",
+        "sales",
+        "marketing"
+      ],
+      "enabled": true,
+      "integrations": [
+        "OpenShift",
+        "GCP"
+      ]
+    },
+    {
+      "id": "tag-004",
+      "key": "owner",
+      "values": [
+        "john-smith",
+        "jane-doe",
+        "bob-wilson"
+      ],
+      "enabled": false,
+      "integrations": [
+        "AWS",
+        "Azure"
+      ]
+    },
+    {
+      "id": "tag-005",
+      "key": "application",
+      "values": [
+        "api-gateway",
+        "user-service",
+        "payment-service",
+        "analytics-engine",
+        "ml-training"
+      ],
+      "enabled": true,
+      "integrations": [
+        "OpenShift",
+        "AWS",
+        "GCP"
+      ]
+    },
+    {
+      "id": "tag-006",
+      "key": "project",
+      "values": [
+        "project-alpha",
+        "project-beta",
+        "project-gamma"
+      ],
+      "enabled": true,
+      "integrations": [
+        "AWS",
+        "GCP",
+        "Azure"
+      ]
+    },
+    {
+      "id": "tag-007",
+      "key": "version",
+      "values": [
+        "v1",
+        "v2",
+        "v3",
+        "canary"
+      ],
+      "enabled": false,
+      "integrations": [
+        "OpenShift"
+      ]
+    },
+    {
+      "id": "tag-008",
+      "key": "storageclass",
+      "values": [
+        "gp3",
+        "gp2",
+        "io1",
+        "standard"
+      ],
+      "enabled": true,
+      "integrations": [
+        "OpenShift",
+        "AWS"
+      ]
+    }
+  ],
+  "tagMappings": {
+    "description": "Maps cloud provider tags to cost management tag keys",
+    "mappings": [
+      {
+        "id": "mapping-001",
+        "parentKey": "environment",
+        "childKeys": [
+          {
+            "source": "AWS",
+            "key": "Environment",
+            "description": "AWS Environment tag"
+          },
+          {
+            "source": "GCP",
+            "key": "env",
+            "description": "GCP environment label"
+          },
+          {
+            "source": "Azure",
+            "key": "Env",
+            "description": "Azure Environment tag"
+          }
+        ],
+        "enabled": true,
+        "lastModified": "2024-10-15"
+      },
+      {
+        "id": "mapping-002",
+        "parentKey": "costCenter",
+        "childKeys": [
+          {
+            "source": "AWS",
+            "key": "CostCenter",
+            "description": "AWS Cost Center tag"
+          },
+          {
+            "source": "GCP",
+            "key": "cost_center",
+            "description": "GCP cost center label"
+          },
+          {
+            "source": "Azure",
+            "key": "CostCentre",
+            "description": "Azure Cost Centre tag"
+          }
+        ],
+        "enabled": true,
+        "lastModified": "2024-10-10"
+      },
+      {
+        "id": "mapping-003",
+        "parentKey": "application",
+        "childKeys": [
+          {
+            "source": "AWS",
+            "key": "App",
+            "description": "AWS Application tag"
+          },
+          {
+            "source": "GCP",
+            "key": "application",
+            "description": "GCP application label"
+          }
+        ],
+        "enabled": true,
+        "lastModified": "2024-10-12"
+      },
+      {
+        "id": "mapping-004",
+        "parentKey": "team",
+        "childKeys": [
+          {
+            "source": "GCP",
+            "key": "team",
+            "description": "GCP team label"
+          },
+          {
+            "source": "Azure",
+            "key": "Team",
+            "description": "Azure Team tag"
+          }
+        ],
+        "enabled": false,
+        "lastModified": "2024-09-28"
+      }
+    ]
+  },
+  "costCategories": {
+    "description": "Custom cost categorization for grouping and reporting",
+    "categories": [
+      {
+        "id": "category-001",
+        "name": "Production Infrastructure",
+        "description": "All production workloads and services",
+        "rules": [
+          {
+            "type": "tag",
+            "key": "environment",
+            "operator": "equals",
+            "value": "production"
+          }
+        ],
+        "color": "#E74C3C",
+        "enabled": true,
+        "estimatedMonthlyCost": 290000,
+        "createdDate": "2024-08-01",
+        "lastModified": "2024-10-15"
+      },
+      {
+        "id": "category-002",
+        "name": "Development & Testing",
+        "description": "Development, staging, and QA environments",
+        "rules": [
+          {
+            "type": "tag",
+            "key": "environment",
+            "operator": "in",
+            "value": [
+              "development",
+              "staging"
+            ]
+          }
+        ],
+        "color": "#3498DB",
+        "enabled": true,
+        "estimatedMonthlyCost": 85000,
+        "createdDate": "2024-08-01",
+        "lastModified": "2024-10-10"
+      },
+      {
+        "id": "category-003",
+        "name": "ML & Data Science",
+        "description": "Machine learning training and data processing",
+        "rules": [
+          {
+            "type": "tag",
+            "key": "team",
+            "operator": "equals",
+            "value": "ml-research"
+          },
+          {
+            "type": "project",
+            "operator": "contains",
+            "value": "ml-training"
+          }
+        ],
+        "color": "#9B59B6",
+        "enabled": true,
+        "estimatedMonthlyCost": 45000,
+        "createdDate": "2024-08-15",
+        "lastModified": "2024-10-18"
+      },
+      {
+        "id": "category-004",
+        "name": "Storage & Backup",
+        "description": "All storage, backup, and archival costs",
+        "rules": [
+          {
+            "type": "service",
+            "operator": "in",
+            "value": [
+              "S3",
+              "Cloud Storage",
+              "Blob Storage",
+              "Backup"
+            ]
+          }
+        ],
+        "color": "#F39C12",
+        "enabled": true,
+        "estimatedMonthlyCost": 28000,
+        "createdDate": "2024-08-20",
+        "lastModified": "2024-10-05"
+      },
+      {
+        "id": "category-005",
+        "name": "Platform Services",
+        "description": "OpenShift platform overhead and infrastructure",
+        "rules": [
+          {
+            "type": "project",
+            "operator": "contains",
+            "value": "openshift-"
+          },
+          {
+            "type": "project",
+            "operator": "contains",
+            "value": "platform-unallocated"
+          }
+        ],
+        "color": "#1ABC9C",
+        "enabled": true,
+        "estimatedMonthlyCost": 37000,
+        "createdDate": "2024-09-01",
+        "lastModified": "2024-10-12"
+      }
+    ]
+  },
+  "platformProjects": {
+    "description": "OpenShift system and platform-level projects",
+    "projects": [
+      {
+        "id": "platform-001",
+        "name": "openshift-apiserver",
+        "displayName": "OpenShift API Server",
+        "type": "platform",
+        "description": "API server for cluster management",
+        "isPlatformOverhead": true,
+        "isSystemNamespace": true,
+        "costAllocationMethod": "distributed",
+        "enabled": true
+      },
+      {
+        "id": "platform-002",
+        "name": "openshift-authentication",
+        "displayName": "OpenShift Authentication",
+        "type": "platform",
+        "description": "Authentication and authorization services",
+        "isPlatformOverhead": true,
+        "isSystemNamespace": true,
+        "costAllocationMethod": "distributed",
+        "enabled": true
+      },
+      {
+        "id": "platform-003",
+        "name": "openshift-console",
+        "displayName": "OpenShift Web Console",
+        "type": "platform",
+        "description": "Web-based management console",
+        "isPlatformOverhead": true,
+        "isSystemNamespace": true,
+        "costAllocationMethod": "distributed",
+        "enabled": true
+      },
+      {
+        "id": "platform-004",
+        "name": "openshift-monitoring",
+        "displayName": "OpenShift Monitoring",
+        "type": "platform",
+        "description": "Cluster monitoring and metrics",
+        "isPlatformOverhead": true,
+        "isSystemNamespace": true,
+        "costAllocationMethod": "distributed",
+        "enabled": true
+      },
+      {
+        "id": "platform-005",
+        "name": "openshift-ingress",
+        "displayName": "OpenShift Ingress",
+        "type": "platform",
+        "description": "Ingress controller and routing",
+        "isPlatformOverhead": true,
+        "isSystemNamespace": true,
+        "costAllocationMethod": "distributed",
+        "enabled": true
+      },
+      {
+        "id": "platform-006",
+        "name": "openshift-kube-apiserver",
+        "displayName": "Kubernetes API Server",
+        "type": "platform",
+        "description": "Core Kubernetes API server",
+        "isPlatformOverhead": true,
+        "isSystemNamespace": true,
+        "costAllocationMethod": "distributed",
+        "enabled": true
+      },
+      {
+        "id": "platform-007",
+        "name": "openshift-etcd",
+        "displayName": "etcd",
+        "type": "platform",
+        "description": "Distributed key-value store",
+        "isPlatformOverhead": true,
+        "isSystemNamespace": true,
+        "costAllocationMethod": "distributed",
+        "enabled": true
+      },
+      {
+        "id": "platform-008",
+        "name": "openshift-image-registry",
+        "displayName": "Image Registry",
+        "type": "platform",
+        "description": "Internal container image registry",
+        "isPlatformOverhead": true,
+        "isSystemNamespace": true,
+        "costAllocationMethod": "distributed",
+        "enabled": true
+      },
+      {
+        "id": "platform-009",
+        "name": "openshift-logging",
+        "displayName": "OpenShift Logging",
+        "type": "platform",
+        "description": "Cluster logging and log aggregation",
+        "isPlatformOverhead": false,
+        "isSystemNamespace": true,
+        "costAllocationMethod": "direct",
+        "enabled": true
+      },
+      {
+        "id": "platform-010",
+        "name": "openshift-operators",
+        "displayName": "OpenShift Operators",
+        "type": "platform",
+        "description": "Operator lifecycle management",
+        "isPlatformOverhead": true,
+        "isSystemNamespace": true,
+        "costAllocationMethod": "distributed",
+        "enabled": true
+      },
+      {
+        "id": "platform-011",
+        "name": "platform-unallocated",
+        "displayName": "Platform Unallocated",
+        "type": "unallocated",
+        "description": "Platform costs not attributed to specific namespaces",
+        "isPlatformOverhead": true,
+        "isSystemNamespace": false,
+        "costAllocationMethod": "unallocated",
+        "enabled": true
+      },
+      {
+        "id": "platform-012",
+        "name": "worker-unallocated",
+        "displayName": "Worker Unallocated",
+        "type": "unallocated",
+        "description": "Worker node costs not attributed to specific workloads",
+        "isPlatformOverhead": false,
+        "isSystemNamespace": false,
+        "costAllocationMethod": "unallocated",
+        "enabled": true
+      }
+    ],
+    "settings": {
+      "distributePlatformCosts": true,
+      "distributionMethod": "proportional",
+      "includeInReports": true,
+      "excludeFromOptimization": true
+    }
+  },
+  "integrations": {
+    "aws": [
+      {
+        "id": "aws-prod-integration",
+        "name": "AWS Production Account",
+        "type": "Amazon Web Services",
+        "accountId": "123456789012",
+        "assignedCostModel": "aws-enterprise-discount",
+        "status": "active",
+        "lastSync": "2024-10-24T08:30:00Z"
+      },
+      {
+        "id": "aws-dev-integration",
+        "name": "AWS Development Account",
+        "type": "Amazon Web Services",
+        "accountId": "234567890123",
+        "assignedCostModel": "",
+        "status": "active",
+        "lastSync": "2024-10-24T08:25:00Z"
+      }
+    ],
+    "gcp": [
+      {
+        "id": "gcp-prod-integration",
+        "name": "GCP Production",
+        "type": "Google Cloud Platform",
+        "billingAccountId": "01AB23-CD45EF-67890G",
+        "assignedCostModel": "gcp-committed-use",
+        "status": "active",
+        "lastSync": "2024-10-24T08:35:00Z"
+      },
+      {
+        "id": "gcp-ml-integration",
+        "name": "GCP Machine Learning",
+        "type": "Google Cloud Platform",
+        "billingAccountId": "98ZY76-XW54VU-32109T",
+        "assignedCostModel": "",
+        "status": "active",
+        "lastSync": "2024-10-24T08:32:00Z"
+      }
+    ],
+    "azure": [
+      {
+        "id": "azure-prod-integration",
+        "name": "Azure Production Subscription",
+        "type": "Microsoft Azure",
+        "subscriptionId": "abcd1234-5678-90ef-ghij-klmnopqrstuv",
+        "assignedCostModel": "azure-reserved-instances",
+        "status": "active",
+        "lastSync": "2024-10-24T08:28:00Z"
+      },
+      {
+        "id": "azure-dev-integration",
+        "name": "Azure Development Subscription",
+        "type": "Microsoft Azure",
+        "subscriptionId": "wxyz9876-5432-10ab-cdef-ghijklmnopqrs",
+        "assignedCostModel": "",
+        "status": "active",
+        "lastSync": "2024-10-24T08:22:00Z"
+      }
+    ]
+  }
+}

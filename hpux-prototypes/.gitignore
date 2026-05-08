@@ -1,0 +1,15 @@
+**/node_modules
+dist
+yarn-error.log
+yarn.lock
+stats.json
+coverage
+storybook-static
+.DS_Store
+.idea
+.env
+# Never commit a Jira token; default is ~/.jira-token
+.jira-token
+.history
+node_modules
+src/app/prototypes/shiri-alerting-ui-v2/data/monitoring-plugin/

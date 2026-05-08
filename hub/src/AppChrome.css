@@ -1,0 +1,565 @@
+/* Small chrome tweaks layered after PatternFly base. */
+
+/* Document scroll: PF Page uses 100vh + overflow on main; let the window scroll instead. */
+.ops-hub-page.pf-v6-c-page {
+  height: auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-height: none;
+  grid-template-rows: auto auto;
+  /* Keep page chrome packed to the top; avoid stretching the main row to fill the viewport. */
+  align-content: start;
+  --pf-v6-c-page__main-container--MaxHeight: none;
+  --pf-v6-c-page__main-container--xs--MaxHeight: none;
+}
+
+/* Breathing room between masthead and main content (on PF page main container). */
+.ops-hub-page .pf-v6-c-page__main-container {
+  margin-block-start: var(--pf-t--global--spacer--2xl);
+  max-height: none;
+  overflow-x: hidden;
+  overflow-y: visible;
+  /* PF defaults to align-self: stretch on narrow breakpoints — that elongates the main card; keep content top-aligned. */
+  --pf-v6-c-page__main-container--AlignSelf: start;
+}
+
+.ops-hub-page .pf-v6-c-page__main {
+  overflow: visible;
+  justify-content: flex-start;
+  flex-grow: 0;
+}
+
+/* Hub: PatternFly glyph icons use neutral grey; link text uses PatternFly default link (primary blue). */
+.ops-hub-page .pf-v6-c-icon .pf-v6-c-icon__content {
+  --pf-v6-c-icon__content--Color: var(--pf-t--global--icon--color--subtle);
+}
+
+/* Do not override global link tokens — theme supplies primary blue for --pf-t--global--text--color--link--*. */
+
+.ops-hub-page a:not([class*="pf-v6-c-button"]):not(:hover):not(:focus-visible) {
+  color: var(--pf-t--global--text--color--link--default);
+}
+
+.ops-hub-page a:not([class*="pf-v6-c-button"]):hover,
+.ops-hub-page a:not([class*="pf-v6-c-button"]):focus-visible {
+  color: var(--pf-t--global--text--color--link--hover);
+}
+
+.ops-hub-page a:not([class*="pf-v6-c-button"]):visited {
+  color: var(--pf-t--global--text--color--link--visited);
+}
+
+.ops-hub-page .pf-v6-c-nav__link:not(.pf-m-current):not([aria-current="page"]) {
+  --pf-v6-c-nav__link--Color: var(--pf-t--global--text--color--link--default);
+  --pf-v6-c-nav__link--hover--Color: var(--pf-t--global--text--color--link--hover);
+  --pf-v6-c-nav__link-icon--Color: var(--pf-t--global--icon--color--subtle);
+}
+
+.ops-hub-page .pf-v6-c-nav__link:not(.pf-m-current):not([aria-current="page"]):hover,
+.ops-hub-page .pf-v6-c-nav__link:not(.pf-m-current):not([aria-current="page"]):focus-visible {
+  --pf-v6-c-nav__link-icon--Color: var(--pf-t--global--icon--color--subtle);
+}
+
+.ops-hub-page .pf-v6-c-nav__link.pf-m-current,
+.ops-hub-page .pf-v6-c-nav__link[aria-current="page"] {
+  --pf-v6-c-nav__link--m-current--Color: var(--pf-t--global--text--color--link--visited);
+  --pf-v6-c-nav__link--m-current__link-icon--Color: var(--pf-t--global--icon--color--subtle);
+}
+
+.ops-hub-page .pf-v6-c-button.pf-m-link {
+  --pf-v6-c-button--m-link--Color: var(--pf-t--global--text--color--link--default);
+  --pf-v6-c-button--m-link--hover--Color: var(--pf-t--global--text--color--link--hover);
+  --pf-v6-c-button--m-link--hover__icon--Color: var(--pf-t--global--icon--color--subtle);
+  --pf-v6-c-button--m-link--m-clicked--Color: var(--pf-t--global--text--color--link--visited);
+  --pf-v6-c-button--m-link--m-clicked__icon--Color: var(--pf-t--global--icon--color--subtle);
+  --pf-v6-c-button--m-link__icon--Color: var(--pf-t--global--icon--color--subtle);
+}
+
+/* Secondary buttons: remove bordered ::after ring (PatternFly draws border via pseudo-element). */
+.ops-hub-page .pf-v6-c-button.pf-m-secondary {
+  --pf-v6-c-button--BorderWidth: 0;
+  --pf-v6-c-button--hover--BorderWidth: 0;
+  --pf-v6-c-button--m-clicked--BorderWidth: 0;
+  --pf-v6-c-button--m-secondary--Color: var(--pf-t--global--text--color--link--default);
+  --pf-v6-c-button--m-secondary--hover--Color: var(--pf-t--global--text--color--link--hover);
+  --pf-v6-c-button--m-secondary--m-clicked--Color: var(--pf-t--global--text--color--link--visited);
+  --pf-v6-c-button--m-secondary__icon--Color: var(--pf-t--global--icon--color--subtle);
+  --pf-v6-c-button--m-secondary--hover__icon--Color: var(--pf-t--global--icon--color--subtle);
+  --pf-v6-c-button--m-secondary--m-clicked__icon--Color: var(--pf-t--global--icon--color--subtle);
+}
+
+/* html/body default to height:100% from PF base — allow page to grow taller than the viewport. */
+:where(html, body) {
+  height: auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/*
+ * PatternFly removes the decorative ::before frame on clickable cards (.pf-m-clickable::before { border: none }).
+ * Home team + cross-product cards use isClickable, so they looked borderless vs prototype cards — restore edges.
+ */
+.ops-hub-page .pf-v6-c-card.pf-m-clickable::before {
+  border: var(--pf-v6-c-card--BorderWidth) var(--pf-v6-c-card--BorderStyle) var(--pf-v6-c-card--BorderColor);
+}
+
+.ops-hub-page .pf-v6-c-card.pf-m-clickable:is(:hover, :focus-within):not(.pf-m-current)::before {
+  border-color: var(--pf-t--global--border--color--hover);
+  border-width: var(--pf-t--global--border--width--box--hover);
+}
+
+/*
+ * Sticky chrome: masthead stays at the viewport top while the document scrolls
+ * (body/html scroll — main container overflow is not a scroll trap here).
+ */
+.ops-hub-page.pf-v6-c-page > .pf-v6-c-masthead {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  z-index: var(--pf-v6-c-page--c-masthead--ZIndex);
+}
+
+/* Console-like masthead: white bar + soft bottom shadow (OpenShift-style header). */
+.ops-hub-masthead[class*="masthead"] {
+  /* PF can set token background/border-b on masthead — keep console-like flat white + shadow only. */
+  --pf-v6-c-masthead--BackgroundColor: #fff;
+  background-color: #fff !important;
+  border-block-end: none !important;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+}
+
+.ops-hub-brand-logo img {
+  display: block;
+  height: 36px;
+  width: auto;
+}
+
+/* Toolbar area: push nav + search to the trailing edge together. */
+.ops-hub-masthead__tools {
+  justify-content: flex-end;
+}
+
+[class*="masthead"][class*="content"].ops-hub-masthead__tools {
+  justify-content: flex-end;
+}
+
+/* Horizontal hub links: tighter spacing between items. */
+.ops-hub-nav-inline[class*="horizontal"] [class*="nav__list"] {
+  gap: var(--pf-t--global--spacer--xs, 4px);
+  column-gap: var(--pf-t--global--spacer--xs, 4px);
+}
+
+.ops-hub-masthead .ops-hub-nav-inline[class*="horizontal"] {
+  --pf-v6-c-nav__link--PaddingInlineStart: var(--pf-t--global--spacer--sm);
+  --pf-v6-c-nav__link--PaddingInlineEnd: var(--pf-t--global--spacer--sm);
+}
+
+/* External nav entries (Team, Demos): small icon after label (PF renders icon first; reverse flex). */
+.ops-hub-masthead .ops-hub-nav__item--external .pf-v6-c-nav__link {
+  flex-direction: row-reverse;
+  column-gap: var(--pf-t--global--spacer--xs);
+}
+
+.ops-hub-masthead .ops-hub-nav__item--external .pf-v6-c-nav__link-icon {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+}
+
+.ops-hub-masthead .ops-hub-nav__item--external .pf-v6-c-nav__link-icon svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  vertical-align: middle;
+}
+
+/* Masthead nav: single bottom border only.
+   - PF Nav uses .pf-v6-c-nav__link::after for a focus ring — hide it.
+   - PF base.css (:where(a) / :where(a:hover, a:focus)) adds text-decoration underline
+     (text-width) — that stacks under our border-bottom (full link width). Kill all
+     text-decoration on the link and descendants. */
+.ops-hub-masthead .ops-hub-nav-inline[class*="horizontal"] .pf-v6-c-nav__link::after {
+  display: none;
+}
+
+.ops-hub-masthead .ops-hub-nav-inline[class*="horizontal"] .pf-v6-c-nav__link,
+.ops-hub-masthead .ops-hub-nav-inline[class*="horizontal"] .pf-v6-c-nav__link * {
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+}
+
+.ops-hub-masthead .ops-hub-nav-inline[class*="horizontal"] .pf-v6-c-nav__link:is(:hover, :focus, :focus-visible, :active),
+.ops-hub-masthead .ops-hub-nav-inline[class*="horizontal"] .pf-v6-c-nav__link:is(:hover, :focus, :focus-visible, :active) * {
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+}
+
+.ops-hub-masthead .ops-hub-nav-inline[class*="horizontal"] .pf-v6-c-nav__link {
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.14s ease, color 0.14s ease;
+}
+
+.ops-hub-masthead .ops-hub-nav-inline[class*="horizontal"] .pf-v6-c-nav__link:where(:hover, :focus-visible) {
+  background-color: transparent;
+  border-bottom-color: var(--pf-t--global--text--color--link--default);
+  box-shadow: none;
+}
+
+/* Brand logo: no underline. */
+.ops-hub-brand,
+.ops-hub-brand:hover,
+.ops-hub-brand:focus {
+  text-decoration: none !important;
+}
+
+.ops-hub-masthead .ops-hub-nav-inline[class*="horizontal"] .pf-v6-c-nav__link.pf-m-current,
+.ops-hub-masthead .ops-hub-nav-inline[class*="horizontal"] .pf-v6-c-nav__link[aria-current="page"] {
+  border-bottom-color: var(--pf-t--global--text--color--link--visited);
+}
+
+.ops-hub-masthead .ops-hub-nav-inline[class*="horizontal"] .pf-v6-c-nav__link:active {
+  background-color: transparent;
+  border-bottom-color: var(--pf-t--global--text--color--link--hover);
+}
+
+.ops-hub-masthead .ops-hub-nav-inline[class*="horizontal"] .pf-v6-c-nav__link:focus-visible {
+  outline: 2px solid var(--pf-t--global--text--color--link--default);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ops-hub-masthead .ops-hub-nav-inline[class*="horizontal"] .pf-v6-c-nav__link {
+    transition: none;
+  }
+}
+
+/* Team drill-down header: breadcrumb spacing before title. */
+.ops-hub-team-header .pf-v6-c-breadcrumb {
+  margin-block-end: var(--pf-t--global--spacer--md);
+}
+
+/* Page footer: compact strip at bottom. */
+.ops-hub-footer.pf-v6-c-page__main-section {
+  --pf-v6-c-page__main-section--PaddingBlockStart: var(--pf-t--global--spacer--sm);
+  --pf-v6-c-page__main-section--PaddingBlockEnd: var(--pf-t--global--spacer--sm);
+}
+
+.ops-hub-footer {
+  padding-block-end: var(--pf-t--global--spacer--lg);
+}
+
+.ops-hub-footer__body {
+  margin-block-start: var(--pf-t--global--spacer--md);
+}
+
+.ops-hub-footer__legacy-repo-row {
+  inline-size: 100%;
+}
+
+.ops-hub-footer__repo-item {
+  flex: 1;
+  min-inline-size: min(100%, 17rem);
+}
+
+.ops-hub-footer__repo-line {
+  text-align: end;
+}
+
+/* Client route: wrap team card with a real <a href>; keep card chrome, no default link styling. */
+.ops-hub-team-card-link {
+  display: block;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.ops-hub-team-card-link:focus-visible {
+  outline: none;
+}
+
+.ops-hub-team-card-link:focus-visible .pf-v6-c-card {
+  outline: var(--pf-t--global--border--width--strong, 2px) solid var(--pf-t--global--color--primary--default, #06c);
+  outline-offset: 2px;
+}
+
+/* Contributor guide: monospace paths and field names in body copy. */
+.ops-hub-inline-code {
+  font-family: var(--pf-v6-c-code--FontFamily, ui-monospace, SFMono-Regular, menlo, monospace);
+  font-size: 0.925em;
+  padding-inline: 0.35em;
+  padding-block: 0.12em;
+  border-radius: var(--pf-t--global--border--radius--tiny, 4px);
+  background-color: var(--pf-t--global--background--color--secondary--default, #f5f5f5);
+  word-break: break-word;
+}
+
+.ops-hub-designer-callout[class*="page__main-section"] {
+  border-radius: var(--pf-t--global--border--radius--medium, 8px);
+}
+
+/* Home callouts: compact vertical padding on this section */
+.ops-hub-home-callouts[class*="page__main-section"] {
+  --pf-v6-c-page__main-section--PaddingBlockStart: var(--pf-t--global--spacer--sm);
+  --pf-v6-c-page__main-section--PaddingBlockEnd: var(--pf-t--global--spacer--sm);
+}
+
+/* Prototype listing cards: roomier padding + icon column for title / meta / links. */
+.ops-hub-prototype-card.pf-v6-c-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+}
+
+.ops-hub-prototype-card .pf-v6-c-card__body.ops-hub-prototype-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding-block: var(--pf-t--global--spacer--lg);
+  padding-inline: var(--pf-t--global--spacer--lg);
+}
+
+.ops-hub-prototype-card__layout {
+  flex: 1 1 0%;
+  min-block-size: 0;
+  min-height: 0;
+}
+
+.ops-hub-prototype-card__main {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ops-hub-prototype-card__footer {
+  flex-shrink: 0;
+}
+
+.ops-hub-prototype-card__row-icon {
+  flex-shrink: 0;
+  inline-size: 1rem;
+  display: flex;
+  justify-content: center;
+  margin-block-start: 0.1875rem;
+  color: var(--pf-t--global--text--color--subtle);
+}
+
+.ops-hub-prototype-card__row-icon .pf-v6-c-icon {
+  color: var(--pf-t--global--text--color--subtle);
+}
+
+/* Title below meta row — modest gap (padding avoids stacking with flex gap) */
+.ops-hub-prototype-card__title-block {
+  padding-block-start: 0.75rem;
+}
+
+/* Inline persona chip: pill badge, not full width / not button-styled */
+.ops-hub-prototype-card__persona {
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+  padding-block: 0.125rem;
+  padding-inline: 0.5rem;
+  border-radius: var(--pf-t--global--border--radius--pill, 624.9375rem);
+  font-size: var(--pf-t--global--font--size--body--sm, 0.75rem);
+  font-weight: var(--pf-t--global--font--weight--body--bold, 500);
+  line-height: 1.3;
+  color: var(--pf-t--global--text--color--regular);
+  background-color: var(--pf-t--global--background--color--secondary--default, #f5f5f5);
+  border: 1px solid var(--pf-t--global--border--color--default);
+}
+
+/* Prototype CTAs (non-open): link-like layout when using flattened secondary — not the main “Open prototype” control. */
+.ops-hub-prototype-card-actions .pf-v6-c-button.pf-m-secondary,
+.ops-hub-prototype-card__footer .pf-v6-c-button.pf-m-secondary:not(.ops-hub-prototype-card__open-btn) {
+  --pf-v6-c-button--JustifyContent: flex-end;
+  text-align: end;
+  --pf-v6-c-button--PaddingInlineStart: 0;
+  --pf-v6-c-button--PaddingInlineEnd: 0;
+}
+
+/* “Open prototype” / “View prototype”: real outlined secondary (hub global secondary rules are link-styled). */
+.ops-hub-page .ops-hub-prototype-card__footer .pf-v6-c-button.pf-m-secondary.ops-hub-prototype-card__open-btn {
+  --pf-v6-c-button--JustifyContent: center;
+  --pf-v6-c-button--BorderWidth: var(--pf-t--global--border--width--action--default);
+  --pf-v6-c-button--hover--BorderWidth: var(--pf-t--global--border--width--action--hover);
+  --pf-v6-c-button--m-clicked--BorderWidth: var(--pf-t--global--border--width--action--clicked);
+  --pf-v6-c-button--m-secondary--Color: var(--pf-t--global--text--color--brand--default);
+  --pf-v6-c-button--m-secondary--BorderColor: var(--pf-t--global--border--color--brand--default);
+  --pf-v6-c-button--m-secondary--hover--Color: var(--pf-t--global--text--color--brand--hover);
+  --pf-v6-c-button--m-secondary--hover--BorderColor: var(--pf-t--global--border--color--brand--hover);
+  --pf-v6-c-button--m-secondary--m-clicked--Color: var(--pf-t--global--text--color--brand--clicked);
+  --pf-v6-c-button--m-secondary--m-clicked--BorderColor: var(--pf-t--global--border--color--brand--clicked);
+  --pf-v6-c-button--m-secondary__icon--Color: var(--pf-t--global--icon--color--brand--default);
+  --pf-v6-c-button--m-secondary--hover__icon--Color: var(--pf-t--global--icon--color--brand--hover);
+  --pf-v6-c-button--m-secondary--m-clicked__icon--Color: var(--pf-t--global--icon--color--brand--clicked);
+  --pf-v6-c-button--PaddingInlineStart: var(--pf-v6-c-button--m-small--PaddingInlineStart);
+  --pf-v6-c-button--PaddingInlineEnd: var(--pf-v6-c-button--m-small--PaddingInlineEnd);
+}
+
+/* Jira / issue key: read like inline text — no chip, no underline; hover = color only */
+.ops-hub-page .ops-hub-prototype-card-actions .pf-v6-c-button.pf-m-link,
+.ops-hub-page .ops-hub-prototype-card-meta .pf-v6-c-button.pf-m-link {
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  --pf-v6-c-button--BackgroundColor: transparent;
+  --pf-v6-c-button--hover--BackgroundColor: transparent;
+  --pf-v6-c-button--active--BackgroundColor: transparent;
+  --pf-v6-c-button--m-clicked--BackgroundColor: transparent;
+}
+
+.ops-hub-page .ops-hub-prototype-card-actions .pf-v6-c-button.pf-m-link:hover,
+.ops-hub-page .ops-hub-prototype-card-meta .pf-v6-c-button.pf-m-link:hover {
+  color: var(--pf-t--global--text--color--link--hover);
+  text-decoration: none;
+  background: transparent;
+  box-shadow: none;
+  --pf-v6-c-button--hover--BackgroundColor: transparent;
+  --pf-v6-c-button--m-link--hover--Color: var(--pf-t--global--text--color--link--hover);
+}
+
+.ops-hub-page .ops-hub-prototype-card-actions .pf-v6-c-button.pf-m-link:focus-visible,
+.ops-hub-page .ops-hub-prototype-card-meta .pf-v6-c-button.pf-m-link:focus-visible {
+  color: var(--pf-t--global--text--color--link--hover);
+  text-decoration: none;
+  background: transparent;
+  box-shadow: none;
+  outline: 2px solid
+    var(--pf-t--global--text--color--link--default, var(--pf-t--global--color--brand--default));
+  outline-offset: 2px;
+  --pf-v6-c-button--focus--BackgroundColor: transparent;
+}
+
+/* PF sometimes paints surfaces on ::before — keep link visually flat */
+.ops-hub-page .ops-hub-prototype-card-actions .pf-v6-c-button.pf-m-link::before,
+.ops-hub-page .ops-hub-prototype-card-meta .pf-v6-c-button.pf-m-link::before {
+  border: none;
+  background: transparent;
+}
+
+.ops-hub-contrib-subnav {
+  margin-top: var(--pf-t--global--spacer--lg);
+  padding-block: var(--pf-t--global--spacer--sm);
+  border-top: 1px solid var(--pf-t--global--border--color--default, #d2d2d2);
+}
+
+/* Offset anchor targets so they clear the sticky masthead. */
+[id="skill"],
+[id="getting-started"],
+[id="share-preview"],
+[id="need-help"] {
+  scroll-margin-top: 5rem;
+}
+
+/* OME (or other) fullscreen embed tab — minimal chrome, iframe fills viewport */
+html.ops-hub-embed-fullscreen-active,
+body.ops-hub-embed-fullscreen-active {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.ops-hub-embed-fullscreen-root {
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--pf-t--global--background--color--primary--default, #fff);
+}
+
+.ops-hub-embed-top-bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--pf-t--global--spacer--md);
+  min-height: 2.75rem;
+  padding-block: var(--pf-t--global--spacer--xs);
+  padding-inline: var(--pf-t--global--spacer--md);
+  border-bottom: 1px solid var(--pf-t--global--border--color--default, #d2d2d2);
+  background: var(--pf-t--global--background--color--secondary--default, #f5f5f5);
+}
+
+.ops-hub-embed-top-bar__trailing {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.ops-hub-embed-top-bar__trailing-inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--pf-t--global--spacer--md);
+}
+
+.ops-hub-embed-top-bar__copy-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pf-t--global--spacer--sm);
+}
+
+.ops-hub-embed-version-readonly {
+  font-size: var(--pf-t--global--font--size--body--default);
+  color: var(--pf-t--global--text--color--subtle, #6a6e73);
+  white-space: nowrap;
+}
+
+.ops-hub-embed-version-select {
+  font: inherit;
+  max-width: min(22rem, 70vw);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--pf-t--global--border--radius--small, 4px);
+  border: 1px solid var(--pf-t--global--border--color--default);
+  background: var(--pf-t--global--background--color--primary--default);
+}
+
+.ops-hub-embed-top-bar__link {
+  font-size: var(--pf-t--global--font--size--body--default);
+  font-weight: var(--pf-t--global--font--weight--body--bold, 600);
+  color: var(--pf-t--global--text--color--link--default);
+  text-decoration: none;
+}
+
+.ops-hub-embed-top-bar__link:hover,
+.ops-hub-embed-top-bar__link:focus-visible {
+  color: var(--pf-t--global--text--color--link--hover);
+  text-decoration: underline;
+}
+
+.ops-hub-embed-fullscreen-frame {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  border: 0;
+}
+
+/* (older) in-page embed iframe sizing — retained for any non-fullscreen reuse */
+.ops-hub-embed-section .pf-v6-c-page__main-section {
+  overflow-x: auto;
+}
+
+.ops-hub-embed-frame {
+  display: block;
+  width: 100%;
+  min-height: min(78dvh, 900px);
+  height: 78dvh;
+  border: 1px solid var(--pf-t--global--border--color--default, #d2d2d2);
+  border-radius: var(--pf-t--global--border--radius--small);
+  background: var(--pf-t--global--background--color--primary--default);
+}
+
+.ops-hub-prototype-card__description {
+  color: var(--pf-t--global--text--color--regular);
+  font-size: var(--pf-t--global--font--size--body--default);
+  line-height: var(--pf-t--global--font--line-height--body);
+  margin-block-start: var(--pf-t--global--spacer--xs);
+  margin-block-end: var(--pf-t--global--spacer--lg);
+}

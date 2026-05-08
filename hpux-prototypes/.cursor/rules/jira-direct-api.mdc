@@ -1,0 +1,51 @@
+---
+description: Use direct Jira REST API (Red Hat) when working with Jira; Atlassian MCP is blocked by org policy.
+alwaysApply: true
+---
+
+# Jira — Direct REST API (Red Hat)
+
+## Policy
+
+The Atlassian MCP plugin is blocked by Red Hat organization policy. **Do not rely on Atlassian MCP** for Jira. Use the **direct Jira Cloud REST API** with `curl` and the workspace helper **`scripts/jira-api.sh`**.
+
+## Connection
+
+- **Base URL:** `https://redhat.atlassian.net/rest/api/3`
+- **Auth:** HTTP Basic Auth — email **`fkargbo@redhat.com`** + API token read from **`~/.jira-token`** (file mode `600`, never committed).
+- **Browse URLs for tables:** `https://issues.redhat.com/browse/{KEY}`
+
+## Search (important)
+
+- **Use:** `POST /rest/api/3/search/jql` with a JSON body (`jql`, `maxResults`, optional `fields`, `nextPageToken`, etc.).
+- **Do not use** the legacy **`GET /rest/api/3/search`** JQL query pattern; it has been removed from Jira Cloud.
+
+After sourcing the script (`source scripts/jira-api.sh`), helpers are:
+
+| Function | Purpose |
+|----------|---------|
+| `jira_search "<JQL>"` [maxResults] | Search issues via `POST .../search/jql` |
+| `jira_get_issue "KEY"` | Get one issue |
+| `jira_create_issue '<json>'` | Create an issue |
+| `jira_edit_issue "KEY" '<json>'` | Update fields on an issue |
+| `jira_transition_issue "KEY" '<json>'` | Apply a workflow transition |
+| `jira_get_transitions "KEY"` | List available transitions |
+| `jira_add_comment "KEY" "text"` | Add a comment (ADF body) |
+| `jira_lookup_user "name"` | User search (`/user/search`) |
+| `jira_link_issues "type" "KEY-1" "KEY-2"` | Create issue link (`KEY-1` inward, `KEY-2` outward) |
+
+Or run: `scripts/jira-api.sh jira_search '...'` (same names as functions).
+
+## UXD custom fields (reference)
+
+| Field | ID | Type / notes |
+|-------|-----|----------------|
+| Story Points | `customfield_10028` | number — Stories only |
+| Size | `customfield_10795` | select: XS / S / M / L / XL — Epics only |
+| Activity Type | `customfield_10464` | select: Orient / Explore / Make / Monitor / Consult / Enable |
+| Epic Link | `customfield_10014` | string — epic issue key |
+
+## Agent output conventions
+
+- Present issue lists as **markdown tables** with a **Summary** column and a **Key** column linking to `https://issues.redhat.com/browse/{KEY}`.
+- On **401 Unauthorized**, tell the user to regenerate the API token at https://id.atlassian.com/manage-profile/security/api-tokens and update `~/.jira-token` (permissions `600`).

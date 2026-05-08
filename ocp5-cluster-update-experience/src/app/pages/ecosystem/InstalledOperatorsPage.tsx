@@ -1,0 +1,1993 @@
+import {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+  useMemo,
+  useRef,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
+import {
+  CheckCircle,
+  HelpCircle,
+  Info,
+  AlertCircle,
+  ExternalLink,
+  Clock,
+  Columns2,
+  Globe,
+} from "@/lib/pfIcons";
+import { usePatternFlyGlassActive } from "@/lib/usePatternFlyGlassActive";
+import { Link, useNavigate } from "react-router";
+import {
+  Button,
+  Card,
+  CardBody,
+  Checkbox,
+  Content,
+  DescriptionList,
+  DescriptionListDescription,
+  DescriptionListGroup,
+  DescriptionListTerm,
+  Divider,
+  Dropdown,
+  DropdownItem,
+  Flex,
+  FlexItem,
+  Icon,
+  Label,
+  MenuToggle,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  PageSection,
+  Pagination,
+  PaginationVariant,
+  Popover,
+  Tab,
+  Tabs,
+  TabTitleText,
+  Title,
+  Tooltip,
+  ToolbarGroup,
+  ToolbarItem,
+} from "@patternfly/react-core";
+import {
+  DataView,
+  DataViewCheckboxFilter,
+  DataViewTextFilter,
+  DataViewToolbar,
+  useDataViewFilters,
+} from "@patternfly/react-data-view";
+import EllipsisVIcon from "@patternfly/react-icons/dist/esm/icons/ellipsis-v-icon";
+import SlidersHIcon from "@patternfly/react-icons/dist/esm/icons/sliders-h-icon";
+import SortCommonAscIcon from "@patternfly/react-icons/dist/esm/icons/pficon-sort-common-asc-icon";
+import { InnerScrollContainer, Table, Tbody, Td, Th, Thead, Tr } from "@patternfly/react-table";
+import Breadcrumbs from "../../components/Breadcrumbs";
+import FavoriteButton from "../../components/FavoriteButton";
+import { useChat } from "../../contexts/ChatContext";
+import { AiAssessmentSection } from "../../components/AiAssessmentSection";
+import { OlsChatbot } from "../../components/OlsChatbot";
+import { useClusterUpdateDemoVariant } from "../../contexts/ClusterUpdateDemoContext";
+import {
+  ListAdvancedFilterModal,
+  type ListAdvancedAttributeSpec,
+} from "../../components/dataView/ListAdvancedFilterModal";
+import { IoDataViewFiltersWithMidActions } from "../../components/dataView/IoDataViewFiltersWithMidActions";
+import {
+  formatLifecycleDateShort,
+  getCurrentPhaseEndDateRaw,
+  getCurrentPhaseEndSortTimestamp,
+  getDerivedSupportPhase,
+  getPhaseLabelStatus,
+  getSupportLifecycleDateEntries,
+  getSupportLifecycleSortTimestamp,
+  RH_OPENSHIFT_CLUSTER_LIFECYCLE_URL,
+  RH_OPERATOR_LC_DOC_URL,
+  RH_PRODUCT_LIFE_CYCLES_URL,
+  type OperatorSupportLifecycle,
+  type SupportPhase,
+} from "@/lib/operatorSupportLifecycle";
+
+export type { OperatorSupportLifecycle, SupportPhase } from "@/lib/operatorSupportLifecycle";
+
+const CLUSTER_TARGET_VERSION = "5.1.10";
+const CLUSTER_CHANNEL = "fast-5.1";
+
+/** Red Hat docs — ClusterServiceVersion (Installed Operators). */
+const IO_CSV_DOC_URL =
+  "https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/operators/operator-lifecycle-manager/olm-understanding-cluster-service-version-csv";
+
+/** Red Hat docs — creating resources from YAML in the web console. */
+const IO_IMPORT_YAML_DOC_URL =
+  "https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/web_console/web-console-overview";
+
+/** Data columns and optional table chrome (kebab) via Managed columns. */
+type TableColumnKey =
+  | "version"
+  | "clusterCompatibility"
+  | "updatePlan"
+  | "support"
+  | "supportPhaseEnd"
+  | "status"
+  | "lastUpdated"
+  | "managedNamespaces"
+  | "rowActions";
+
+type DataColumnKey = Exclude<TableColumnKey, "rowActions">;
+
+const TABLE_COLUMN_OPTIONS: { key: DataColumnKey; label: string }[] = [
+  { key: "version", label: "Version" },
+  { key: "clusterCompatibility", label: "Cluster compatibility" },
+  { key: "updatePlan", label: "Update plan" },
+  { key: "support", label: "Support phase" },
+  { key: "supportPhaseEnd", label: "Support phase end date" },
+  { key: "status", label: "Status" },
+  { key: "lastUpdated", label: "Last updated" },
+  { key: "managedNamespaces", label: "Managed namespaces" },
+];
+
+/** “Default columns” in Manage columns (Operator is always on). */
+const DEFAULT_MANAGE_COLUMN_ORDER: { key: TableColumnKey; label: string }[] = [
+  { key: "version", label: "Version" },
+  { key: "status", label: "Status" },
+  { key: "clusterCompatibility", label: "Cluster compatibility" },
+  { key: "support", label: "Support phase" },
+  { key: "supportPhaseEnd", label: "Support phase end date" },
+  { key: "lastUpdated", label: "Last updated" },
+];
+
+const ADDITIONAL_MANAGE_COLUMN_ORDER: { key: TableColumnKey; label: string }[] = [
+  { key: "updatePlan", label: "Update plan" },
+  { key: "managedNamespaces", label: "Managed namespaces" },
+  { key: "rowActions", label: "Actions" },
+];
+
+const RESTORE_DEFAULT_VISIBLE: Record<TableColumnKey, boolean> = {
+  version: true,
+  status: true,
+  clusterCompatibility: true,
+  support: true,
+  supportPhaseEnd: true,
+  lastUpdated: true,
+  updatePlan: false,
+  managedNamespaces: false,
+  rowActions: false,
+};
+
+const ioManageColRowStyle = (withDivider: boolean): CSSProperties => ({
+  paddingBlock: "var(--pf-t--global--spacer--sm)",
+  ...(withDivider
+    ? { borderBottom: "1px solid var(--pf-t--global--border--color--default)" }
+    : {}),
+});
+
+/**
+ * PatternFly Data View filters (see @patternfly/react-data-view) — `useDataViewFilters` shape.
+ * Matches HPUX-1429 / CONSOLE-5091 prototype (attribute menu + chip rows on ToolbarFilter).
+ */
+type IoListFilters = {
+  name: string;
+  status: string[];
+  version: string;
+  clusterCompatibility: string[];
+  support: string[];
+  supportPhaseEnd: string;
+  lastUpdated: string;
+  managedNamespaces: string;
+};
+
+const INITIAL_IO_FILTERS: IoListFilters = {
+  name: "",
+  status: [],
+  version: "",
+  clusterCompatibility: [],
+  support: [],
+  supportPhaseEnd: "",
+  lastUpdated: "",
+  managedNamespaces: "",
+};
+
+function getEmptyIoListFilters(): IoListFilters {
+  return { ...INITIAL_IO_FILTERS };
+}
+
+const FILTER_VALUE_OPTIONS: Record<
+  keyof Pick<IoListFilters, "status" | "clusterCompatibility" | "support">,
+  { value: string; label: string }[]
+> = {
+  status: [
+    { value: "Running", label: "Running" },
+    { value: "Degraded", label: "Degraded" },
+    { value: "Pending", label: "Pending" },
+  ],
+  clusterCompatibility: [
+    { value: "Compatible", label: "Compatible" },
+    { value: "Incompatible", label: "Incompatible" },
+  ],
+  support: [
+    { value: "Full Support", label: "Full Support" },
+    { value: "Maintenance", label: "Maintenance" },
+    { value: "EUS1", label: "EUS1" },
+    { value: "EUS2", label: "EUS2" },
+    { value: "EUS3", label: "EUS3" },
+    { value: "End of life", label: "End of life" },
+    { value: "Unsupported", label: "Unsupported" },
+  ],
+};
+
+/** HPUX-1429 / CONSOLE-5091 — advanced filter attributes (toolbar attribute menu uses the same set per tab). */
+const IO_LIST_ADV_FILTER_SPEC: ListAdvancedAttributeSpec<keyof IoListFilters>[] = [
+  {
+    id: "name",
+    label: "Name",
+    valueKind: "text",
+    valuePlaceholder: "Filter by name or namespace",
+  },
+  {
+    id: "status",
+    label: "Status",
+    valueKind: "multi",
+    valuePlaceholder: "Filter by status",
+    options: FILTER_VALUE_OPTIONS.status,
+  },
+  {
+    id: "version",
+    label: "Version",
+    valueKind: "text",
+    valuePlaceholder: "Filter by version",
+  },
+  {
+    id: "clusterCompatibility",
+    label: "Cluster compatibility",
+    valueKind: "multi",
+    valuePlaceholder: "Filter by cluster compatibility",
+    options: FILTER_VALUE_OPTIONS.clusterCompatibility,
+  },
+  {
+    id: "support",
+    label: "Support phase",
+    valueKind: "multi",
+    valuePlaceholder: "Filter by support phase",
+    options: FILTER_VALUE_OPTIONS.support,
+  },
+  {
+    id: "supportPhaseEnd",
+    label: "Support phase end date",
+    valueKind: "text",
+    valuePlaceholder: "Filter by support phase end date",
+  },
+  {
+    id: "lastUpdated",
+    label: "Last updated",
+    valueKind: "text",
+    valuePlaceholder: "Filter by last updated",
+  },
+  {
+    id: "managedNamespaces",
+    label: "Managed namespaces",
+    valueKind: "text",
+    valuePlaceholder: "Filter by managed namespace",
+  },
+];
+
+type SortColumnKey =
+  | "name"
+  | "version"
+  | "status"
+  | "lastUpdated"
+  | "clusterCompatibility"
+  | "support"
+  | "supportPhaseEnd";
+
+const COMPAT_SORT_ORDER: Record<"Compatible" | "Incompatible", number> = {
+  Compatible: 0,
+  Incompatible: 1,
+};
+
+function parseUpdatedAt(s?: string): number {
+  if (!s) return 0;
+  const t = Date.parse(s);
+  return Number.isNaN(t) ? 0 : t;
+}
+
+/**
+ * List timestamp cell — same en-US “medium + short” shape as PatternFly Data View examples
+ * (see https://www.patternfly.org/extensions/data-view/overview). Falls back to the raw value if it won’t parse.
+ */
+function formatDataViewListDate(value: string | undefined): string {
+  if (!value || value === "—") return "—";
+  const t = Date.parse(value);
+  if (Number.isNaN(t)) {
+    return value;
+  }
+  return new Date(t).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" });
+}
+
+type InstalledOperator = {
+  name: string;
+  namespace: string;
+  version: string;
+  channel: string;
+  source: string;
+  status: "Running" | "Degraded" | "Pending";
+  autoUpdate: boolean;
+  clusterCompatibility: "Compatible" | "Incompatible";
+  compatibilityMessage?: string;
+  /** Policy dates and optional EUS; see Red Hat OpenShift Operator life cycles. */
+  supportLifecycle?: OperatorSupportLifecycle;
+  /** Community / non-entitled installs — not covered by Red Hat support for this row. */
+  isUnsupported?: boolean;
+  updateAvailable?: string;
+  maxOcpVersion?: string;
+  lastUpdated?: string;
+  managedNamespaces?: string[];
+};
+
+type CatalogOperator = InstalledOperator & {
+  requiredBeforeClusterUpdate?: boolean;
+  isOlmV1Extension?: boolean;
+};
+
+function compareVersions(a: string, b: string): number {
+  const pa = a.split(".").map(Number);
+  const pb = b.split(".").map(Number);
+  for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+    const diff = (pa[i] || 0) - (pb[i] || 0);
+    if (diff !== 0) return diff;
+  }
+  return 0;
+}
+
+function getOperatorCompatibilityPage(
+  op: InstalledOperator,
+  targetVersion: string
+): { compatibility: "Compatible" | "Incompatible"; message?: string } {
+  if (op.status === "Pending") {
+    return {
+      compatibility: "Incompatible",
+      message: op.compatibilityMessage || "Operator is pending and not compatible until it is running.",
+    };
+  }
+  if (op.status === "Degraded") {
+    return {
+      compatibility: "Incompatible",
+      message:
+        op.compatibilityMessage ||
+        "Operator is degraded and not compatible until the operator is healthy.",
+    };
+  }
+  if (!op.maxOcpVersion) return { compatibility: "Compatible" };
+  const targetMajorMinor = targetVersion.split(".").slice(0, 2).join(".");
+  if (compareVersions(op.maxOcpVersion, targetMajorMinor) < 0) {
+    return {
+      compatibility: "Incompatible",
+      message: `Max supported OCP version is ${op.maxOcpVersion}. ${
+        op.updateAvailable
+          ? `Update to v${op.updateAvailable}+ before upgrading cluster.`
+          : "Update operator before upgrading cluster."
+      }`,
+    };
+  }
+  return { compatibility: "Compatible" };
+}
+
+type OperatorRow = CatalogOperator & {
+  clusterCompatibility: "Compatible" | "Incompatible";
+};
+
+function rowMatchesDataViewFilters(op: OperatorRow, f: IoListFilters): boolean {
+  if (f.name.trim()) {
+    const q = f.name.trim().toLowerCase();
+    if (!op.name.toLowerCase().includes(q) && !op.namespace.toLowerCase().includes(q)) return false;
+  }
+  if (f.status.length > 0 && !f.status.includes(op.status)) return false;
+  if (f.version.trim()) {
+    const q = f.version.trim().toLowerCase();
+    if (!op.version.toLowerCase().includes(q)) return false;
+  }
+  if (f.clusterCompatibility.length > 0) {
+    if (op.isOlmV1Extension) return false;
+    if (!f.clusterCompatibility.includes(op.clusterCompatibility)) return false;
+  }
+  if (f.support.length > 0) {
+    if (op.isOlmV1Extension) return false;
+    if (!f.support.includes(getDerivedSupportPhase(op))) return false;
+  }
+  if (f.supportPhaseEnd.trim()) {
+    if (op.isOlmV1Extension) return false;
+    const q = f.supportPhaseEnd.trim().toLowerCase();
+    const raw = getCurrentPhaseEndDateRaw(op);
+    const formatted = formatLifecycleDateShort(raw).toLowerCase();
+    const rawStr = (raw ?? "").toLowerCase();
+    if (!formatted.includes(q) && !rawStr.includes(q)) return false;
+  }
+  if (f.lastUpdated.trim()) {
+    const q = f.lastUpdated.trim().toLowerCase();
+    const display = formatDataViewListDate(op.lastUpdated).toLowerCase();
+    const rawStr = (op.lastUpdated ?? "").toLowerCase();
+    if (!display.includes(q) && !rawStr.includes(q)) return false;
+  }
+  if (f.managedNamespaces.trim()) {
+    const q = f.managedNamespaces.trim().toLowerCase();
+    const nss = op.managedNamespaces ?? [];
+    if (!nss.some((ns) => ns.toLowerCase().includes(q))) return false;
+  }
+  return true;
+}
+
+function sortOperatorRows(rows: OperatorRow[], key: SortColumnKey, dir: "asc" | "desc"): OperatorRow[] {
+  const m = dir === "asc" ? 1 : -1;
+  return [...rows].sort((a, b) => {
+    let cmp = 0;
+    switch (key) {
+      case "name":
+        cmp = a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
+        break;
+      case "version":
+        cmp = compareVersions(a.version, b.version);
+        break;
+      case "status": {
+        const order = { Running: 0, Degraded: 1, Pending: 2 };
+        cmp = order[a.status] - order[b.status];
+        break;
+      }
+      case "clusterCompatibility": {
+        const ta = a.isOlmV1Extension ? 1 : 0;
+        const tb = b.isOlmV1Extension ? 1 : 0;
+        if (ta !== tb) return ta - tb;
+        if (ta === 1) cmp = 0;
+        else cmp = COMPAT_SORT_ORDER[a.clusterCompatibility] - COMPAT_SORT_ORDER[b.clusterCompatibility];
+        break;
+      }
+      case "lastUpdated":
+        cmp = parseUpdatedAt(a.lastUpdated) - parseUpdatedAt(b.lastUpdated);
+        break;
+      case "support": {
+        const ta = a.isOlmV1Extension ? 1 : 0;
+        const tb = b.isOlmV1Extension ? 1 : 0;
+        if (ta !== tb) return ta - tb;
+        if (ta === 1) cmp = 0;
+        else cmp = getSupportLifecycleSortTimestamp(a) - getSupportLifecycleSortTimestamp(b);
+        break;
+      }
+      case "supportPhaseEnd": {
+        const ta = a.isOlmV1Extension ? 1 : 0;
+        const tb = b.isOlmV1Extension ? 1 : 0;
+        if (ta !== tb) return ta - tb;
+        if (ta === 1) cmp = 0;
+        else cmp = getCurrentPhaseEndSortTimestamp(a) - getCurrentPhaseEndSortTimestamp(b);
+        break;
+      }
+      default:
+        cmp = 0;
+    }
+    if (cmp !== 0) return cmp * m;
+    return a.name.localeCompare(b.name) * m;
+  });
+}
+
+const INITIAL_CATALOG_OPERATORS: CatalogOperator[] = [
+  {
+    name: "Cluster Logging",
+    namespace: "openshift-logging",
+    version: "6.4.3",
+    channel: "stable-6.4",
+    source: "redhat-operators",
+    status: "Running",
+    autoUpdate: false,
+    clusterCompatibility: "Incompatible",
+    compatibilityMessage:
+      "Max supported OCP version is 5.0. Update to v6.5+ before upgrading cluster.",
+    supportLifecycle: {
+      fullSupportEndDate: "2025-08-01",
+      maintenanceEndDate: "2025-10-15",
+      eolEndDate: "2025-11-13",
+    },
+    updateAvailable: "6.5.1",
+    maxOcpVersion: "5.0",
+    lastUpdated: "Jan 8, 2026, 3:12 PM",
+    managedNamespaces: ["openshift-logging"],
+    requiredBeforeClusterUpdate: true,
+  },
+  {
+    name: "Elasticsearch Operator",
+    namespace: "openshift-operators-redhat",
+    version: "5.7.2",
+    channel: "stable-5.7",
+    source: "redhat-operators",
+    status: "Running",
+    autoUpdate: false,
+    clusterCompatibility: "Compatible",
+    supportLifecycle: {
+      fullSupportEndDate: "2028-05-10",
+      maintenanceEndDate: "2029-11-10",
+      eus1EndDate: "2030-05-10",
+      eus2EndDate: "2031-05-10",
+      eus3EndDate: "2032-05-10",
+      eolEndDate: "2032-05-10",
+    },
+    maxOcpVersion: "5.1",
+    lastUpdated: "Feb 12, 2026, 4:32 AM",
+    managedNamespaces: ["openshift-operators-redhat", "openshift-logging"],
+    requiredBeforeClusterUpdate: true,
+  },
+  {
+    name: "Cloud Credential Operator",
+    namespace: "openshift-cloud-credential-operator",
+    version: "5.0.0",
+    channel: "stable",
+    source: "Built-in",
+    status: "Running",
+    autoUpdate: true,
+    clusterCompatibility: "Compatible",
+    compatibilityMessage: "IAM configuration may need updating before cluster upgrade.",
+    supportLifecycle: {
+      fullSupportEndDate: "2026-05-03",
+      maintenanceEndDate: "2027-04-21",
+      eolEndDate: "2027-04-21",
+    },
+    maxOcpVersion: "5.2",
+    lastUpdated: "Mar 1, 2026, 3:48 AM",
+    managedNamespaces: ["openshift-cloud-credential-operator"],
+  },
+  {
+    name: "Operator Lifecycle Manager",
+    namespace: "openshift-operator-lifecycle-manager",
+    version: "4.21.0",
+    channel: "stable",
+    source: "Built-in",
+    status: "Running",
+    autoUpdate: false,
+    clusterCompatibility: "Incompatible",
+    compatibilityMessage: "Incompatible with OCP 5.1. Update to 4.22.0 or higher.",
+    supportLifecycle: {
+      fullSupportEndDate: "2027-03-20",
+      maintenanceEndDate: "2028-03-20",
+      eolEndDate: "2028-03-20",
+    },
+    updateAvailable: "4.22.0",
+    maxOcpVersion: "5.0",
+    lastUpdated: "Mar 1, 2026, 3:48 AM",
+    managedNamespaces: ["openshift-operator-lifecycle-manager", "openshift-marketplace"],
+  },
+  {
+    name: "Cert Manager",
+    namespace: "cert-manager-operator",
+    version: "1.14.0",
+    channel: "stable-v1",
+    source: "redhat-operators",
+    status: "Running",
+    autoUpdate: true,
+    clusterCompatibility: "Compatible",
+    supportLifecycle: {
+      fullSupportEndDate: "2027-09-01",
+      maintenanceEndDate: "2028-09-01",
+      eolEndDate: "2028-09-01",
+    },
+    maxOcpVersion: "5.2",
+    lastUpdated: "Mar 18, 2026, 2:05 AM",
+    managedNamespaces: ["cert-manager", "cert-manager-operator"],
+  },
+  {
+    name: "OpenShift DNS",
+    namespace: "openshift-dns-operator",
+    version: "5.0.0",
+    channel: "stable",
+    source: "Built-in",
+    status: "Running",
+    autoUpdate: true,
+    clusterCompatibility: "Compatible",
+    supportLifecycle: {
+      fullSupportEndDate: "2028-06-15",
+      maintenanceEndDate: "2029-06-15",
+      eolEndDate: "2029-06-15",
+    },
+    maxOcpVersion: "5.2",
+    lastUpdated: "Mar 1, 2026, 3:48 AM",
+    managedNamespaces: ["openshift-dns", "openshift-dns-operator"],
+  },
+  {
+    name: "Ingress Operator",
+    namespace: "openshift-ingress-operator",
+    version: "5.0.0",
+    channel: "stable",
+    source: "Built-in",
+    status: "Running",
+    autoUpdate: true,
+    clusterCompatibility: "Compatible",
+    supportLifecycle: {
+      fullSupportEndDate: "2028-06-15",
+      maintenanceEndDate: "2029-06-15",
+      eolEndDate: "2029-06-15",
+    },
+    maxOcpVersion: "5.2",
+    lastUpdated: "Mar 1, 2026, 3:48 AM",
+    managedNamespaces: ["openshift-ingress", "openshift-ingress-operator"],
+  },
+  {
+    name: "Machine Config Operator",
+    namespace: "openshift-machine-config-operator",
+    version: "5.0.0",
+    channel: "stable",
+    source: "Built-in",
+    status: "Running",
+    autoUpdate: true,
+    clusterCompatibility: "Compatible",
+    supportLifecycle: {
+      fullSupportEndDate: "2028-06-15",
+      maintenanceEndDate: "2029-06-15",
+      eolEndDate: "2029-06-15",
+    },
+    maxOcpVersion: "5.2",
+    lastUpdated: "Mar 1, 2026, 3:48 AM",
+    managedNamespaces: ["openshift-machine-config-operator"],
+  },
+  {
+    name: "Monitoring Stack",
+    namespace: "openshift-monitoring",
+    version: "5.0.0",
+    channel: "stable",
+    source: "Built-in",
+    status: "Running",
+    autoUpdate: true,
+    clusterCompatibility: "Compatible",
+    supportLifecycle: {
+      fullSupportEndDate: "2028-06-15",
+      maintenanceEndDate: "2029-06-15",
+      eolEndDate: "2029-06-15",
+    },
+    maxOcpVersion: "5.2",
+    lastUpdated: "Mar 1, 2026, 3:48 AM",
+    managedNamespaces: ["openshift-monitoring", "openshift-user-workload-monitoring"],
+  },
+  {
+    name: "Service Mesh",
+    namespace: "openshift-operators",
+    version: "2.5.1",
+    channel: "stable",
+    source: "redhat-operators",
+    status: "Degraded",
+    autoUpdate: false,
+    clusterCompatibility: "Incompatible",
+    compatibilityMessage:
+      "Operator is degraded. Compatibility cannot be determined until the operator is healthy.",
+    supportLifecycle: {
+      fullSupportEndDate: "2026-02-01",
+      maintenanceEndDate: "2026-12-01",
+      eus1EndDate: "2027-12-01",
+      eus2EndDate: "2028-12-01",
+      eus3EndDate: "2029-12-01",
+      eolEndDate: "2029-12-01",
+    },
+    updateAvailable: "2.6.0",
+    lastUpdated: "Nov 5, 2025, 10:22 AM",
+    managedNamespaces: ["istio-system", "openshift-operators"],
+  },
+  {
+    name: "Web Terminal",
+    namespace: "openshift-operators",
+    version: "1.9.0",
+    channel: "fast",
+    source: "redhat-operators",
+    status: "Running",
+    autoUpdate: true,
+    clusterCompatibility: "Compatible",
+    supportLifecycle: {
+      fullSupportEndDate: "2027-05-03",
+      maintenanceEndDate: "2028-04-21",
+      eolEndDate: "2028-04-21",
+    },
+    maxOcpVersion: "5.2",
+    lastUpdated: "Mar 22, 2026, 6:00 AM",
+    managedNamespaces: ["openshift-terminal"],
+  },
+  {
+    name: "Kiali Operator",
+    namespace: "openshift-operators",
+    version: "1.73.0",
+    channel: "stable",
+    source: "redhat-operators",
+    status: "Running",
+    autoUpdate: false,
+    clusterCompatibility: "Compatible",
+    supportLifecycle: {
+      fullSupportEndDate: "2028-01-15",
+      maintenanceEndDate: "2029-01-15",
+      eolEndDate: "2029-01-15",
+    },
+    updateAvailable: "1.76.0",
+    maxOcpVersion: "5.1",
+    lastUpdated: "Dec 20, 2025, 9:15 AM",
+    managedNamespaces: ["kiali-operator", "istio-system"],
+  },
+  {
+    name: "OpenShift GitOps (cluster extension)",
+    namespace: "openshift-gitops-operator",
+    version: "1.12.0",
+    channel: "gitops-1.12",
+    source: "redhat-operators",
+    status: "Running",
+    autoUpdate: true,
+    clusterCompatibility: "Compatible",
+    supportLifecycle: {
+      fullSupportEndDate: "2025-06-01",
+      maintenanceEndDate: "2026-05-01",
+      eus1EndDate: "2027-05-01",
+      eus2EndDate: "2028-05-01",
+      eus3EndDate: "2029-05-01",
+      eolEndDate: "2029-05-01",
+    },
+    maxOcpVersion: "5.2",
+    lastUpdated: "Jun 12, 2025, 4:02 PM",
+    managedNamespaces: ["openshift-gitops"],
+    isOlmV1Extension: true,
+  },
+  {
+    name: "Sample observability bundle",
+    namespace: "observability-bundles",
+    version: "0.4.1",
+    channel: "stable",
+    source: "community-operators",
+    status: "Pending",
+    autoUpdate: true,
+    clusterCompatibility: "Incompatible",
+    compatibilityMessage: "V1 discovery in progress — update availability TBD",
+    isUnsupported: true,
+    lastUpdated: "Jun 11, 2025, 9:15 AM",
+    managedNamespaces: ["observability-sample"],
+    isOlmV1Extension: true,
+  },
+];
+
+/** Shared caveat for Support phase column popovers (SKU / extended support may differ from displayed phase). */
+function SupportPhaseSkuPopoverNote() {
+  return (
+    <Content component="p" className="pf-v6-u-font-size-sm pf-v6-u-mb-md">
+      May not reflect your actual SKU. Check your actual SKU for extended support.
+    </Content>
+  );
+}
+
+/** Lifecycle context + docs links — shown from Support phase column header help trigger only. */
+function SupportPhaseColumnContextHelpBody() {
+  return (
+    <div className="ocs-io-support-phase-col-help-popover-body">
+      <Content component="p" className="pf-v6-u-font-size-sm pf-v6-u-mb-md">
+        Review together with your cluster OpenShift version: operator policy and cluster life cycle both affect what is
+        supported.
+      </Content>
+      <Flex direction={{ default: "column" }} gap={{ default: "gapSm" }}>
+        <Button
+          variant="link"
+          isInline
+          icon={<ExternalLink />}
+          iconPosition="right"
+          component="a"
+          target="_blank"
+          rel="noopener noreferrer"
+          href={RH_OPERATOR_LC_DOC_URL}
+        >
+          OpenShift Operator life cycles
+        </Button>
+        <Button
+          variant="link"
+          isInline
+          icon={<ExternalLink />}
+          iconPosition="right"
+          component="a"
+          target="_blank"
+          rel="noopener noreferrer"
+          href={RH_OPENSHIFT_CLUSTER_LIFECYCLE_URL}
+        >
+          OpenShift life cycle (cluster version)
+        </Button>
+        <Button
+          variant="link"
+          isInline
+          icon={<ExternalLink />}
+          iconPosition="right"
+          component="a"
+          target="_blank"
+          rel="noopener noreferrer"
+          href={RH_PRODUCT_LIFE_CYCLES_URL}
+        >
+          Red Hat product life cycles
+        </Button>
+      </Flex>
+    </div>
+  );
+}
+
+function SupportLifecyclePopoverContents({ op }: { op: OperatorRow }) {
+  const entries = getSupportLifecycleDateEntries(op);
+
+  if (op.isUnsupported) {
+    return (
+      <>
+        <Content component="p" className="pf-v6-u-mb-md">
+          This install is not represented as entitled Red Hat support for this prototype row. Confirm your subscription,
+          catalog source, and support agreement in your real environment.
+        </Content>
+        <SupportPhaseSkuPopoverNote />
+        <Divider className="pf-v6-u-my-md" />
+        <Flex direction={{ default: "column" }} gap={{ default: "gapSm" }}>
+          <Button
+            variant="link"
+            isInline
+            icon={<ExternalLink />}
+            iconPosition="right"
+            component="a"
+            target="_blank"
+            rel="noopener noreferrer"
+            href={RH_OPERATOR_LC_DOC_URL}
+          >
+            OpenShift Operator life cycles
+          </Button>
+        </Flex>
+      </>
+    );
+  }
+
+  return (
+    <>
+      {entries.length > 0 ? (
+        <DescriptionList isCompact isHorizontal termWidth="12rem">
+          {entries.map((row) => (
+            <DescriptionListGroup key={row.term}>
+              <DescriptionListTerm>{row.term}</DescriptionListTerm>
+              <DescriptionListDescription>{row.description}</DescriptionListDescription>
+            </DescriptionListGroup>
+          ))}
+        </DescriptionList>
+      ) : (
+        <Content component="p" className="pf-v6-u-mb-md">
+          Published lifecycle dates are not shown for this operator in this view. Use Red Hat Customer Portal
+          documentation for authoritative timelines for your version line.
+        </Content>
+      )}
+      <Divider className="pf-v6-u-my-md" />
+      <SupportPhaseSkuPopoverNote />
+    </>
+  );
+}
+
+function OlmV1ExtensionSupportPopoverContents() {
+  return (
+    <>
+      <Content component="p" className="pf-v6-u-mb-md">
+        This column reflects Red Hat published phases for <strong>OLM v0</strong> catalog operators.{" "}
+        <strong>OLM v1</strong> cluster extensions use different packaging; use the same policy references and your
+        extension version on the portal to confirm dates.
+      </Content>
+      <SupportPhaseSkuPopoverNote />
+    </>
+  );
+}
+
+function patternFlyPhaseLabelColor(status: ReturnType<typeof getPhaseLabelStatus>): "green" | "orange" | "red" {
+  switch (status) {
+    case "success":
+      return "green";
+    case "warning":
+      return "orange";
+    case "danger":
+      return "red";
+    default:
+      return "green";
+  }
+}
+
+/** Lifecycle phase pill — PatternFly semantic colors (green / orange / red), outline variant. */
+function PhaseStatusLabelPill({ phase }: { phase: SupportPhase }) {
+  const status = getPhaseLabelStatus(phase);
+  const color = patternFlyPhaseLabelColor(status);
+
+  return (
+    <Label className="ocs-io-support-phase-pill" color={color} isCompact variant="outline">
+      {phase}
+    </Label>
+  );
+}
+
+/** Samples widest pills off-screen; sets shared pixel width on the operators table (before paint). */
+function SupportPhasePillMeasure({ onMeasuredWidth }: { onMeasuredWidth: (px: number) => void }) {
+  const shellRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const root = shellRef.current;
+    if (!root) return;
+
+    const measureMax = () => {
+      const labels = root.querySelectorAll<HTMLElement>(".pf-v6-c-label");
+      let max = 0;
+      labels.forEach((el) => {
+        max = Math.max(max, el.getBoundingClientRect().width);
+      });
+      if (max > 0) {
+        onMeasuredWidth(Math.ceil(max));
+      }
+    };
+
+    measureMax();
+
+    const labels = [...root.querySelectorAll<HTMLElement>(".pf-v6-c-label")];
+    if (labels.length === 0) return;
+
+    const ro = new ResizeObserver(() => measureMax());
+    labels.forEach((el) => ro.observe(el));
+    return () => ro.disconnect();
+  }, [onMeasuredWidth]);
+
+  return (
+    <div ref={shellRef} className="ocs-io-support-phase-pill-measure-shell" aria-hidden>
+      <PhaseStatusLabelPill phase="Full Support" />
+      <PhaseStatusLabelPill phase="Maintenance" />
+      <PhaseStatusLabelPill phase="EUS1" />
+      <PhaseStatusLabelPill phase="EUS2" />
+      <PhaseStatusLabelPill phase="EUS3" />
+      <PhaseStatusLabelPill phase="Unsupported" />
+      <PhaseStatusLabelPill phase="End of life" />
+      <Label className="ocs-io-support-phase-pill" color="grey" isCompact variant="outline">
+        —
+      </Label>
+    </div>
+  );
+}
+
+/** Whole label opens the lifecycle popover; OLM v1 placeholder uses neutral styling. */
+function SupportPhaseLabelWithInfo({
+  phase,
+  popoverAriaLabel,
+  headerContent,
+  bodyContent,
+}: {
+  phase: SupportPhase | null;
+  popoverAriaLabel: string;
+  headerContent: ReactNode;
+  bodyContent: ReactNode;
+}) {
+  const pill =
+    phase === null ? (
+      <Label className="ocs-io-support-phase-pill" color="grey" isCompact variant="outline">
+        —
+      </Label>
+    ) : (
+      <PhaseStatusLabelPill phase={phase} />
+    );
+
+  return (
+    <Flex
+      className="ocs-io-support-phase-cell"
+      direction={{ default: "row" }}
+      alignItems={{ default: "alignItemsCenter" }}
+      gap={{ default: "gapSm" }}
+      flexWrap={{ default: "wrap" }}
+      style={{ minWidth: 0, width: "fit-content", maxWidth: "100%" }}
+    >
+      <Popover
+        aria-label={popoverAriaLabel}
+        headerContent={headerContent}
+        bodyContent={bodyContent}
+        position="auto"
+        maxWidth="min(22rem, 90vw)"
+        appendTo={() => document.body}
+      >
+        <Button
+          variant="plain"
+          type="button"
+          className="ocs-io-support-phase-popover-btn"
+          aria-label={popoverAriaLabel}
+          hasNoPadding
+        >
+          {pill}
+        </Button>
+      </Popover>
+    </Flex>
+  );
+}
+
+function InstalledOperatorSupportPhaseCell({ op }: { op: OperatorRow }) {
+  const phase = getDerivedSupportPhase(op);
+
+  if (op.isUnsupported) {
+    return (
+      <SupportPhaseLabelWithInfo
+        phase={phase}
+        popoverAriaLabel={`Support details for ${op.name}`}
+        headerContent={<Title headingLevel="h6">Support</Title>}
+        bodyContent={<SupportLifecyclePopoverContents op={op} />}
+      />
+    );
+  }
+
+  if (op.isOlmV1Extension) {
+    return (
+      <SupportPhaseLabelWithInfo
+        phase={null}
+        popoverAriaLabel="Support phase and OLM v1 extensions"
+        headerContent={<Title headingLevel="h6">Support phase</Title>}
+        bodyContent={<OlmV1ExtensionSupportPopoverContents />}
+      />
+    );
+  }
+
+  return (
+    <SupportPhaseLabelWithInfo
+      phase={phase}
+      popoverAriaLabel={`Lifecycle dates for ${op.name}`}
+      headerContent={<Title headingLevel="h6">Lifecycle dates</Title>}
+      bodyContent={<SupportLifecyclePopoverContents op={op} />}
+    />
+  );
+}
+
+function InstalledOperatorSupportPhaseEndCell({ op }: { op: OperatorRow }) {
+  if (op.isOlmV1Extension) {
+    return (
+      <Tooltip content="Support phase dates apply to OLM v0 managed operators (CSV) only." position="top">
+        <Content component="small">—</Content>
+      </Tooltip>
+    );
+  }
+  if (op.isUnsupported) {
+    return "—";
+  }
+  const raw = getCurrentPhaseEndDateRaw(op);
+  const formatted = raw ? formatLifecycleDateShort(raw) : "—";
+  return <Content component="small">{formatted}</Content>;
+}
+
+type InstalledCatalogKindTab = "olmv0" | "olmv1";
+
+export default function InstalledOperatorsPage() {
+  const [operators] = useState<CatalogOperator[]>(() => [...INITIAL_CATALOG_OPERATORS]);
+  const [installKindTab, setInstallKindTab] = useState<InstalledCatalogKindTab>("olmv0");
+  const [openKebabIndex, setOpenKebabIndex] = useState<number | null>(null);
+  const { filters, onSetFilters, clearAllFilters } = useDataViewFilters<IoListFilters>({
+    initialFilters: INITIAL_IO_FILTERS,
+  });
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const [sortColumn, setSortColumn] = useState<SortColumnKey>("name");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [chatbotOpen, setChatbotOpen] = useState(false);
+  const [chatbotContext, setChatbotContext] = useState("");
+  const [olsMountKey, setOlsMountKey] = useState(0);
+  const [isManageColumnsModalOpen, setIsManageColumnsModalOpen] = useState(false);
+  const [isAdvancedFilterModalOpen, setIsAdvancedFilterModalOpen] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState<Record<TableColumnKey, boolean>>(
+    () => ({ ...RESTORE_DEFAULT_VISIBLE })
+  );
+  const [columnModalDraft, setColumnModalDraft] = useState<Record<TableColumnKey, boolean>>(
+    () => ({ ...RESTORE_DEFAULT_VISIBLE })
+  );
+  const navigate = useNavigate();
+  const { demoVariant } = useClusterUpdateDemoVariant();
+  const { setCurrentPage } = useChat();
+  const isGlass = usePatternFlyGlassActive();
+  /** Agent-led demo (`agent-only`): AI Assessment + summary cards. Manual updates demo hides them. */
+  const showAssessmentAndOverviewCards = demoVariant === "agent-only";
+
+  const openChatbot = useCallback((context: string) => {
+    setChatbotContext(context);
+    setOlsMountKey((k) => k + 1);
+    setChatbotOpen(true);
+  }, []);
+
+  const [supportPhasePillWidthPx, setSupportPhasePillWidthPx] = useState<number | null>(null);
+  const handleSupportPhasePillMeasured = useCallback((px: number) => {
+    setSupportPhasePillWidthPx((prev) => (prev === px ? prev : px));
+  }, []);
+
+  const handleChatAction = useCallback(
+    (actionId: string) => {
+      if (actionId === "view-plan" || actionId === "view-history") {
+        navigate("/administration/cluster-update");
+      }
+    },
+    [navigate]
+  );
+
+  useEffect(() => {
+    setCurrentPage("/ecosystem/installed-operators");
+  }, [setCurrentPage]);
+
+  const hasOlmV0Operators = useMemo(
+    () => operators.some((o) => !o.isOlmV1Extension),
+    [operators]
+  );
+
+  /** CSV-only columns: hide on Cluster extensions (OLMv1) tab, not only when the cluster has no v0 operators. */
+  const showOlmV0ListColumns = hasOlmV0Operators && installKindTab === "olmv0";
+
+  const visibleDataColumnCount = useMemo(
+    () =>
+      TABLE_COLUMN_OPTIONS.filter(({ key }) => {
+        if (
+          !showOlmV0ListColumns &&
+          (key === "clusterCompatibility" || key === "support" || key === "supportPhaseEnd")
+        ) {
+          return false;
+        }
+        return visibleColumns[key];
+      }).length,
+    [visibleColumns, showOlmV0ListColumns]
+  );
+
+  const manageColumnsDefaultOrder = useMemo(
+    () =>
+      DEFAULT_MANAGE_COLUMN_ORDER.filter(
+        (col) =>
+          showOlmV0ListColumns ||
+          (col.key !== "clusterCompatibility" &&
+            col.key !== "support" &&
+            col.key !== "supportPhaseEnd")
+      ),
+    [showOlmV0ListColumns]
+  );
+
+  const ioListAdvFilterSpecEffective = useMemo(() => {
+    if (showOlmV0ListColumns) return IO_LIST_ADV_FILTER_SPEC;
+    const omit = new Set<string>(["clusterCompatibility", "support", "supportPhaseEnd"]);
+    return IO_LIST_ADV_FILTER_SPEC.filter((a) => !omit.has(String(a.id)));
+  }, [showOlmV0ListColumns]);
+
+  const tableColSpan = 1 + visibleDataColumnCount + (visibleColumns.rowActions ? 1 : 0);
+
+  const operatorsWithCompat = useMemo(() => {
+    return operators.map((op) => {
+      const { compatibility, message } = getOperatorCompatibilityPage(op, CLUSTER_TARGET_VERSION);
+      return {
+        ...op,
+        clusterCompatibility: compatibility,
+        compatibilityMessage: message || op.compatibilityMessage,
+      };
+    });
+  }, [operators]);
+
+  const searchAndAttributeFiltered = useMemo(
+    () => operatorsWithCompat.filter((op) => rowMatchesDataViewFilters(op, filters)),
+    [operatorsWithCompat, filters]
+  );
+
+  const tabFilteredOperators = useMemo(
+    () =>
+      searchAndAttributeFiltered.filter((op) =>
+        installKindTab === "olmv1" ? op.isOlmV1Extension === true : !op.isOlmV1Extension
+      ),
+    [searchAndAttributeFiltered, installKindTab]
+  );
+
+  const sortedFilteredOperators = useMemo(
+    () => sortOperatorRows(tabFilteredOperators, sortColumn, sortDirection),
+    [tabFilteredOperators, sortColumn, sortDirection]
+  );
+
+  const pagedOperators = useMemo(() => {
+    const start = (page - 1) * perPage;
+    return sortedFilteredOperators.slice(start, start + perPage);
+  }, [sortedFilteredOperators, page, perPage]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filters, perPage, installKindTab]);
+
+  useEffect(() => {
+    if (installKindTab === "olmv1") {
+      onSetFilters({ clusterCompatibility: [], support: [], supportPhaseEnd: "" });
+    }
+  }, [installKindTab, onSetFilters]);
+
+  const toggleSort = useCallback((col: SortColumnKey) => {
+    if (col !== sortColumn) {
+      setSortColumn(col);
+      setSortDirection("asc");
+    } else {
+      setSortDirection((d) => (d === "asc" ? "desc" : "asc"));
+    }
+  }, [sortColumn]);
+
+  const renderSortableHeader = useCallback(
+    (label: string, col: SortColumnKey, trailing?: ReactNode) => {
+      const active = sortColumn === col;
+      const isDesc = active && sortDirection === "desc";
+      const sortBtn = (
+        <Button
+          className="ocs-operator-table-sort"
+          variant="plain"
+          onClick={() => toggleSort(col)}
+          isInline
+          iconPosition="end"
+          icon={
+            <SortCommonAscIcon
+              className={[
+                "ocs-operator-table-sort-glyph",
+                active ? "ocs-operator-table-sort-icon--active" : "ocs-operator-table-sort-icon--idle",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              style={isDesc ? { transform: "rotate(180deg)" } : undefined}
+              aria-hidden
+            />
+          }
+        >
+          {label}
+        </Button>
+      );
+      if (!trailing) return sortBtn;
+      return (
+        <Flex
+          direction={{ default: "row" }}
+          alignItems={{ default: "alignItemsCenter" }}
+          gap={{ default: "gapXs" }}
+          flexWrap={{ default: "nowrap" }}
+          style={{ display: "inline-flex", minWidth: 0 }}
+          className="ocs-io-support-phase-th-inner"
+        >
+          {sortBtn}
+          {trailing}
+        </Flex>
+      );
+    },
+    [sortColumn, sortDirection, toggleSort]
+  );
+
+  const supportPhaseColumnHelpTrigger = (
+    <Popover
+      aria-label="Support phase lifecycle references"
+      headerContent={<Title headingLevel="h6">Lifecycle references</Title>}
+      bodyContent={<SupportPhaseColumnContextHelpBody />}
+      position="auto"
+      maxWidth="min(22rem, 90vw)"
+      appendTo={() => document.body}
+    >
+      <Button
+        variant="plain"
+        type="button"
+        className="ocs-io-support-phase-col-help-trigger"
+        aria-label="Lifecycle references for support phase"
+        hasNoPadding
+        icon={<HelpCircle aria-hidden />}
+      />
+    </Popover>
+  );
+
+  /** Non-sortable headers: same <Button plain isInline> shell as sortable columns for consistent type size. */
+  const renderPlainHeader = useCallback((label: string) => {
+    return (
+      <Button
+        className="ocs-operator-table-sort ocs-operator-table-header-static"
+        component="div"
+        variant="plain"
+        isInline
+        tabIndex={-1}
+      >
+        {label}
+      </Button>
+    );
+  }, []);
+
+  const installedAiSummary = useMemo(
+    () => ({
+      totalOperators: operators.length,
+      updatesAvailable: operators.filter((o) => o.updateAvailable).length,
+      clusterTargetVersion: CLUSTER_TARGET_VERSION,
+      channelLabel: CLUSTER_CHANNEL,
+    }),
+    [operators]
+  );
+
+  const navigateToUpdate = (op: OperatorRow) => {
+    navigate(`/ecosystem/installed-operators/${encodeURIComponent(op.name)}/update`, {
+      state: { returnTo: "/ecosystem/installed-operators", operatorName: op.name, operatorData: op },
+    });
+  };
+
+  return (
+    <div className="flex h-full relative min-w-0">
+      <OlsChatbot
+        key={olsMountKey}
+        isOpen={chatbotOpen}
+        context={chatbotContext}
+        selectedVersion={CLUSTER_TARGET_VERSION}
+        selectedChannel={CLUSTER_CHANNEL}
+        onClose={() => setChatbotOpen(false)}
+        onAction={handleChatAction}
+      >
+      <div className="ocs-app-page-outer flex-1 min-h-0 min-w-0 overflow-y-auto">
+            <SupportPhasePillMeasure onMeasuredWidth={handleSupportPhasePillMeasured} />
+            <Breadcrumbs
+              items={[
+                { label: "Home", path: "/" },
+                { label: "Ecosystem", path: "/ecosystem" },
+                { label: "Installed Operators" },
+              ]}
+            >
+            <Flex direction={{ default: "column" }} gap={{ default: "gapMd" }}>
+
+            <Content>
+              <Flex
+                alignItems={{ default: "alignItemsCenter" }}
+                justifyContent={{ default: "justifyContentSpaceBetween" }}
+              >
+                <h1 id="main-title">Installed Operators</h1>
+                <FavoriteButton name="Installed Operators" path="/ecosystem/installed-operators" />
+              </Flex>
+              <p>
+                Installed Operators are represented by ClusterServiceVersions within this Namespace. For more
+                information, see the{" "}
+                <Button
+                  variant="link"
+                  isInline
+                  icon={<ExternalLink />}
+                  iconPosition="right"
+                  component="a"
+                  href={IO_CSV_DOC_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  documentation
+                </Button>
+                . Or create an Operator and ClusterServiceVersion using{" "}
+                <Button
+                  variant="link"
+                  isInline
+                  icon={<ExternalLink />}
+                  iconPosition="right"
+                  component="a"
+                  href={IO_IMPORT_YAML_DOC_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Import YAML
+                </Button>
+                .
+              </p>
+            </Content>
+
+            {showAssessmentAndOverviewCards && (
+              <>
+                <AiAssessmentSection
+                  variant="installed-operators"
+                  installedSummary={installedAiSummary}
+                  openChatbot={openChatbot}
+                  selectedVersion={CLUSTER_TARGET_VERSION}
+                />
+
+                <Flex flexWrap={{ default: "flexWrapWrap" }} gap={{ default: "gapLg" }}>
+                  <FlexItem flex={{ default: "flex_1" }} grow={{ default: "grow" }} shrink={{ default: "shrink" }}>
+                    <Card isGlass={isGlass} isFullHeight>
+                      <CardBody>
+                        <Flex direction={{ default: "column" }} gap={{ default: "gapSm" }}>
+                          <Flex alignItems={{ default: "alignItemsCenter" }} gap={{ default: "gapMd" }}>
+                            <Icon size="lg" status="success">
+                              <CheckCircle />
+                            </Icon>
+                            <Content component="small">Total installed</Content>
+                          </Flex>
+                          <Title headingLevel="h3" size="4xl">
+                            {operators.length}
+                          </Title>
+                        </Flex>
+                      </CardBody>
+                    </Card>
+                  </FlexItem>
+                  <FlexItem flex={{ default: "flex_1" }} grow={{ default: "grow" }} shrink={{ default: "shrink" }}>
+                    <Card isGlass={isGlass} isFullHeight>
+                      <CardBody>
+                        <Flex direction={{ default: "column" }} gap={{ default: "gapSm" }}>
+                          <Flex alignItems={{ default: "alignItemsCenter" }} gap={{ default: "gapMd" }}>
+                            <Icon size="lg" status="info">
+                              <Info />
+                            </Icon>
+                            <Content component="small">Available Updates</Content>
+                          </Flex>
+                          <Title headingLevel="h3" size="4xl">
+                            {operators.filter((o) => o.updateAvailable).length}
+                          </Title>
+                        </Flex>
+                      </CardBody>
+                    </Card>
+                  </FlexItem>
+                  <FlexItem flex={{ default: "flex_1" }} grow={{ default: "grow" }} shrink={{ default: "shrink" }}>
+                    <Card isGlass={isGlass} isFullHeight>
+                      <CardBody>
+                        <Flex direction={{ default: "column" }} gap={{ default: "gapSm" }}>
+                          <Flex alignItems={{ default: "alignItemsCenter" }} gap={{ default: "gapMd" }}>
+                            <Icon size="lg" status="warning">
+                              <AlertCircle />
+                            </Icon>
+                            <Content component="small">End of Life Support</Content>
+                          </Flex>
+                          <Title headingLevel="h3" size="4xl">
+                            {
+                              operators.filter(
+                                (o) =>
+                                  !o.isOlmV1Extension && getDerivedSupportPhase(o) === "End of life"
+                              ).length
+                            }
+                          </Title>
+                        </Flex>
+                      </CardBody>
+                    </Card>
+                  </FlexItem>
+                </Flex>
+              </>
+            )}
+
+            <Flex direction={{ default: "column" }} gap={{ default: "gapMd" }}>
+              <Tabs
+                id="installed-operators-olm-tabs"
+                aria-label="Installed operator catalog type"
+                activeKey={installKindTab}
+                onSelect={(_event, eventKey) => {
+                  if (eventKey === "olmv0" || eventKey === "olmv1") {
+                    setInstallKindTab(eventKey);
+                  }
+                }}
+                variant="secondary"
+              >
+                <Tab
+                  eventKey="olmv0"
+                  title={<TabTitleText>Operators (OLMv0)</TabTitleText>}
+                  ouiaId="installed-operators-tab-olmv0"
+                >
+                  <></>
+                </Tab>
+                <Tab
+                  eventKey="olmv1"
+                  title={
+                    <Flex
+                      gap={{ default: "gapSm" }}
+                      alignItems={{ default: "alignItemsCenter" }}
+                      flexWrap={{ default: "nowrap" }}
+                    >
+                      <TabTitleText>Cluster extensions (OLMv1)</TabTitleText>
+                      <Label isCompact color="orange">
+                        Tech preview
+                      </Label>
+                    </Flex>
+                  }
+                  ouiaId="installed-operators-tab-olmv1"
+                >
+                  <></>
+                </Tab>
+              </Tabs>
+
+              <DataView
+              ouiaId="installed-operators-data-view"
+              className="ocs-io-dataview"
+              style={
+                showAssessmentAndOverviewCards
+                  ? undefined
+                  : { marginBlockStart: 0 }
+              }
+            >
+              <DataViewToolbar
+                ouiaId="installed-operators-dv-toolbar"
+                id="installed-operators-dv-toolbar"
+                className="ocs-io-dataview-toolbar pf-m-toggle-group-container ocs-io-dv-toolbar-align"
+                clearAllFilters={clearAllFilters}
+                collapseListedFiltersBreakpoint="xl"
+                filters={
+                  <IoDataViewFiltersWithMidActions<IoListFilters>
+                    values={filters}
+                    onChange={(_filterId, partial) => onSetFilters(partial as Partial<IoListFilters>)}
+                    breakpoint="xl"
+                    midContent={
+                      <ToolbarGroup
+                        className="ocs-io-filters-mid-actions"
+                        gap={{ default: "gapMd" }}
+                        variant="action-group"
+                        alignItems="center"
+                      >
+                        <ToolbarItem>
+                          <Button
+                            variant="plain"
+                            title="Advanced filter"
+                            aria-label="Advanced filter"
+                            onClick={() => {
+                              setIsAdvancedFilterModalOpen(true);
+                            }}
+                            icon={<SlidersHIcon aria-hidden />}
+                          />
+                        </ToolbarItem>
+                        <ToolbarItem>
+                          <Button
+                            variant="plain"
+                            title="Manage columns"
+                            aria-label="Manage columns"
+                            onClick={() => {
+                              setColumnModalDraft({ ...visibleColumns });
+                              setIsManageColumnsModalOpen(true);
+                            }}
+                            icon={<Columns2 aria-hidden />}
+                          />
+                        </ToolbarItem>
+                        <ToolbarItem>
+                          <Button
+                            variant="link"
+                            component={Link}
+                            to="/ecosystem/software-catalog"
+                            icon={<ExternalLink />}
+                            iconPosition="right"
+                          >
+                            Browse Software Catalog
+                          </Button>
+                        </ToolbarItem>
+                      </ToolbarGroup>
+                    }
+                  >
+                    <DataViewTextFilter
+                      title="Name"
+                      filterId="name"
+                      placeholder="Search operators or namespaces"
+                      style={{ minWidth: "16rem", maxWidth: "100%" }}
+                    />
+                    <DataViewCheckboxFilter
+                      title="Status"
+                      filterId="status"
+                      placeholder="Choose statuses"
+                      showIcon
+                      showBadge
+                      options={FILTER_VALUE_OPTIONS.status}
+                    />
+                    <DataViewTextFilter
+                      title="Version"
+                      filterId="version"
+                      placeholder="Type to match version"
+                      style={{ minWidth: "12rem", maxWidth: "100%" }}
+                    />
+                    {showOlmV0ListColumns ? (
+                      <>
+                        <DataViewCheckboxFilter
+                          title="Cluster compatibility"
+                          filterId="clusterCompatibility"
+                          placeholder="Choose compatibility"
+                          showIcon
+                          showBadge
+                          options={FILTER_VALUE_OPTIONS.clusterCompatibility}
+                        />
+                        <DataViewCheckboxFilter
+                          title="Support phase"
+                          filterId="support"
+                          placeholder="Choose lifecycle phases"
+                          showIcon
+                          showBadge
+                          options={FILTER_VALUE_OPTIONS.support}
+                        />
+                        <DataViewTextFilter
+                          title="Support phase end date"
+                          filterId="supportPhaseEnd"
+                          placeholder="Match end date text"
+                          style={{ minWidth: "14rem", maxWidth: "100%" }}
+                        />
+                      </>
+                    ) : null}
+                    <DataViewTextFilter
+                      title="Last updated"
+                      filterId="lastUpdated"
+                      placeholder="Match updated date or time"
+                      style={{ minWidth: "14rem", maxWidth: "100%" }}
+                    />
+                    <DataViewTextFilter
+                      title="Managed namespaces"
+                      filterId="managedNamespaces"
+                      placeholder="Search namespaces"
+                      style={{ minWidth: "14rem", maxWidth: "100%" }}
+                    />
+                  </IoDataViewFiltersWithMidActions>
+                }
+                pagination={
+                  <Pagination
+                    perPageOptions={[
+                      { title: "5", value: 5 },
+                      { title: "10", value: 10 },
+                      { title: "20", value: 20 },
+                      { title: "50", value: 50 },
+                    ]}
+                    itemCount={sortedFilteredOperators.length}
+                    page={page}
+                    perPage={perPage}
+                    onSetPage={(_e, p) => setPage(p)}
+                    onPerPageSelect={(_e, pp) => {
+                      setPerPage(pp);
+                      setPage(1);
+                    }}
+                    variant={PaginationVariant.top}
+                    isCompact
+                    ouiaId="installed-operators-pagination"
+                    widgetId="installed-operators-pagination"
+                    titles={{ items: "operators" }}
+                    paginationAriaLabel="Installed operators pagination (top)"
+                  />
+                }
+              />
+
+            <PageSection aria-label="Installed operators table" padding={{ default: "noPadding" }}>
+            <InnerScrollContainer>
+                <Table
+                  aria-label="Installed operators"
+                  borders
+                  variant="compact"
+                  className="ocs-io-operator-table"
+                  data-io-phase-pills-sized={supportPhasePillWidthPx ?? undefined}
+                  {...(supportPhasePillWidthPx != null
+                    ? {
+                        style: {
+                          "--ocs-io-support-phase-pill-width": `${supportPhasePillWidthPx}px`,
+                        } as CSSProperties,
+                      }
+                    : {})}
+                >
+                  <Thead>
+                    <Tr>
+                      <Th dataLabel="Operator">
+                        {renderSortableHeader("Operator", "name")}
+                      </Th>
+                      {visibleColumns.status && (
+                        <Th dataLabel="Status">{renderSortableHeader("Status", "status")}</Th>
+                      )}
+                      {visibleColumns.version && (
+                        <Th dataLabel="Version">{renderSortableHeader("Version", "version")}</Th>
+                      )}
+                      {showOlmV0ListColumns && visibleColumns.clusterCompatibility && (
+                        <Th dataLabel="Cluster compatibility">
+                          {renderSortableHeader("Cluster compatibility", "clusterCompatibility")}
+                        </Th>
+                      )}
+                      {showOlmV0ListColumns && visibleColumns.support && (
+                        <Th dataLabel="Support phase">
+                          {renderSortableHeader("Support phase", "support", supportPhaseColumnHelpTrigger)}
+                        </Th>
+                      )}
+                      {showOlmV0ListColumns && visibleColumns.supportPhaseEnd && (
+                        <Th dataLabel="Support phase end date">
+                          {renderSortableHeader("Support phase end date", "supportPhaseEnd")}
+                        </Th>
+                      )}
+                      {visibleColumns.lastUpdated && (
+                        <Th dataLabel="Last updated">{renderSortableHeader("Last updated", "lastUpdated")}</Th>
+                      )}
+                      {visibleColumns.updatePlan && (
+                        <Th dataLabel="Update plan">{renderPlainHeader("Update plan")}</Th>
+                      )}
+                      {visibleColumns.managedNamespaces && (
+                        <Th dataLabel="Managed namespaces">{renderPlainHeader("Managed namespaces")}</Th>
+                      )}
+                      {visibleColumns.rowActions && (
+                        <Th modifier="fitContent" dataLabel="Actions">
+                          {renderPlainHeader("Actions")}
+                        </Th>
+                      )}
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {sortedFilteredOperators.length === 0 ? (
+                      <Tr>
+                        <Td colSpan={tableColSpan} dataLabel="Empty state">
+                          No operators match your search or filters.
+                        </Td>
+                      </Tr>
+                    ) : (
+                      pagedOperators.map((op, i) => (
+                        <Tr key={op.name}>
+                          <Td dataLabel="Operator">
+                            <Flex direction={{ default: "column" }} gap={{ default: "gapXs" }}>
+                              <Button
+                                variant="link"
+                                isInline
+                                component={Link}
+                                to={`/ecosystem/installed-operators/${encodeURIComponent(op.name)}`}
+                              >
+                                {op.name}
+                              </Button>
+                              <Content component="small">
+                                <code>{op.namespace}</code>
+                              </Content>
+                            </Flex>
+                          </Td>
+                          {visibleColumns.status && (
+                            <Td dataLabel="Status">
+                              {op.status === "Running" ? (
+                                <Flex alignItems={{ default: "alignItemsCenter" }} gap={{ default: "gapSm" }}>
+                                  <Icon status="success">
+                                    <CheckCircle />
+                                  </Icon>
+                                  Running
+                                </Flex>
+                              ) : op.status === "Degraded" ? (
+                                <Flex alignItems={{ default: "alignItemsCenter" }} gap={{ default: "gapSm" }}>
+                                  <Icon status="danger">
+                                    <AlertCircle />
+                                  </Icon>
+                                  Degraded
+                                </Flex>
+                              ) : (
+                                <Flex alignItems={{ default: "alignItemsCenter" }} gap={{ default: "gapSm" }}>
+                                  <Icon status="warning">
+                                    <Clock />
+                                  </Icon>
+                                  Pending
+                                </Flex>
+                              )}
+                            </Td>
+                          )}
+                          {visibleColumns.version && (
+                            <Td dataLabel="Version">
+                              <Flex direction={{ default: "column" }} gap={{ default: "gapXs" }}>
+                                <Content component="small">
+                                  <code>{op.version}</code>
+                                </Content>
+                                {op.updateAvailable ? (
+                                  <Content component="small">
+                                    <Button
+                                      variant="link"
+                                      isInline
+                                      component={Link}
+                                      to={`/ecosystem/installed-operators/${encodeURIComponent(op.name)}/update`}
+                                      state={{
+                                        returnTo: "/ecosystem/installed-operators",
+                                        operatorName: op.name,
+                                        operatorData: op,
+                                      }}
+                                    >
+                                      Update available: {op.updateAvailable}
+                                    </Button>
+                                  </Content>
+                                ) : null}
+                              </Flex>
+                            </Td>
+                          )}
+                          {showOlmV0ListColumns && visibleColumns.clusterCompatibility && (
+                            <Td dataLabel="Cluster compatibility">
+                              {op.isOlmV1Extension ? (
+                                <Tooltip
+                                  content="Cluster compatibility applies to OLM v0 managed operators (CSV) only."
+                                  position="top"
+                                >
+                                  <Content component="small">—</Content>
+                                </Tooltip>
+                              ) : op.clusterCompatibility === "Compatible" ? (
+                                <Flex alignItems={{ default: "alignItemsCenter" }} gap={{ default: "gapSm" }}>
+                                  <Icon status="success">
+                                    <CheckCircle />
+                                  </Icon>
+                                  Compatible
+                                </Flex>
+                              ) : (
+                                <Flex alignItems={{ default: "alignItemsCenter" }} gap={{ default: "gapSm" }}>
+                                  <Icon status="danger">
+                                    <AlertCircle />
+                                  </Icon>
+                                  Incompatible
+                                </Flex>
+                              )}
+                            </Td>
+                          )}
+                          {showOlmV0ListColumns && visibleColumns.support && (
+                            <Td dataLabel="Support phase" className="ocs-io-col-support-phase">
+                              <InstalledOperatorSupportPhaseCell op={op} />
+                            </Td>
+                          )}
+                          {showOlmV0ListColumns && visibleColumns.supportPhaseEnd && (
+                            <Td dataLabel="Support phase end date" modifier="nowrap">
+                              <InstalledOperatorSupportPhaseEndCell op={op} />
+                            </Td>
+                          )}
+                          {visibleColumns.lastUpdated && (
+                            <Td dataLabel="Last updated" modifier="nowrap">
+                              {op.lastUpdated && op.lastUpdated !== "—" ? (
+                                <Flex
+                                  spaceItems={{ default: "spaceItemsSm" }}
+                                  alignItems={{ default: "alignItemsCenter" }}
+                                  flexWrap={{ default: "nowrap" }}
+                                >
+                                  <Globe
+                                    aria-hidden
+                                    style={{
+                                      color: "var(--pf-t--global--icon--color--on-disabled, #6a6e73)",
+                                      width: "1.125em",
+                                      height: "1.125em",
+                                      flexShrink: 0,
+                                    }}
+                                  />
+                                  <span>{formatDataViewListDate(op.lastUpdated)}</span>
+                                </Flex>
+                              ) : (
+                                "—"
+                              )}
+                            </Td>
+                          )}
+                          {visibleColumns.updatePlan && (
+                            <Td dataLabel="Update plan">{op.autoUpdate ? "Automatic" : "Manual"}</Td>
+                          )}
+                          {visibleColumns.managedNamespaces && (
+                            <Td dataLabel="Managed namespaces">
+                              <Flex gap={{ default: "gapXs" }} flexWrap={{ default: "flexWrapWrap" }}>
+                                {(op.managedNamespaces || []).map((ns, idx) => (
+                                  <Label key={idx} isCompact variant="outline" color="grey">
+                                    {ns}
+                                  </Label>
+                                ))}
+                              </Flex>
+                            </Td>
+                          )}
+                          {visibleColumns.rowActions && (
+                            <Td dataLabel="Actions" isActionCell hasAction>
+                              <Dropdown
+                                isOpen={openKebabIndex === i}
+                                onOpenChange={(open) => setOpenKebabIndex(open ? i : null)}
+                                popperProps={{ position: "right-end" }}
+                                toggle={(toggleRef) => (
+                                  <MenuToggle
+                                    ref={toggleRef}
+                                    variant="plain"
+                                    aria-label={`Actions for ${op.name}`}
+                                    icon={<EllipsisVIcon />}
+                                    onClick={() =>
+                                      setOpenKebabIndex(openKebabIndex === i ? null : i)
+                                    }
+                                    isExpanded={openKebabIndex === i}
+                                  />
+                                )}
+                                onSelect={() => setOpenKebabIndex(null)}
+                              >
+                                <DropdownItem
+                                  itemId="view"
+                                  onClick={() =>
+                                    navigate(
+                                      `/ecosystem/installed-operators/${encodeURIComponent(op.name)}`
+                                    )
+                                  }
+                                >
+                                  View details
+                                </DropdownItem>
+                                {typeof op.updateAvailable === "string" && op.updateAvailable.length > 0 ? (
+                                  <DropdownItem itemId="update" onClick={() => navigateToUpdate(op)}>
+                                    Update
+                                  </DropdownItem>
+                                ) : null}
+                                <DropdownItem
+                                  itemId="subscription"
+                                  onClick={() =>
+                                    navigate(
+                                      `/ecosystem/installed-operators/${encodeURIComponent(op.name)}/subscription`
+                                    )
+                                  }
+                                >
+                                  Edit subscription
+                                </DropdownItem>
+                              </Dropdown>
+                            </Td>
+                          )}
+                        </Tr>
+                      ))
+                    )}
+                  </Tbody>
+                </Table>
+              </InnerScrollContainer>
+            </PageSection>
+            </DataView>
+            </Flex>
+          </Flex>
+            </Breadcrumbs>
+      </div>
+      </OlsChatbot>
+
+      <Modal
+        variant="large"
+        isOpen={isManageColumnsModalOpen}
+        onClose={() => setIsManageColumnsModalOpen(false)}
+        aria-labelledby="io-manage-cols-title"
+        aria-describedby="io-manage-cols-body"
+      >
+        <ModalHeader
+          labelId="io-manage-cols-title"
+          descriptorId="io-manage-cols-body"
+          title="Manage columns"
+          description="Default columns are shown by default. Additional columns include update plan, managed namespaces, and optional row actions. Cluster compatibility, Support phase, and Support phase end date apply to OLM v0 managed operators only. Operator is always shown."
+        />
+        <ModalBody id="io-manage-cols-body">
+          <Flex
+            direction={{ default: "column", md: "row" }}
+            gap={{ default: "gap2xl" }}
+            alignItems={{ default: "alignItemsStretch" }}
+            style={{ maxWidth: "100%" }}
+          >
+            <FlexItem grow={{ default: "grow" }} style={{ minWidth: 0, flex: 1 }}>
+              <Title headingLevel="h3" size="md" className="pf-v6-u-mb-md">
+                Default columns
+              </Title>
+              <div style={ioManageColRowStyle(true)}>
+                <Checkbox
+                  id="io-col-operator-mandatory"
+                  label="Operator"
+                  isChecked
+                  isDisabled
+                  onChange={() => {}}
+                />
+              </div>
+              {manageColumnsDefaultOrder.map((col, i) => {
+                const isLast = i === manageColumnsDefaultOrder.length - 1;
+                return (
+                  <div key={col.key} style={ioManageColRowStyle(!isLast)}>
+                    <Checkbox
+                      id={`io-col-draft-${col.key}`}
+                      label={col.label}
+                      isChecked={columnModalDraft[col.key]}
+                      onChange={(_e, c) =>
+                        setColumnModalDraft((d) => ({ ...d, [col.key]: c }))
+                      }
+                    />
+                  </div>
+                );
+              })}
+            </FlexItem>
+            <FlexItem grow={{ default: "grow" }} style={{ minWidth: 0, flex: 1 }}>
+              <Title headingLevel="h3" size="md" className="pf-v6-u-mb-md">
+                Additional columns
+              </Title>
+              {ADDITIONAL_MANAGE_COLUMN_ORDER.map((col, i) => {
+                const isLast = i === ADDITIONAL_MANAGE_COLUMN_ORDER.length - 1;
+                return (
+                  <div key={col.key} style={ioManageColRowStyle(!isLast)}>
+                    <Checkbox
+                      id={`io-col-draft-${col.key}`}
+                      label={col.label}
+                      isChecked={columnModalDraft[col.key]}
+                      onChange={(_e, c) =>
+                        setColumnModalDraft((d) => ({ ...d, [col.key]: c }))
+                      }
+                    />
+                  </div>
+                );
+              })}
+            </FlexItem>
+          </Flex>
+        </ModalBody>
+        <ModalFooter>
+          <Flex
+            flexWrap={{ default: "flexWrapWrap" }}
+            alignItems={{ default: "alignItemsCenter" }}
+            gap={{ default: "gapMd" }}
+            justifyContent={{ default: "justifyContentFlexStart" }}
+          >
+            <Button
+              variant="primary"
+              onClick={() => {
+                setVisibleColumns({ ...columnModalDraft });
+                setIsManageColumnsModalOpen(false);
+              }}
+            >
+              Save
+            </Button>
+            <Button variant="link" onClick={() => setIsManageColumnsModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="link"
+              onClick={() => setColumnModalDraft({ ...RESTORE_DEFAULT_VISIBLE })}
+            >
+              Restore default columns
+            </Button>
+          </Flex>
+        </ModalFooter>
+      </Modal>
+
+      <ListAdvancedFilterModal<keyof IoListFilters>
+        isOpen={isAdvancedFilterModalOpen}
+        onClose={() => setIsAdvancedFilterModalOpen(false)}
+        source={filters}
+        onSave={(next) => onSetFilters(next as IoListFilters)}
+        getEmpty={getEmptyIoListFilters}
+        spec={ioListAdvFilterSpecEffective}
+        defaultAttributeWhenNoRows="name"
+        idPrefix="io-list-adv"
+      />
+    </div>
+  );
+}

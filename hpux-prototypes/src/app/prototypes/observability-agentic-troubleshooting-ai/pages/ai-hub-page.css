@@ -1,0 +1,4 @@
+/* AI Hub only: remove global `create-policy-header` top border from app.css */
+.ols-ai-hub-page div.create-policy-header {
+  border-top: none !important;
+}

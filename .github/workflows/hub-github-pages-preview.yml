@@ -1,0 +1,70 @@
+# Publishes the hub (Vite app in hub/) to GitHub Pages under preview/<branch-slug>/ on every push.
+# Requires GitHub Pages "Deploy from branch" → branch gh-pages, folder / (root).
+# Preview URL pattern: https://<owner>.github.io/<repo>/preview/<slug>/
+name: Hub branch preview (GitHub Pages)
+
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hub-pages-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Branch slug for preview path
+        id: slug
+        shell: bash
+        run: |
+          s=$(echo "${GITHUB_REF_NAME}" | tr "[:upper:]" "[:lower:]" | sed -e "s/[^a-z0-9._-]/-/g" -e "s/-\+/-/g" -e "s/^-//" -e "s/-$//")
+          if [[ -z "$s" ]]; then s="branch"; fi
+          echo "slug=$s" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: hub/package-lock.json
+
+      - name: Install and build hub
+        working-directory: hub
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/preview/${{ steps.slug.outputs.slug }}/
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy preview to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: hub/dist
+          destination_dir: preview/${{ steps.slug.outputs.slug }}
+          keep_files: true
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
+
+      - name: Write preview URL to job summary
+        shell: bash
+        run: |
+          owner="${{ github.repository_owner }}"
+          repo="${{ github.event.repository.name }}"
+          slug="${{ steps.slug.outputs.slug }}"
+          {
+            echo "## Hub preview published"
+            echo ""
+            echo "**Site:** https://${owner}.github.io/${repo}/preview/${slug}/"
+            echo ""
+            echo "Path is derived from your branch name (lowercased, special characters → hyphens). Each push to this branch updates the same preview."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,272 @@
+.vm-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--pf-t--global--background--color--secondary--default);
+}
+
+.vm-header {
+  background-color: var(--pf-t--global--background--color--primary--default);
+  border-bottom: 1px solid var(--pf-t--global--border--color--default);
+  padding: 24px !important;
+}
+
+.vm-header .pf-v6-c-flex {
+  width: 100%;
+  align-items: center;
+}
+
+.vm-header .pf-v6-c-divider {
+  height: 32px;
+  margin: 0 8px;
+}
+
+.vm-content-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  isolation: isolate;
+}
+
+body.resizing-sidebar {
+  cursor: col-resize !important;
+  user-select: none;
+}
+
+body.resizing-sidebar * {
+  cursor: col-resize !important;
+}
+
+.vm-content-wrapper.sidebar-collapsed .vm-main-content {
+  width: 100%;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  top: 80px;
+  z-index: 1000;
+  background-color: var(--pf-t--global--background--color--primary--default);
+  border: 1px solid var(--pf-t--global--border--color--default);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: left 0.3s ease;
+  box-shadow: var(--pf-t--global--box-shadow--sm);
+}
+
+.sidebar-toggle svg {
+  width: 14px;
+  height: 14px;
+}
+
+.sidebar-toggle:hover {
+  background-color: var(--pf-t--global--background--color--primary--hover);
+  box-shadow: var(--pf-t--global--box-shadow--md);
+}
+
+.vm-content-wrapper.sidebar-collapsed .sidebar-toggle {
+  left: 0px;
+}
+
+.vm-sidebar {
+  position: relative;
+  background-color: var(--pf-t--global--background--color--primary--default);
+  border-right: 1px solid var(--pf-t--global--border--color--default);
+  padding: 16px;
+  overflow-y: auto;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.sidebar-resize-handle {
+  background-color: transparent !important;
+  border-right: 1px solid var(--pf-t--global--border--color--default);
+}
+
+.sidebar-resize-handle:hover {
+  border-right: 2px solid var(--pf-t--global--color--brand--default) !important;
+}
+
+.sidebar-resize-handle:hover .resize-grip {
+  background-color: var(--pf-t--global--color--brand--default);
+}
+
+.resize-grip {
+  background-color: var(--pf-t--global--border--color--default);
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.vm-main-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background-color: var(--pf-t--global--background--color--primary--default);
+  position: relative;
+  z-index: 1;
+}
+
+.vm-sidebar .pf-v6-c-tree-view {
+  background-color: transparent !important;
+  max-height: calc(100vh - 270px);
+  overflow-y: auto;
+}
+
+.vm-sidebar .pf-v6-c-tree-view__list-item .pf-v6-c-tree-view__node-container {
+  width: 100%;
+}
+
+.vm-sidebar .pf-v6-c-tree-view__node-text {
+  width: 100%;
+  padding-right: 16px;
+}
+
+.table-content-card {
+  background-color: var(--pf-t--global--background--color--primary--default);
+  border-radius: 8px;
+  border: 1px solid var(--pf-t--global--border--color--default);
+  overflow: visible !important;
+}
+
+.table-content-card .pf-v6-c-toolbar,
+.table-content-card .pf-v6-c-toolbar__content,
+.table-content-card .pf-v6-c-toolbar__item {
+  overflow: visible !important;
+}
+
+.vm-header .pf-v6-c-menu {
+  box-shadow: var(--pf-t--global--box-shadow--lg);
+  border: 1px solid var(--pf-t--global--border--color--default);
+  border-radius: 4px;
+  background-color: var(--pf-t--global--background--color--primary--default);
+  z-index: 1000;
+}
+
+.vm-header .pf-v6-c-menu__list-item button {
+  width: 100%;
+  text-align: left;
+}
+
+.vm-header .pf-v6-c-menu__list-item:hover {
+  background-color: var(--pf-t--global--background--color--primary--hover);
+}
+
+.search-dropdown-menu .pf-v6-c-menu {
+  box-shadow: var(--pf-t--global--box-shadow--lg);
+  border: 1px solid var(--pf-t--global--border--color--default);
+  border-radius: 4px;
+  background-color: var(--pf-t--global--background--color--primary--default);
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.search-dropdown-menu .pf-v6-c-menu__list-item button {
+  width: 100%;
+  text-align: left;
+}
+
+.search-dropdown-menu .pf-v6-c-menu__list-item:hover {
+  background-color: var(--pf-t--global--background--color--primary--hover);
+}
+
+.search-dropdown-menu .pf-v6-c-divider {
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 0 !important;
+  border: none !important;
+  border-top: 1px solid var(--pf-t--global--border--color--default) !important;
+  background-color: transparent !important;
+}
+
+.search-dropdown-menu .pf-v6-c-menu__list-item[disabled] {
+  background-color: transparent !important;
+  padding: 8px 16px;
+}
+
+.search-dropdown-menu .pf-v6-c-menu__list-item[disabled]:hover {
+  background-color: transparent !important;
+}
+
+/* Ensure dropdown list items allow overflow for flyout menus */
+.pf-v6-c-dropdown__menu .pf-v6-c-dropdown__list-item {
+  overflow: visible !important;
+  position: relative;
+}
+
+/* Flyout submenu styling */
+.migrate-flyout-menu {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  z-index: 10001;
+  min-width: 300px;
+}
+
+.migrate-flyout-menu .pf-v6-c-menu {
+  box-shadow: var(--pf-t--global--box-shadow--lg);
+  border-radius: 4px;
+  background-color: var(--pf-t--global--background--color--primary--default);
+}
+
+/* Custom context menu */
+.custom-context-menu {
+  background-color: var(--pf-t--global--background--color--primary--default);
+  border: 1px solid var(--pf-t--global--border--color--default);
+  border-radius: 4px;
+  box-shadow: var(--pf-t--global--box-shadow--lg);
+  padding: 8px 0;
+  min-width: 200px;
+  width: max-content;
+  max-width: 250px;
+}
+
+.context-menu-item {
+  padding: 8px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 14px;
+  color: var(--pf-t--global--text--color--regular);
+}
+
+.context-menu-item:hover {
+  background-color: var(--pf-t--global--background--color--action--hover--default);
+}
+
+.context-menu-divider {
+  height: 1px;
+  background-color: var(--pf-t--global--border--color--default);
+  margin: 4px 0;
+}
+
+/* Multi-selected tree nodes styling */
+.custom-tree-node.multi-selected {
+  background-color: #E7F1FA !important;
+  border: 2px solid #0066CC !important;
+}
+
+/* Override PatternFly TreeView selection styles for multi-selected items */
+.vm-sidebar .pf-v6-c-tree-view__node:has(.multi-selected) {
+  background-color: transparent !important;
+}
+
+.vm-sidebar .pf-v6-c-tree-view__node .custom-tree-node.multi-selected {
+  background-color: #E7F1FA !important;
+}
+
+/* Spinning animation for migrating status icon */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+

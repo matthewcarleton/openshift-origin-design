@@ -1,0 +1,1110 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Match PatternFly `body` typography so the React root inherits the design-system font stack */
+#root {
+  font-family: var(--pf-t--global--font--family--body);
+  font-size: var(--pf-t--global--font--size--body--default);
+  font-weight: var(--pf-t--global--font--weight--body--default);
+  line-height: var(--pf-t--global--font--line-height--body);
+  color: var(--pf-t--global--text--color--regular);
+}
+
+/* Universal reset to ensure no padding/margin constraints */
+* {
+  box-sizing: border-box;
+}
+
+/* Ensure no global padding/margin from PatternFly or browser defaults */
+.pf-v6-c-page,
+.pf-v6-c-page__main,
+.pf-v6-c-page__main-section,
+.pf-v6-c-page__main-section > *:not(.templates-page-container):not(.catalog-page-container):not(.instance-types-page-container):not(.search-page-container):not(.search-page-wrapper):not(.search-page-header):not(.search-page-content) {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Override PatternFly Page component constraints */
+.pf-v6-c-page {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+/* Horizontal inset for Page main wrapper (contains #primary-app-container) */
+.pf-v6-c-page__main-container {
+  padding-left: var(--pf-t--global--spacer--lg, 24px) !important;
+  padding-right: var(--pf-t--global--spacer--lg, 24px) !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure the main container takes full width without overflow */
+.pf-v6-c-page__main {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  position: relative !important;
+  left: 0 !important;
+  right: 0 !important;
+  overflow-x: hidden !important;
+}
+
+.pf-v6-c-content {
+  --pf-v6-c-content--small--Color: var(--pf-t--global--color--status--danger--default);
+  --pf-v6-c-content--blockquote--BorderLeftColor: var(--pf-t--global--color--nonstatus--purple--default);
+  --pf-v6-c-content--hr--BackgroundColor: var(--pf-t--global--color--nonstatus--yellow--default);
+}
+
+/* Light mode - PatternFly default theme */
+/* All dark theme styles removed - using PatternFly v6 default light theme */
+
+/* Perspective selector */
+.perspective-selector {
+  padding: var(--pf-t--global--spacer--md);
+  border-bottom: 1px solid var(--pf-t--global--border--color--default);
+}
+
+.perspective-selector .pf-v6-c-menu-toggle {
+  width: 100%;
+  justify-content: space-between;
+}
+
+/* Wizard modal custom styling */
+.pf-v6-c-modal-box.pf-m-lg {
+  max-width: 1200px;
+  max-height: 90vh;
+  height: 700px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Modal body flex layout */
+.pf-v6-c-modal-box > .pf-v6-c-modal-box__body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Global page layout pattern */
+.pf-v6-c-page__main .pf-v6-c-page__main-section {
+  background-color: #f5f5f5 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-height: calc(100vh - 200px) !important;
+}
+
+/* Ensure the main page container has no constraints */
+.pf-v6-c-page {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.pf-v6-c-page__main {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Header section - white background with title and tabs */
+.page-header-section {
+  background-color: #ffffff !important;
+  padding: 24px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Add spacing between title and tabs */
+.page-header-section .pf-v6-c-tabs {
+  margin-top: 16px !important;
+}
+
+/* Content area - grey background */
+.page-content-section {
+  background-color: #f5f5f5 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Spinning animation for running job icon */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Clusters page container - grey background with padding */
+.clusters-page-container {
+  background-color: #f5f5f5 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Header section within clusters page */
+.clusters-page-container .page-header-section {
+  background-color: #ffffff !important;
+  padding: 24px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Add spacing between title and tabs */
+.clusters-page-container .page-header-section .pf-v6-c-tabs {
+  margin-top: 16px !important;
+}
+
+/* Content area within clusters page */
+.clusters-page-container .page-content-section {
+  background-color: #f5f5f5 !important;
+  padding: 16px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Identities page container - same layout as clusters */
+.identities-page-container {
+  background-color: #f5f5f5 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+}
+
+.identities-page-container .page-header-section {
+  background-color: #ffffff !important;
+  padding: 24px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.identities-page-container .page-header-section .pf-v6-c-tabs {
+  margin-top: 16px !important;
+}
+
+.identities-page-container .page-content-section {
+  background-color: #f5f5f5 !important;
+  padding: 16px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+}
+
+/* Roles page container - same layout as clusters */
+.roles-page-container {
+  background-color: #f5f5f5 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.roles-page-container .page-header-section {
+  background-color: #ffffff !important;
+  padding: 24px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.roles-page-container .page-header-section .pf-v6-c-tabs {
+  margin-top: 16px !important;
+}
+
+.roles-page-container .page-content-section {
+  background-color: #f5f5f5 !important;
+  padding: 16px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Identity Providers page container - same layout as clusters */
+.identity-providers-page-container {
+  background-color: #f5f5f5 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.identity-providers-page-container .page-header-section {
+  background-color: #ffffff !important;
+  padding: 24px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.identity-providers-page-container .page-header-section .pf-v6-c-tabs {
+  margin-top: 16px !important;
+}
+
+.identity-providers-page-container .page-content-section {
+  background-color: #f5f5f5 !important;
+  padding: 16px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Migration plans page container */
+.migration-plans-page-container {
+  background-color: #f5f5f5 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.migration-plans-page-container .page-header-section {
+  background-color: #ffffff !important;
+  padding: 24px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.migration-plans-page-container .page-content-section {
+  background-color: #f5f5f5 !important;
+  padding: 16px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Migration plan detail page container */
+.migration-plan-detail-page-container {
+  background-color: #f5f5f5 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.migration-plan-detail-page-container .page-header-section {
+  background-color: #ffffff !important;
+  padding: 24px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.migration-plan-detail-page-container .page-content-section {
+  background-color: #f5f5f5 !important;
+  padding: 24px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Governance page container */
+.governance-page-container {
+  background-color: #f5f5f5 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.governance-page-container .page-header-section {
+  background-color: #ffffff !important;
+  padding: 24px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.governance-page-container .page-header-section .pf-v6-c-tabs {
+  margin-top: 16px !important;
+}
+
+.governance-page-container .page-content-section {
+  background-color: #f5f5f5 !important;
+  padding: 16px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Quotas page layout */
+.quotas-page-container {
+  background-color: #f5f5f5 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.quotas-page-container .page-header-section {
+  background-color: #ffffff !important;
+  padding: 24px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.quotas-page-container .page-content-section {
+  background-color: #f5f5f5 !important;
+  padding: 24px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Hide progress bar percentage in Quotas table */
+.quotas-page-container .pf-v6-c-progress__measure {
+  display: none !important;
+}
+
+/* Create quota page - white background for content area */
+.create-quota-page .page-content-section {
+  background-color: #ffffff !important;
+}
+
+/* Create quota page - non-sticky header */
+.create-quota-page .page-header-section {
+  position: relative !important;
+  top: auto !important;
+  z-index: auto !important;
+}
+
+/* Template page breadcrumb section - 16px padding */
+div.template-page-breadcrumb {
+  padding-top: 16px !important;
+  padding-right: 16px !important;
+  padding-bottom: 16px !important;
+  padding-left: 16px !important;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+/* Template page heading section - 24px padding */
+div.template-page-heading {
+  padding-top: 24px !important;
+  padding-right: 24px !important;
+  padding-bottom: 24px !important;
+  padding-left: 24px !important;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+/* Template page content area - 24px padding */
+div.template-page-content {
+  padding-top: 24px !important;
+  padding-right: 24px !important;
+  padding-bottom: 24px !important;
+  padding-left: 24px !important;
+  background-color: #f5f5f5 !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  min-height: calc(100vh - 200px) !important;
+}
+
+/* Wizard main body padding */
+.pf-v6-c-wizard__main-body {
+  padding: 24px !important;
+  box-sizing: border-box !important;
+}
+
+/* Force padding on all wizard body elements */
+div.pf-v6-c-wizard__main div.pf-v6-c-wizard__main-body {
+  padding-top: 24px !important;
+  padding-right: 24px !important;
+  padding-bottom: 24px !important;
+  padding-left: 24px !important;
+  box-sizing: border-box !important;
+}
+
+/* Wizard page header padding */
+.wizard-page-header {
+  padding: 24px !important;
+  box-sizing: border-box !important;
+}
+
+/* Create policy page breadcrumb and header sections - must come after global resets */
+div.create-policy-breadcrumb {
+  padding-top: 16px !important;
+  padding-right: 16px !important;
+  padding-bottom: 8px !important;
+  padding-left: 16px !important;
+  background-color: #ffffff !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+div.create-policy-header {
+  padding-top: 16px !important;
+  padding-right: 24px !important;
+  padding-bottom: 24px !important;
+  padding-left: 24px !important;
+  background-color: #ffffff !important;
+  border-top: 1px solid #d2d2d2 !important;
+  border-bottom: 1px solid #d2d2d2 !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+/* Projects page container - same layout as identity providers */
+.projects-page-container {
+  background-color: #f5f5f5 !important;
+  padding: 24px !important;
+  margin: 0 !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.projects-page-container .page-header-section {
+  background-color: #ffffff !important;
+  padding: 24px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  margin: 0 0 24px 0 !important;
+  border-radius: 8px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.projects-page-container .page-content-section {
+  background-color: #f5f5f5 !important;
+  padding: 0 24px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Search page header - HIGHEST PRIORITY */
+.pf-v6-c-page__main .pf-v6-c-page__main-section .search-page-header,
+.pf-v6-c-page__main-section .search-page-header,
+div.search-page-header {
+  background-color: #ffffff !important;
+  padding: 24px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Search page content - HIGHEST PRIORITY */
+.pf-v6-c-page__main .pf-v6-c-page__main-section .search-page-content,
+.pf-v6-c-page__main-section .search-page-content,
+div.search-page-content {
+  background-color: #f5f5f5 !important;
+  padding: 24px !important;
+  margin: 0 !important;
+  min-height: calc(100vh - 300px) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Search page container - HIGHEST PRIORITY */
+.pf-v6-c-page__main .pf-v6-c-page__main-section .search-page-container,
+.pf-v6-c-page__main-section .search-page-container,
+div.search-page-container {
+  background-color: #f5f5f5 !important;
+  padding: 24px !important;
+  margin: 0 !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Catalog page container */
+.catalog-page-container {
+  background-color: #f5f5f5 !important;
+  padding: 24px !important;
+  margin: 0 !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.catalog-page-container .page-header-section {
+  background-color: #ffffff !important;
+  padding: 24px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  margin: 0 0 24px 0 !important;
+  border-radius: 8px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.catalog-page-container .page-content-section {
+  background-color: #f5f5f5 !important;
+  padding: 0 24px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Templates page - consistent padding */
+.templates-page-container {
+  background-color: #ffffff !important;
+  padding: 24px !important;
+  margin: 0 !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Clusters page - no padding, no card, completely flat, full width */
+.clusters-page-content {
+  background-color: #f5f5f5 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: calc(100vh - 200px) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Remove any card styling from Clusters page */
+.clusters-page-content .pf-v6-c-card {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Remove card body padding */
+.clusters-page-content .pf-v6-c-card__body {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Ensure full width for all PatternFly containers in clusters page */
+.clusters-page-content .pf-v6-c-page__main-section,
+.clusters-page-content .pf-v6-c-page__main,
+.clusters-page-content .pf-v6-c-page {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Override any PatternFly container constraints */
+.pf-v6-c-page__main .pf-v6-c-page__main-section .pf-v6-c-page__main-section {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Ensure no container constraints anywhere */
+.pf-v6-c-page__main * {
+  max-width: none !important;
+}
+
+/* Comprehensive reset for any potential global constraints */
+.pf-v6-c-page__main,
+.pf-v6-c-page__main > *,
+.pf-v6-c-page__main > * > * {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure content fits within viewport without horizontal scroll */
+.clusters-page-content {
+  position: relative !important;
+  left: 0 !important;
+  right: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+/* Ensure all parent containers allow full width without overflow */
+.pf-v6-c-page__main-section,
+.pf-v6-c-page__main-section > *:not(.templates-page-container):not(.catalog-page-container):not(.instance-types-page-container):not(.search-page-container):not(.search-page-wrapper):not(.search-page-header):not(.search-page-content),
+.pf-v6-c-page__main-section > * > * {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+}
+
+/* Exception: Header section should have padding, content area should not */
+.pf-v6-c-page__main-section .page-header-section {
+  padding: 24px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Exception: Templates page container should have padding - HIGHEST PRIORITY */
+.pf-v6-c-page__main .pf-v6-c-page__main-section .templates-page-container,
+.pf-v6-c-page__main-section .templates-page-container,
+div.templates-page-container {
+  padding: 24px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  background-color: #ffffff !important;
+  min-height: 100vh !important;
+  box-sizing: border-box !important;
+}
+
+/* Exception: InstanceTypes page container should have padding - HIGHEST PRIORITY */
+.pf-v6-c-page__main .pf-v6-c-page__main-section .instance-types-page-container,
+.pf-v6-c-page__main-section .instance-types-page-container,
+div.instance-types-page-container {
+  padding: 24px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  background-color: #ffffff !important;
+  min-height: 100vh !important;
+  box-sizing: border-box !important;
+}
+
+/* Exception: Catalog page container should have padding */
+.pf-v6-c-page__main-section .catalog-page-container {
+  padding: 24px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  background-color: #f5f5f5 !important;
+  min-height: 100vh !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure content area has no padding */
+.pf-v6-c-page__main-section .page-content-section,
+.pf-v6-c-page__main-section .clusters-page-content {
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Table content card - sits on grey background */
+.table-content-card {
+  background-color: #ffffff !important;
+  border-radius: 8px !important;
+  border: 1px solid #e0e0e0 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  overflow: visible !important;
+  margin: 0 !important;
+}
+
+/* Style toolbar within the card */
+.table-content-card .pf-v6-c-toolbar {
+  padding: 24px !important;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  overflow: visible !important;
+}
+
+.table-content-card .pf-v6-c-toolbar__content {
+  overflow: visible !important;
+}
+
+.table-content-card .pf-v6-c-toolbar__item {
+  overflow: visible !important;
+}
+
+/* Style table within the card - no margins, fits perfectly */
+.table-content-card .pf-v6-c-table {
+  margin: 0 !important;
+  background-color: #ffffff !important;
+  width: 100% !important;
+}
+
+/* Style table headers with white background */
+.pf-v6-c-table thead tr {
+  background-color: #ffffff !important;
+}
+
+.pf-v6-c-table thead th {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  font-weight: 600 !important;
+  padding: 16px !important;
+}
+
+/* Style table rows */
+.pf-v6-c-table tbody tr {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+
+.pf-v6-c-table tbody tr:hover {
+  background-color: #f8f9fa !important;
+}
+
+.pf-v6-c-table tbody td {
+  padding: 16px !important;
+}
+
+/* Style pagination within the card */
+.table-content-card .pf-v6-c-toolbar:last-child {
+  padding: 16px 24px !important;
+  background-color: #ffffff !important;
+  border-top: 1px solid #e0e0e0 !important;
+}
+
+/* Ensure table doesn't overflow the card */
+.table-content-card .pf-v6-c-table-container {
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Ensure table content fits within viewport */
+.clusters-page-content .pf-v6-c-table-container {
+  overflow-x: auto !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.clusters-page-content .pf-v6-c-table {
+  width: 100% !important;
+  max-width: 100% !important;
+  table-layout: auto !important;
+}
+
+/* Ensure checkboxes are normal size */
+input[type="checkbox"] {
+  width: 16px !important;
+  height: 16px !important;
+  transform: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Override any scaling that might be applied */
+.pf-v6-c-table input[type="checkbox"] {
+  width: 16px !important;
+  height: 16px !important;
+  transform: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  scale: 1 !important;
+}
+
+/* Force PatternFly Checkbox components to be smaller */
+.pf-v6-c-check {
+  --pf-v6-c-check--FontSize: 12px !important;
+  --pf-v6-c-check--LineHeight: 1.2 !important;
+}
+
+.pf-v6-c-check__input {
+  width: 14px !important;
+  height: 14px !important;
+  min-width: 14px !important;
+  min-height: 14px !important;
+  max-width: 14px !important;
+  max-height: 14px !important;
+  transform: none !important;
+  scale: 1 !important;
+}
+
+.pf-v6-c-check__label {
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+}
+
+/* Override any PatternFly checkbox sizing */
+.pf-v6-c-table .pf-v6-c-check {
+  --pf-v6-c-check--FontSize: 12px !important;
+  --pf-v6-c-check--LineHeight: 1.2 !important;
+}
+
+.pf-v6-c-table .pf-v6-c-check__input {
+  width: 14px !important;
+  height: 14px !important;
+  min-width: 14px !important;
+  min-height: 14px !important;
+  max-width: 14px !important;
+  max-height: 14px !important;
+  transform: none !important;
+  scale: 1 !important;
+}
+
+.pf-v6-c-table .pf-v6-c-check__label {
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+}
+
+/* Detail page wrapper to override aggressive padding removal */
+.detail-page-wrapper {
+  padding: 24px !important;
+  background-color: #f5f5f5 !important;
+  min-height: 100vh !important;
+}
+
+/* Detail page header section - white background with padding */
+.detail-page-header {
+  background-color: #ffffff !important;
+  padding: 24px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+}
+
+/* Detail page content section - gray background with padding */
+.detail-page-content {
+  background-color: #f5f5f5 !important;
+  padding: 24px !important;
+}
+
+/* Reduce spacing between checkbox column and Name column to exactly 16px */
+/* Only apply to tables with checkboxes (when first cell contains a checkbox) */
+.pf-v6-c-table th:first-child:has(.pf-v6-c-check),
+.pf-v6-c-table td:first-child:has(.pf-v6-c-check),
+.pf-v6-c-table th:first-child:has(input[type="checkbox"]),
+.pf-v6-c-table td:first-child:has(input[type="checkbox"]) {
+  padding-right: 16px !important;
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+.pf-v6-c-table th:first-child:has(.pf-v6-c-check) + th,
+.pf-v6-c-table td:first-child:has(.pf-v6-c-check) + td,
+.pf-v6-c-table th:first-child:has(input[type="checkbox"]) + th,
+.pf-v6-c-table td:first-child:has(input[type="checkbox"]) + td {
+  padding-left: 0 !important;
+  padding-right: 16px !important;
+}
+
+/* Ensure dropdowns in tables can appear above other content */
+.pf-v6-c-table .pf-v6-c-dropdown {
+  position: relative !important;
+}
+
+.pf-v6-c-table .pf-v6-c-dropdown__menu,
+.pf-v6-c-dropdown__menu {
+  z-index: 9999 !important;
+}
+
+/* Ensure table cells with dropdowns allow overflow */
+.pf-v6-c-table td:has(.pf-v6-c-dropdown) {
+  overflow: visible !important;
+}
+
+.pf-v6-c-table tbody tr {
+  overflow: visible !important;
+}
+
+.pf-v6-c-table tbody {
+  overflow: visible !important;
+}
+
+.pf-v6-c-table td {
+  overflow: visible !important;
+}
+
+.table-content-card .pf-v6-c-table tbody,
+.table-content-card .pf-v6-c-table tbody tr,
+.table-content-card .pf-v6-c-table tbody tr td {
+  overflow: visible !important;
+}
+
+/* Ensure dropdown menus appear above table content */
+.table-content-card .pf-v6-c-dropdown {
+  position: relative !important;
+  z-index: 1;
+}
+
+.table-content-card .pf-v6-c-dropdown__menu {
+  z-index: 10000 !important;
+  position: absolute !important;
+}
+
+/* Custom tabs styling for wizard */
+.custom-tabs-selected .pf-v6-c-tabs__link {
+  position: relative;
+  border-bottom: 3px solid transparent;
+}
+
+.custom-tabs-selected .pf-v6-c-tabs__item.pf-m-current .pf-v6-c-tabs__link {
+  color: #0066cc !important;
+  font-weight: 600 !important;
+  border-bottom-color: #0066cc !important;
+}
+
+.custom-tabs-selected .pf-v6-c-tabs__link:hover {
+  color: #004080;
+}
+
+/* Remove modal box close button sibling margin */
+.pf-v6-c-modal-box__close + * {
+  margin-inline-end: 0 !important;
+}
+
+/* Ensure modal header has proper spacing */
+.pf-v6-c-modal-box__header {
+  padding-top: 24px !important;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+  padding-bottom: 16px !important;
+}
+
+/* Prototype launcher cards - ALL cards must have identical styling */
+.prototype-launcher-card {
+  border: 1px solid #d2d2d2 !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+  border-radius: 8px !important;
+  height: 100% !important;
+  cursor: default !important;
+}
+
+/* Multi-cluster Alerting Page - Standard page padding */
+.alerting-page-container {
+  padding: 0px !important;
+  background-color: var(--pf-t--global--background--color--secondary--default, #f0f0f0);
+  min-height: 100%;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.alerting-page-container .alerting-page-header {
+  margin-bottom: 16px;
+}
+
+/* Ensure Split component respects container bounds */
+.alerting-page-container .pf-v6-c-split {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Ensure the filled SplitItem doesn't overflow */
+.alerting-page-container .pf-v6-c-split__item.pf-m-fill {
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Ensure cards within the alerting page don't overflow */
+.alerting-page-container .pf-v6-c-card {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Ensure the treemap chart container is responsive */
+.alerting-page-container .echarts-for-react {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Fix toolbar vertical alignment */
+.alerting-page-container .pf-v6-c-toolbar {
+  --pf-v6-c-toolbar--AlignItems: center;
+}
+
+.alerting-page-container .pf-v6-c-toolbar__content {
+  align-items: center !important;
+}
+
+.alerting-page-container .pf-v6-c-toolbar__content-section {
+  align-items: center !important;
+  display: flex !important;
+}
+
+.alerting-page-container .pf-v6-c-toolbar__item {
+  align-items: center !important;
+  display: flex !important;
+}
+
+.alerting-page-container .pf-v6-c-toolbar__group {
+  align-items: center !important;
+  display: flex !important;
+}
+
+/* Ensure Flex items in toolbar are centered */
+.alerting-page-container .pf-v6-l-flex.pf-m-align-items-center {
+  align-items: center !important;
+}
+
+/* Fix Content component vertical alignment in toolbar */
+.alerting-page-container .pf-v6-c-toolbar .pf-v6-c-content {
+  display: flex !important;
+  align-items: center !important;
+  margin: 0 !important;
+}
+
+.alerting-page-container .pf-v6-c-toolbar .pf-v6-c-content--small,
+.alerting-page-container .pf-v6-c-toolbar small {
+  display: flex !important;
+  align-items: center !important;
+  line-height: 1 !important;
+}
+
+/* Fix switch toggle alignment in toolbar */
+.alerting-page-container .pf-v6-c-switch {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.alerting-page-container .pf-v6-c-switch__input,
+.alerting-page-container .pf-v6-c-switch__toggle,
+.alerting-page-container .pf-v6-c-switch__label {
+  vertical-align: middle !important;
+}

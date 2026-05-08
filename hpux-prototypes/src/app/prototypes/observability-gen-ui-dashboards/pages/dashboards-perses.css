@@ -1,0 +1,659 @@
+/* Hide the "View task details" floating action button for this prototype */
+button[aria-label="View task details"] {
+  display: none !important;
+}
+
+/* Ensure notification drawer section buttons align badges/carets to right edge */
+.pf-v6-c-drawer__panel-body button[aria-label*="Alerts"],
+.pf-v6-c-drawer__panel-body button[aria-label*="Recommendations"] {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Notification drawer section alignment */
+.notification-section-button {
+  width: calc(100% + 48px) !important;
+  padding: 8px 24px !important;
+  margin-left: -24px !important;
+  margin-right: -24px !important;
+  text-align: left !important;
+  justify-content: flex-start !important;
+}
+
+.notification-section-button > div {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  gap: var(--pf-t--global--spacer--md) !important;
+}
+
+.notification-section-title {
+  font-weight: 400 !important;
+  font-size: 16px !important;
+  text-align: left !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  margin-right: var(--pf-t--global--spacer--md) !important;
+  display: inline-block !important;
+}
+
+.notification-section-right {
+  display: flex !important;
+  gap: var(--pf-t--global--spacer--sm) !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
+  margin-left: auto !important;
+  padding: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Empty state alignment in notification drawer */
+.pf-v6-c-drawer__panel-body .pf-v6-c-empty-state {
+  text-align: center !important;
+  padding: var(--pf-t--global--spacer--xl) 0 !important;
+}
+
+.pf-v6-c-drawer__panel-body .pf-v6-c-empty-state__header {
+  text-align: center !important;
+}
+
+.pf-v6-c-drawer__panel-body .pf-v6-c-empty-state__body {
+  text-align: center !important;
+}
+
+.pf-v6-c-drawer__panel-body .pf-v6-c-empty-state__footer {
+  text-align: center !important;
+}
+
+/* Ensure page container handles scrolling properly - prevent double scrollbars */
+.pf-v6-c-page__main-container {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Adjust page container width when drawer is open to allow responsive flexing */
+/* The drawer is fixed, so we need to reduce the actual width of the container */
+.pf-v6-c-page__main-container.chatbot-drawer-open {
+  width: calc(100% - 33.333%);
+  transition: width 0.2s ease-in-out;
+}
+
+@media (min-width: 992px) {
+  .pf-v6-c-page__main-container.chatbot-drawer-open {
+    width: calc(100% - 25%);
+  }
+}
+
+/* For very small screens, account for drawer min-width (400px) */
+@media (max-width: 1200px) {
+  .pf-v6-c-page__main-container.chatbot-drawer-open {
+    width: calc(100% - 400px);
+  }
+}
+
+/* For larger screens, account for drawer max-width (600px) */
+@media (min-width: 2400px) {
+  .pf-v6-c-page__main-container.chatbot-drawer-open {
+    width: calc(100% - 600px);
+  }
+}
+
+/* Adjust masthead toolbar items to slide left when chatbot drawer is open */
+.pf-v6-c-masthead__content.chatbot-drawer-open,
+.pf-v6-c-page.chatbot-drawer-open .pf-v6-c-masthead__content {
+  width: calc(100% - 33.333%);
+  transition: width 0.2s ease-in-out;
+}
+
+@media (min-width: 992px) {
+  .pf-v6-c-masthead__content.chatbot-drawer-open,
+  .pf-v6-c-page.chatbot-drawer-open .pf-v6-c-masthead__content {
+    width: calc(100% - 25%);
+  }
+}
+
+@media (max-width: 1200px) {
+  .pf-v6-c-masthead__content.chatbot-drawer-open,
+  .pf-v6-c-page.chatbot-drawer-open .pf-v6-c-masthead__content {
+    width: calc(100% - 400px);
+  }
+}
+
+@media (min-width: 2400px) {
+  .pf-v6-c-masthead__content.chatbot-drawer-open,
+  .pf-v6-c-page.chatbot-drawer-open .pf-v6-c-masthead__content {
+    width: calc(100% - 600px);
+  }
+}
+
+/* AI Assistant Drawer Wrapper - Fixed position outside page container */
+.ai-assistant-drawer-wrapper {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 33.333% !important;
+  min-width: 400px !important;
+  max-width: 600px !important;
+  z-index: 300 !important;
+  background-color: var(--pf-t--global--background--color--primary--default) !important;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  transition: transform 0.2s ease-in-out !important;
+  contain: layout style paint !important;
+  box-sizing: border-box !important;
+}
+
+@media (min-width: 992px) {
+  .ai-assistant-drawer-wrapper {
+    width: 25% !important;
+  }
+}
+
+/* Inner panel container - ensures proper containment */
+.ai-assistant-panel-inner {
+  height: 100% !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  flex: 1 !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+  contain: layout style paint !important;
+  box-sizing: border-box !important;
+}
+
+/* Override DrawerPanelContent styles when in portal */
+.ai-assistant-drawer-wrapper .pf-v6-c-drawer__panel {
+  position: static !important;
+  width: 100% !important;
+  height: 100% !important;
+  box-shadow: none !important;
+  border: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-drawer__panel-main {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  flex: 1 !important;
+  min-height: 0 !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-drawer__panel-body {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+/* Chatbot Welcome Action Cards - matching PatternFly compact chatbot demo */
+.chatbot-welcome-actions {
+  padding: 0 var(--pf-v5-global--spacer--md) var(--pf-v5-global--spacer--md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-v5-global--spacer--md);
+}
+
+.chatbot-action-card {
+  background-color: var(--pf-t--global--background--color--primary--default);
+  border: 1px solid var(--pf-t--global--border--color--default);
+  border-radius: var(--pf-v5-global--BorderRadius--sm);
+  padding: var(--pf-v5-global--spacer--md);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.chatbot-action-card:hover {
+  background-color: var(--pf-t--global--background--color--secondary--default);
+  border-color: var(--pf-t--global--color--interactive--default);
+}
+
+.chatbot-action-card:active {
+  background-color: var(--pf-t--global--background--color--tertiary--default);
+}
+
+/* Ensure Chatbot component takes full height and is visible */
+.ai-assistant-drawer-wrapper .pf-v6-c-chatbot,
+.ai-assistant-panel-inner .pf-v6-c-chatbot {
+  height: 100% !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  contain: layout style paint !important;
+  box-sizing: border-box !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-chatbot__header {
+  flex-shrink: 0 !important;
+  display: flex !important;
+  visibility: visible !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-chatbot__content,
+.ai-assistant-panel-inner .pf-v6-c-chatbot__content {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  contain: layout style paint !important;
+  box-sizing: border-box !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-chatbot__footer {
+  flex-shrink: 0 !important;
+  width: 100% !important;
+  display: flex !important;
+  visibility: visible !important;
+}
+
+/* Ensure MessageBox is visible */
+.ai-assistant-drawer-wrapper .pf-v6-c-chatbot__message-box {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  width: 100% !important;
+}
+
+/* Ensure MessageBar is visible */
+.ai-assistant-drawer-wrapper .pf-v6-c-message-bar {
+  display: flex !important;
+  visibility: visible !important;
+  width: 100% !important;
+}
+
+/* Fix ChatbotWelcomePrompt alignment and visibility */
+.ai-assistant-drawer-wrapper .pf-v6-c-chatbot__welcome-prompt {
+  text-align: left !important;
+  padding: var(--pf-v5-global--spacer--lg) var(--pf-v5-global--spacer--md) var(--pf-v5-global--spacer--md) !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-chatbot__welcome-prompt-title {
+  text-align: left !important;
+  margin-bottom: var(--pf-v5-global--spacer--sm) !important;
+  display: block !important;
+  visibility: visible !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-chatbot__welcome-prompt-description {
+  text-align: left !important;
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Ensure all chatbot content is visible */
+.ai-assistant-drawer-wrapper .pf-v6-c-chatbot * {
+  visibility: visible !important;
+}
+
+/* Ensure message avatars are visible and properly sized */
+.ai-assistant-drawer-wrapper .pf-v6-c-message__avatar,
+.ai-assistant-drawer-wrapper .pf-v6-c-avatar {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Floating chatbot toggle button - adjust position when drawer is open */
+/* This ensures the button is always visible and not hidden by the drawer */
+.chatbot-toggle-sticky-host {
+  /* Sticky within the page container scroll viewport */
+  position: sticky;
+  bottom: 0;
+  height: 0;
+  z-index: 10000;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 24px;
+  pointer-events: none;
+}
+
+.chatbot-toggle-button {
+  position: relative !important;
+  z-index: 10000 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto;
+  /* Host is height: 0; lift the button into view */
+  transform: translateY(-48px);
+}
+
+.chatbot-toggle-button.drawer-open {
+  /* No special positioning needed; it stays in the content viewport */
+}
+
+@media (min-width: 992px) {
+  /* Keep for future overrides if needed */
+  .chatbot-toggle-button.drawer-open {
+    /* no-op */
+  }
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-message__avatar img,
+.ai-assistant-drawer-wrapper .pf-v6-c-avatar img {
+  width: 48px !important;
+  height: 48px !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-message__avatar svg,
+.ai-assistant-drawer-wrapper .pf-v6-c-avatar svg {
+  width: 48px !important;
+  height: 48px !important;
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Template page breadcrumb section - white background, 16px padding */
+.template-page-breadcrumb {
+  padding: 16px !important;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+}
+
+/* Template page heading section - white background, 24px padding */
+.template-page-heading {
+  padding: 24px !important;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+}
+
+/* Template page content section - gray background, 24px padding */
+.template-page-content {
+  padding: 24px !important;
+  background-color: #f5f5f5 !important;
+}
+
+/* Perses "edit mode" action bar (blue background section) */
+.perses-edit-mode-bar {
+  /* Use the exact PF palette token with a safe fallback */
+  background-color: var(--pf-v6-global--palette--blue-50, #E7F1FA);
+  padding: 16px 24px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 16px;
+}
+
+/* Exact spacing requirement: 28px gap between links and Save */
+.perses-edit-mode-links {
+  margin-right: 28px;
+}
+
+/* Edit bar label: regular text, 14px, #151515 */
+.perses-edit-mode-label {
+  color: #151515 !important;
+  font-size: 14px !important;
+  /* Match PatternFly label weight (semi-bold) */
+  font-weight: var(--pf-v6-global--FontWeight--semi-bold, 600) !important;
+  display: block;
+  margin: 0 0 4px 0 !important;
+}
+
+/* Chatbot code blocks: match reference (dark header, rounded top, language left, copy icon right). */
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block,
+.ai-assistant-drawer-wrapper .pf-chatbot__message-code-block {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border-radius: var(--pf-t--global--border--radius--medium, 8px);
+  overflow: hidden;
+  /* Ensure full block renders: header + content (avoid bottom half clipped in built/deployed envs). */
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  /* Explicit background so content area matches local in built/deployed (GitHub) envs. */
+  background-color: var(--pf-t--color--gray--80, #393f44);
+}
+
+/* Code block content (bottom half): explicit background so it shows in built/deployed envs. */
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block__content {
+  display: block !important;
+  min-height: 0;
+  flex-shrink: 0;
+  background-color: var(--pf-t--color--gray--80, #393f44);
+}
+
+/* Header: dark bar (#2F3134), rounded top corners, white label and icon. Full width so actions can align. */
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block__header {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  width: 100%;
+  box-sizing: border-box;
+  padding-inline-start: var(--pf-t--global--spacer--md, 16px);
+  padding-inline-end: var(--pf-t--global--spacer--md, 16px);
+  padding-block-start: var(--pf-t--global--spacer--sm, 8px);
+  padding-block-end: var(--pf-t--global--spacer--sm, 8px);
+  background-color: #2F3134;
+  border-block-end: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Actions row: take full width so copy can sit at the end. */
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block__actions {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  margin-inline-start: 0;
+}
+
+/* Language label: left, no grow/shrink. */
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block__actions .pf-v6-c-code-block__actions-item:first-child {
+  flex: 0 0 auto;
+}
+
+/* Code block header: single actions item with language + copy (match chatbot CodeBlockMessage layout). */
+.ai-assistant-drawer-wrapper .pf-chatbot__message-code-block .pf-v6-c-code-block__actions-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Language label: PF-recommended weight for CodeBlock headers (semi-bold), white, uppercase format. */
+.ai-assistant-drawer-wrapper .pf-chatbot__code-block-language {
+  font-size: var(--pf-t--global--font--size--xs, 12px);
+  font-family: var(--pf-t--global--font--family--mono, monospace);
+  font-weight: var(--pf-t--global--font--weight--body--bold, 600);
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+/* Copy button in header: native button + inline SVG (class matches chatbot .pf-chatbot__button--copy). */
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block__header .pf-v6-c-button,
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block__header button,
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block__header .pf-chatbot__button--copy,
+.ai-assistant-drawer-wrapper .pf-chatbot__code-block-copy-button {
+  color: #fff !important;
+  background: transparent !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 6px !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block__header .pf-chatbot__button--copy svg,
+.ai-assistant-drawer-wrapper .pf-chatbot__code-block-copy-button svg {
+  color: #fff !important;
+  fill: #fff !important;
+  width: 1em !important;
+  height: 1em !important;
+  display: block !important;
+  flex-shrink: 0 !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block__header .pf-v6-c-button:hover,
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block__header button:hover,
+.ai-assistant-drawer-wrapper .pf-chatbot__code-block-copy-button:hover {
+  color: rgba(255, 255, 255, 0.9) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-chatbot__code-block-copy-button:hover svg {
+  color: rgba(255, 255, 255, 0.9) !important;
+  fill: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Force copy icon visible on dark header: override PF icon color, ensure icon displays, SVG fill. */
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block__header .pf-v6-c-button .pf-v6-c-button__icon,
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block__header button .pf-v6-c-button__icon {
+  display: inline-flex !important;
+  color: #fff !important;
+  --pf-v6-c-button__icon--Color: #fff !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block__header .pf-v6-c-button .pf-v6-c-button__icon svg,
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block__header button .pf-v6-c-button__icon svg,
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block__header .pf-v6-c-button svg,
+.ai-assistant-drawer-wrapper .pf-v6-c-code-block__header button svg {
+  fill: #fff !important;
+  width: 1em !important;
+  height: 1em !important;
+}
+
+/* Chatbot suggestion chips (quick responses) - brand interactive blue */
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-responses .pf-v6-c-button,
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-responses button,
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-response,
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-response .pf-v6-c-button,
+.ai-assistant-drawer-wrapper .pf-v6-c-chatbot__content .pf-v6-c-message .pf-v6-c-button:not(.pf-m-plain):not(.pf-m-link) {
+  background-color: var(--pf-t--global--background--color--primary--default) !important;
+  border: 1px solid var(--pf-t--global--border--color--interactive--default) !important;
+  color: var(--pf-t--global--text--color--brand--default) !important;
+  border-radius: 9999px !important;
+  font-weight: 500 !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-responses .pf-v6-c-button:hover,
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-responses button:hover,
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-response:hover,
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-response .pf-v6-c-button:hover,
+.ai-assistant-drawer-wrapper .pf-v6-c-chatbot__content .pf-v6-c-message .pf-v6-c-button:not(.pf-m-plain):not(.pf-m-link):hover {
+  background-color: var(--pf-t--global--background--color--secondary--default) !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-responses .pf-v6-c-button:active,
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-responses button:active,
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-response:active,
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-response .pf-v6-c-button:active,
+.ai-assistant-drawer-wrapper .pf-v6-c-chatbot__content .pf-v6-c-message .pf-v6-c-button:not(.pf-m-plain):not(.pf-m-link):active {
+  background-color: var(--pf-t--global--background--color--tertiary--default) !important;
+}
+
+/* Chatbot quick response chips are rendered as clickable PatternFly Labels. */
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable {
+  background-color: var(--pf-t--global--background--color--primary--default) !important;
+  border-color: var(--pf-t--global--border--color--interactive--default) !important;
+  color: var(--pf-t--global--text--color--brand--default) !important;
+  font-weight: 500 !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable .pf-v6-c-label__content,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable .pf-v6-c-label__text {
+  color: var(--pf-t--global--text--color--brand--default) !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable:hover {
+  background-color: var(--pf-t--global--background--color--secondary--default) !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable:focus-visible {
+  outline: 2px solid var(--pf-t--global--border--color--interactive--default) !important;
+  outline-offset: 2px !important;
+}
+
+/* Persisted clicked/selected state: both pills solid blue after click.
+   Override both outline (first pill) and filled (second pill) so they match. */
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-clicked,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-active,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-selected,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable[aria-pressed="true"],
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-filled.pf-m-clicked,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-filled[aria-pressed="true"],
+/* Explicitly override outline variant (Analyze root cause) so it’s solid blue like the other pill */
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-outline.pf-m-clickable.pf-m-clicked,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-outline.pf-m-clickable[aria-pressed="true"],
+/* Fallback: any quick-response label we mark as pressed gets solid blue */
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-response .pf-v6-c-label[aria-pressed="true"] {
+  background-color: #9FCCF7 !important;
+  border-color: #9FCCF7 !important;
+  color: var(--pf-t--global--text--color--default, #151515) !important;
+}
+
+/* Override PF outline CSS variables so outline pill (first pill) uses solid blue, not white */
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-outline[aria-pressed="true"],
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-outline.pf-m-clicked {
+  --pf-v6-c-label--BackgroundColor: #9FCCF7 !important;
+  --pf-v6-c-label--BorderColor: #9FCCF7 !important;
+  --pf-v6-c-label--Color: #151515 !important;
+  --pf-v6-c-label__icon--Color: #151515 !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-clicked .pf-v6-c-label__content,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-active .pf-v6-c-label__content,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-selected .pf-v6-c-label__content,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable[aria-pressed="true"] .pf-v6-c-label__content,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-clicked .pf-v6-c-label__text,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-active .pf-v6-c-label__text,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-selected .pf-v6-c-label__text,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable[aria-pressed="true"] .pf-v6-c-label__text,
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-response .pf-v6-c-label[aria-pressed="true"] .pf-v6-c-label__content,
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-response .pf-v6-c-label[aria-pressed="true"] .pf-v6-c-label__text {
+  color: var(--pf-t--global--text--color--default, #151515) !important;
+}
+
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-clicked:hover,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-active:hover,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-selected:hover,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable[aria-pressed="true"]:hover,
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-response .pf-v6-c-label[aria-pressed="true"]:hover {
+  background-color: #9FCCF7 !important;
+  border-color: #9FCCF7 !important;
+}
+
+/* Ensure the check icon inherits the selected (dark) color */
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-clicked .pf-v6-c-label__icon,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-active .pf-v6-c-label__icon,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable.pf-m-selected .pf-v6-c-label__icon,
+.ai-assistant-drawer-wrapper .pf-v6-c-label.pf-m-clickable[aria-pressed="true"] .pf-v6-c-label__icon,
+.ai-assistant-drawer-wrapper .pf-v6-c-message__quick-response .pf-v6-c-label[aria-pressed="true"] .pf-v6-c-label__icon {
+  color: var(--pf-t--global--text--color--default, #151515) !important;
+}

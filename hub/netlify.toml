@@ -1,0 +1,21 @@
+# Netlify publishes this folder as the site root (good for *.netlify.app).
+
+[build]
+  command = "npm ci && npm run build"
+  publish = "dist"
+
+# RHACS vendored SPA (client-side routes under /main/…); must not fall through to the hub shell.
+[[redirects]]
+  from = "/rhacs-ux-prototypes/saved-filters/*"
+  to = "/rhacs-ux-prototypes/saved-filters/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/ocp5-cluster-update-experience/*"
+  to = "/ocp5-cluster-update-experience/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

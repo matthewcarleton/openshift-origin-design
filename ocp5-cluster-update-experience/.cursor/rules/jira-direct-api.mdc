@@ -1,0 +1,41 @@
+---
+description: Jira/Atlassian at Red Hat — use direct REST API, not the MCP
+alwaysApply: true
+---
+
+# Jira: direct REST API (Red Hat)
+
+- The Atlassian MCP plugin is blocked by Red Hat org policy. Do **not** rely on the MCP for Jira. Use the **Jira Cloud REST API** with `curl` and the workspace helper **`scripts/jira-api.sh`**.
+
+## Connection
+
+- **Base URL:** `https://redhat.atlassian.net/rest/api/3`
+- **Auth:** HTTP Basic: email `khatchou@redhat.com` and API token from **`~/.jira-token`** (read-only in shell; do not log or print the token).
+- **On `401`:** Ask the user to create a new token at https://id.atlassian.com/manage-profile/security/api-tokens and update `~/.jira-token` (mode `600`); never commit the token.
+
+## Search
+
+- Use **`POST /rest/api/3/search/jql`** (JSON body with a `jql` field and optional `maxResults` / `fields` / `nextPageToken` per current API). Do **not** use the deprecated `GET /rest/api/3/search?jql=...` style.
+
+## Helper: `scripts/jira-api.sh` (source or `bash scripts/jira-api.sh <subcommand> …`)
+
+- `jira_search "<JQL>"` — search (POST `search/jql`); optional second arg `maxResults`
+- `jira_get_issue "KEY"`
+- `jira_create_issue '<json>'`
+- `jira_edit_issue "KEY" '<json>'`
+- `jira_get_transitions "KEY"`
+- `jira_transition_issue "KEY" '<json>'` (e.g. transition id in body)
+- `jira_add_comment "KEY" "text"` (plain text; script builds ADF)
+- `jira_lookup_user "name"` (user search)
+- `jira_link_issues "type" "KEY-1" "KEY-2"` (inward = KEY-1, outward = KEY-2; `type` is the link name)
+
+## OpenShift UXD custom fields (use exact IDs in JSON bodies)
+
+- **Story Points** — `customfield_10028` (number; Stories only)
+- **Size (Epic t-shirt)** — `customfield_10795` (select: XS / S / M / L / XL; Epics only)
+- **Activity type** — `customfield_10464` (select: Orient, Explore, Make, Monitor, Consult, Enable)
+- **Epic Link** — `customfield_10014` (string, epic key)
+
+## Presenting results to the user
+
+- When listing or summarizing issues, use **markdown tables** with links: `https://issues.redhat.com/browse/{KEY}` (same Jira; human-friendly host).

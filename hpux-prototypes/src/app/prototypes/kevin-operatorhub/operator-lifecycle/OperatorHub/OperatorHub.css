@@ -1,0 +1,483 @@
+/* Main page container - gray background like other pages */
+.software-catalog-page {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* Breadcrumb - white background with border, 24px padding all around */
+.software-catalog-breadcrumb,
+div.software-catalog-breadcrumb {
+  padding: 24px 24px 24px 24px !important;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.software-catalog-breadcrumb .pf-v6-c-breadcrumb,
+.software-catalog-breadcrumb .pf-c-breadcrumb {
+  margin: 0 !important;
+}
+
+/* Page Header - white background with border, 24px padding all around */
+.software-catalog-header,
+div.software-catalog-header {
+  padding: 24px 24px 24px 24px !important;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.software-catalog-header h1 {
+  margin: 0 0 12px 0 !important;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.software-catalog-description {
+  color: #6a6e73;
+  margin: 0 !important;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Toolbar (Search + Actions) - white background with border, 24px padding all around */
+.software-catalog-toolbar,
+div.software-catalog-toolbar {
+  padding: 24px 24px 24px 24px !important;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Main Content Area - gray background */
+.software-catalog-main {
+  display: flex;
+  min-height: calc(100vh - 250px);
+  background-color: #f5f5f5;
+  width: 100%;
+}
+
+/* Sidebar Styling - filter area with white background */
+.software-catalog-main .pf-c-sidebar,
+.software-catalog-main .pf-v6-c-sidebar,
+.catalog-app__sidebar,
+.pf-v6-c-sidebar.catalog-app__sidebar {
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  flex: 1 1 100% !important;
+  display: flex !important;
+  flex-direction: row !important;
+  --pf-v6-c-sidebar--MaxWidth: none !important;
+  --pf-v6-c-sidebar__content--MaxWidth: none !important;
+  --pf-v6-c-sidebar__content--Width: 100% !important;
+  --pf-v6-c-sidebar__content--FlexBasis: 0 !important;
+}
+
+/* PatternFly v6 sidebar__main wrapper - ensure it takes full width */
+.software-catalog-main .pf-v6-c-sidebar__main,
+.catalog-app__sidebar > .pf-v6-c-sidebar__main {
+  display: flex !important;
+  flex-direction: row !important;
+  width: 100% !important;
+  max-width: none !important;
+  flex: 1 1 100% !important;
+}
+
+.software-catalog-main .pf-c-sidebar__panel,
+.software-catalog-main .pf-v6-c-sidebar__panel,
+.software-catalog-main .catalog-app__sidebar .pf-c-sidebar__panel,
+.software-catalog-main .catalog-app__sidebar .pf-v6-c-sidebar__panel {
+  background-color: #ffffff !important;
+  border-right: 1px solid #e0e0e0 !important;
+  padding: 24px !important;
+  width: 260px !important;
+  min-width: 260px !important;
+  max-width: 260px !important;
+  flex: 0 0 260px !important;
+  overflow-y: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Content area - right side with cards on gray background */
+.software-catalog-main .pf-c-sidebar__content,
+.software-catalog-main .pf-v6-c-sidebar__content,
+.software-catalog-main .catalog-app__sidebar .pf-c-sidebar__content,
+.software-catalog-main .catalog-app__sidebar .pf-v6-c-sidebar__content,
+.pf-v6-c-sidebar__content,
+.catalog-app__sidebar > .pf-v6-c-sidebar__content {
+  background-color: #f5f5f5 !important;
+  padding: 24px !important;
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  --pf-v6-c-sidebar__content--MaxWidth: none !important;
+  --pf-v6-c-sidebar__content--FlexBasis: 0 !important;
+  --pf-v6-c-sidebar__content--Width: 100% !important;
+  --pf-v6-c-sidebar__content--md--MaxWidth: none !important;
+  --pf-v6-c-sidebar__content--lg--MaxWidth: none !important;
+  --pf-v6-c-sidebar__content--xl--MaxWidth: none !important;
+}
+
+/* Grid container - ensure it takes full width */
+.software-catalog-main .pf-c-sidebar__content > *,
+.software-catalog-main .pf-v6-c-sidebar__content > *,
+.software-catalog-main .pf-c-sidebar__content > div,
+.software-catalog-main .pf-v6-c-sidebar__content > div {
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+
+/* Filter Headings */
+.catalog-facets__heading {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  color: #151515;
+}
+
+.catalog-facets__heading-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.catalog-facets__heading-row .catalog-facets__heading {
+  margin: 0;
+  line-height: 1;
+}
+
+.catalog-facets__heading-row .pf-u-p-0 {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+/* Catalog version section spacing */
+.catalog-facets__catalog-version-section {
+  margin-bottom: 0;
+}
+
+.catalog-facets__catalog-version-section .catalog-facets__heading-row {
+  margin-bottom: 16px;
+}
+
+.catalog-facets__catalog-version-section .pf-c-form__group {
+  margin-bottom: 0;
+}
+
+/* Type section spacing - 24px above */
+.catalog-facets__type-section {
+  padding-top: 24px !important;
+}
+
+/* Filter Lists */
+.catalog-facets__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.catalog-facets__list li {
+  margin-bottom: 4px;
+}
+
+.catalog-facets__list li:last-child {
+  margin-bottom: 0;
+}
+
+/* Filter Buttons (for Type section) */
+.catalog-facets__button {
+  justify-content: flex-start;
+  width: 100%;
+  text-align: left;
+  padding: 4px 8px;
+  font-size: 14px;
+  color: #151515;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.catalog-facets__button:hover {
+  background-color: #f0f0f0;
+}
+
+.catalog-facets__button--active {
+  color: #06c;
+  font-weight: 600;
+  background-color: #e7f1fa;
+}
+
+.catalog-facets__show-more {
+  margin-top: 4px;
+  padding: 4px 8px;
+  font-size: 14px;
+  color: #06c;
+}
+
+.catalog-facets__catalog-version {
+  margin-bottom: 24px;
+}
+
+.catalog-version__toggle-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+}
+
+.catalog-version__badge {
+  font-size: 11px;
+  line-height: 1;
+}
+
+.catalog-facets__subheading {
+  font-size: 13px;
+  font-weight: 600;
+  color: #151515;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+/* Operator Cards Grid - Flexible, adapts to screen size */
+.catalog-grid,
+div.catalog-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+  gap: 20px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+}
+
+.catalog-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+  background-color: #ffffff;
+  border: 1px solid #d2d2d2;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.catalog-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Card header - icon left, label positioned top-right */
+.catalog-card__header {
+  position: relative;
+  padding: 20px;
+}
+
+.catalog-card__icon {
+  line-height: 0;
+}
+
+.catalog-card__label {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+/* Card body */
+.catalog-card__body {
+  flex: 1;
+  padding: 0 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Title */
+.catalog-card__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #151515;
+  line-height: 1.4;
+}
+
+/* Provider text */
+.catalog-card__provider {
+  color: #6a6e73;
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Description - limit to 4 lines */
+.catalog-card__description {
+  color: #151515;
+  font-size: 14px;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 8px 0 0 0;
+}
+
+.catalog-card__footer {
+  padding: 16px 20px;
+  border-top: 1px solid #f0f0f0;
+  background-color: #fafafa;
+}
+
+/* Labels in cards */
+.catalog-card .pf-c-label-group {
+  margin-bottom: 8px;
+}
+
+.catalog-card .pf-c-label {
+  font-size: 12px;
+  margin-right: 4px;
+  margin-bottom: 4px;
+}
+
+/* Checkboxes in sidebar */
+.catalog-facets__list .pf-c-check {
+  margin-bottom: 0;
+}
+
+.catalog-facets__list .pf-c-check__label {
+  font-size: 14px;
+  color: #151515;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.catalog-facets__list .pf-c-check__input:checked + .pf-c-check__label {
+  font-weight: 600;
+}
+
+/* Drawer/Details */
+.catalog-details__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.catalog-details__source {
+  color: #6a6e73;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Install Modal */
+.catalog-install__summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Empty State */
+.catalog-empty__icon {
+  font-size: 48px;
+  color: #6a6e73;
+  text-align: center;
+}
+
+/* Remove extra gaps from Sidebar */
+.software-catalog-main .pf-c-sidebar__main,
+.software-catalog-main .pf-v6-c-sidebar__main {
+  gap: 0 !important;
+}
+
+/* Stack spacing inside sidebar - no gap, controlled by individual sections */
+.software-catalog-main .pf-c-sidebar__panel .pf-c-stack,
+.software-catalog-main .pf-v6-c-sidebar__panel .pf-c-stack,
+.software-catalog-main .pf-c-sidebar__panel .pf-v6-c-stack,
+.software-catalog-main .pf-v6-c-sidebar__panel .pf-v6-c-stack {
+  gap: 0 !important;
+}
+
+.software-catalog-main .pf-c-sidebar__panel .pf-c-stack__item,
+.software-catalog-main .pf-v6-c-sidebar__panel .pf-v6-c-stack__item {
+  margin-bottom: 0 !important;
+}
+
+.software-catalog-main .pf-c-sidebar__panel .pf-c-stack__item:last-child,
+.software-catalog-main .pf-v6-c-sidebar__panel .pf-v6-c-stack__item:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Divider in sidebar - 24px spacing above and below for section separation */
+.software-catalog-main .pf-c-divider,
+.software-catalog-main .pf-v6-c-divider {
+  margin: 24px 0 24px 0 !important;
+  background-color: #e0e0e0 !important;
+  height: 1px !important;
+}
+
+/* Catalog version dropdown */
+.catalog-facets__catalog-version .pf-c-select,
+.catalog-facets__catalog-version .pf-c-dropdown {
+  width: 100%;
+}
+
+.catalog-facets__catalog-version .pf-c-select__toggle,
+.catalog-facets__catalog-version .pf-c-menu-toggle {
+  width: 100%;
+}
+
+/* Ensure page doesn't shift when drawer opens */
+.software-catalog-page {
+  position: relative;
+  width: 100%;
+}
+
+/* Responsive - adjust grid minimum size on small screens */
+@media (max-width: 768px) {
+  .catalog-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+    gap: 16px !important;
+  }
+  
+  .software-catalog-main .pf-c-sidebar__panel,
+  .software-catalog-main .pf-v6-c-sidebar__panel {
+    width: 200px !important;
+    min-width: 200px !important;
+    padding: 16px !important;
+  }
+  
+  .software-catalog-main .pf-c-sidebar__content,
+  .software-catalog-main .pf-v6-c-sidebar__content {
+    padding: 16px !important;
+  }
+  
+  .software-catalog-header,
+  .software-catalog-breadcrumb,
+  .software-catalog-toolbar {
+    padding: 16px !important;
+  }
+}

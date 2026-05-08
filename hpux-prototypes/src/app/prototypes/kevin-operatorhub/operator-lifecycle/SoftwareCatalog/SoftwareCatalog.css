@@ -1,0 +1,112 @@
+.catalog-app {
+  background-color: var(--pf-global--BackgroundColor--100);
+  min-height: 100%;
+}
+
+.catalog-app__sidebar .pf-c-sidebar__panel {
+  border-right: 1px solid var(--pf-global--BorderColor--200);
+  background-color: var(--pf-global--BackgroundColor--100);
+}
+
+.catalog-facets__heading {
+  margin-bottom: 0;
+}
+
+.catalog-facets__heading-row {
+  display: flex;
+  align-items: center;
+  gap: var(--pf-global--spacer--sm);
+}
+
+.catalog-facets__button {
+  justify-content: flex-start;
+  width: 100%;
+  text-align: left;
+}
+
+.catalog-facets__button--active {
+  color: var(--pf-global--primary-color--100);
+  font-weight: var(--pf-global--FontWeight--semi-bold);
+}
+
+.catalog-facets__show-more {
+  margin-top: var(--pf-global--spacer--xs);
+}
+
+.catalog-facets__catalog-version {
+  margin-top: var(--pf-global--spacer--sm);
+  padding-left: var(--pf-global--spacer--lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-global--spacer--xs);
+}
+
+.catalog-version__toggle-text {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pf-global--spacer--sm);
+}
+
+.catalog-version__badge {
+  font-size: var(--pf-global--FontSize--xs);
+  line-height: 1.1;
+  margin-left: 0;
+}
+
+.catalog-grid {
+  --pf-l-gallery--GridTemplateColumns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+.catalog-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.catalog-card__body {
+  flex: 1;
+}
+
+.catalog-card__description {
+  color: var(--pf-global--Color--200);
+  font-size: var(--pf-global--FontSize--sm);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.catalog-card__footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pf-global--spacer--sm);
+}
+
+.catalog-details__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--pf-global--spacer--md);
+}
+
+.catalog-details__source {
+  color: var(--pf-global--Color--200);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.catalog-install__summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--pf-global--spacer--md);
+}
+
+.catalog-install__modal .pf-c-modal__body {
+  padding-top: var(--pf-global--spacer--lg);
+}
+
+.catalog-empty__icon {
+  font-size: 3rem;
+  color: var(--pf-global--Color--200);
+}
