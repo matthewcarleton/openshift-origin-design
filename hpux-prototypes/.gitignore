@@ -10,6 +10,9 @@ storybook-static
 .env
 # Never commit a Jira token; default is ~/.jira-token
 .jira-token
+
+# Internal AI workflow rules (not for public contributors)
+.cursor/rules/jira-direct-api.mdc
 .history
 node_modules
 src/app/prototypes/shiri-alerting-ui-v2/data/monitoring-plugin/

@@ -5,7 +5,7 @@
 set -euo pipefail
 
 JIRA_BASE_URL="${JIRA_BASE_URL:-https://redhat.atlassian.net/rest/api/3}"
-JIRA_EMAIL="${JIRA_EMAIL:-fkargbo@redhat.com}"
+JIRA_EMAIL="${JIRA_EMAIL:-your-email@redhat.com}"  # override with JIRA_EMAIL env var
 JIRA_TOKEN_FILE="${JIRA_TOKEN_FILE:-$HOME/.jira-token}"
 
 _jira_token() {

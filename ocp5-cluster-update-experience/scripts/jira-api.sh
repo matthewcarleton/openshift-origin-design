@@ -4,7 +4,7 @@
 set -euo pipefail
 
 : "${JIRA_BASE_URL:=https://redhat.atlassian.net/rest/api/3}"
-: "${JIRA_USER:=khatchou@redhat.com}"
+: "${JIRA_USER:=your-email@redhat.com}"  # override with JIRA_USER env var
 : "${JIRA_TOKEN_FILE:=$HOME/.jira-token}"
 
 _jira_token() {

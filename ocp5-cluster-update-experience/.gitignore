@@ -6,3 +6,7 @@ dist/
 .env.*
 !.env.example
 .vercel
+
+# Internal AI workflow rules and skills (not for public contributors)
+.cursor/rules/jira-direct-api.mdc
+.cursor/skills/create-hpux-ticket/
