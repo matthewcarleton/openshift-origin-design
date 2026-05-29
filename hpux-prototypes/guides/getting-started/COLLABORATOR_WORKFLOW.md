@@ -11,8 +11,8 @@ This ensures your work is isolated in a feature branch from the start, making it
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/kuklas/HPUX-Prototypes.git
-cd HPUX-Prototypes
+git clone https://github.com/matthewcarleton/openshift-origin-design.git
+cd openshift-origin-design/hpux-prototypes
 ```
 
 ### 2. Check Current Branch
@@ -196,8 +196,8 @@ When your prototype is ready:
 
 ```bash
 # 1. Clone
-git clone https://github.com/kuklas/HPUX-Prototypes.git
-cd HPUX-Prototypes
+git clone https://github.com/matthewcarleton/openshift-origin-design.git
+cd openshift-origin-design/hpux-prototypes
 
 # 2. Create branch
 git checkout ux-prototypes

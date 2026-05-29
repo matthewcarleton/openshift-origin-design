@@ -20,7 +20,7 @@ git commit -m "Test: Stefan updates RBAC prototype"
 git push origin stefan-rbac
 
 # 5. Verify on GitHub
-# Go to: https://github.com/kuklas/HPUX-Prototypes/tree/stefan-rbac
+# Go to: https://github.com/matthewcarleton/openshift-origin-design/tree/stefan-rbac
 # You should see the change only on stefan-rbac branch
 ```
 
@@ -30,8 +30,8 @@ git push origin stefan-rbac
 ```bash
 # 1. Go to a different directory
 cd ~/Desktop
-git clone https://github.com/kuklas/HPUX-Prototypes.git HPUX-Prototypes-Test
-cd HPUX-Prototypes-Test
+git clone https://github.com/matthewcarleton/openshift-origin-design.git openshift-origin-design-test
+cd openshift-origin-design-test/hpux-prototypes
 
 # 2. Install dependencies
 npm install

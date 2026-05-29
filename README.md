@@ -48,7 +48,7 @@ Edit Markdown under `designs/`, `conventions/`, or `research/`. The published si
 
 **Private prototypes:** set `private: true` in the prototype's `prototype.config.ts` to hide it from the launcher and hub listing while keeping direct URL access. See `hpux-prototypes/src/app/prototypes/_template/prototype.config.ts` for the field.
 
-**Upstream sync:** `hpux-prototypes/` is vendored from [kuklas/HPUX-Prototypes](https://github.com/kuklas/HPUX-Prototypes); see [hpux-prototypes/VENDOR.md](hpux-prototypes/VENDOR.md).
+**Hub embed & deploy:** `hpux-prototypes/` lives in this monorepo; see [hpux-prototypes/VENDOR.md](hpux-prototypes/VENDOR.md) for hub build paths and GitHub Pages deploy.
 
 ### Hub and embed builds
 

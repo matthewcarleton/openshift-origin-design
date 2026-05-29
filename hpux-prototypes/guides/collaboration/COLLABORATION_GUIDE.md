@@ -4,8 +4,8 @@
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/kuklas/HPUX-Prototypes.git
-cd HPUX-Prototypes
+git clone https://github.com/matthewcarleton/openshift-origin-design.git
+cd openshift-origin-design/hpux-prototypes
 ```
 
 ### 2. Install Dependencies

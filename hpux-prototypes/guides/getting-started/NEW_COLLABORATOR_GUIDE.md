@@ -21,10 +21,10 @@ Before you start, make sure you have:
 
 ```bash
 # Clone the repository
-git clone https://github.com/kuklas/HPUX-Prototypes.git
+git clone https://github.com/matthewcarleton/openshift-origin-design.git
 
-# Navigate into the directory
-cd HPUX-Prototypes
+# Navigate into the prototypes app
+cd openshift-origin-design/hpux-prototypes
 ```
 
 ---
@@ -281,7 +281,7 @@ When your prototype is ready:
    ```
 
 2. **Go to GitHub:**
-   - Visit: https://github.com/kuklas/HPUX-Prototypes
+   - Visit: https://github.com/matthewcarleton/openshift-origin-design
    - Click "Pull requests" → "New pull request"
    - Select your branch: `your-name-feature`
    - Base branch: `ux-prototypes`

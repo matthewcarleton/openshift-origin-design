@@ -10,8 +10,8 @@ This is **Version 2** of the Cluster Observability Operator Installation Wizard.
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/kuklas/HPUX-Prototypes.git
-   cd HPUX-Prototypes
+   git clone https://github.com/matthewcarleton/openshift-origin-design.git
+   cd openshift-origin-design/hpux-prototypes
    ```
 
 2. **Create your feature branch FIRST:**
