@@ -33,8 +33,8 @@ export default merge(common('production'), {
         test: /\.css$/,
         include: [
           ...stylePaths,
-          path.resolve('./node_modules/@patternfly/chatbot'),
-          path.resolve('./node_modules/highlight.js'),
+          /node_modules[\\/]@patternfly[\\/]chatbot/,
+          /node_modules[\\/]highlight\.js/,
         ],
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
