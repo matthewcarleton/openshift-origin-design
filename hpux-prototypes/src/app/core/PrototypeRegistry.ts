@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { PrototypeModule, PrototypeRegistryEntry, PrototypeFilters } from './types';
+import { PrototypeModule, PrototypeRegistryEntry, PrototypeFilters, isPrototypeListed } from './types';
 
 /**
  * Global prototype registry
@@ -43,17 +43,24 @@ class PrototypeRegistry {
   }
 
   /**
-   * Get all registered prototypes
+   * Get all registered prototypes (includes private — for deep links and registry lookup).
    */
   getAll(): PrototypeModule[] {
     return Array.from(this.prototypes.values()).map(entry => entry.module);
   }
 
   /**
-   * Get filtered prototypes
+   * Prototypes visible in launcher / index listings (excludes `private: true`).
+   */
+  getListed(): PrototypeModule[] {
+    return this.getAll().filter((p) => isPrototypeListed(p.config));
+  }
+
+  /**
+   * Get filtered prototypes (listed only; private prototypes are never included).
    */
   filter(filters: PrototypeFilters): PrototypeModule[] {
-    let prototypes = this.getAll();
+    let prototypes = this.getListed();
 
     // Filter by status
     if (filters.status && filters.status.length > 0) {
@@ -101,26 +108,26 @@ class PrototypeRegistry {
    * Get prototypes by status
    */
   getByStatus(status: string): PrototypeModule[] {
-    return this.getAll().filter(p => p.config.status === status);
+    return this.getListed().filter(p => p.config.status === status);
   }
 
   /**
-   * Get all unique tags across all prototypes
+   * Get all unique tags across listed prototypes
    */
   getAllTags(): string[] {
     const tags = new Set<string>();
-    this.getAll().forEach(p => {
+    this.getListed().forEach(p => {
       p.config.tags.forEach(tag => tags.add(tag));
     });
     return Array.from(tags).sort();
   }
 
   /**
-   * Get all unique owners across all prototypes
+   * Get all unique owners across listed prototypes
    */
   getAllOwners(): string[] {
     const owners = new Set<string>();
-    this.getAll().forEach(p => {
+    this.getListed().forEach(p => {
       owners.add(p.config.owner.name);
     });
     return Array.from(owners).sort();
@@ -130,7 +137,7 @@ class PrototypeRegistry {
    * Get children of a parent prototype
    */
   getChildren(parentId: string): PrototypeModule[] {
-    return this.getAll()
+    return this.getListed()
       .filter(p => p.config.parentId === parentId)
       .sort((a, b) => (a.config.childOrder || 0) - (b.config.childOrder || 0));
   }
@@ -139,14 +146,14 @@ class PrototypeRegistry {
    * Get all parent prototypes
    */
   getParents(): PrototypeModule[] {
-    return this.getAll().filter(p => p.config.isParent === true);
+    return this.getListed().filter(p => p.config.isParent === true);
   }
 
   /**
-   * Get all top-level prototypes (parents + standalones)
+   * Get all top-level listed prototypes (parents + standalones; excludes private).
    */
   getTopLevel(): PrototypeModule[] {
-    return this.getAll().filter(p => !p.config.parentId);
+    return this.getListed().filter(p => !p.config.parentId);
   }
 
   /**

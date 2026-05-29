@@ -4,14 +4,15 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "sync:hpux-private-ids": "node ./scripts/discover-hpux-private-prototypes.mjs",
+    "dev": "npm run sync:hpux-private-ids && vite",
     "build:ome": "node ./scripts/build-ome-embed.mjs",
     "build:osac": "node ./scripts/build-osac-embed.mjs",
     "build:hpux": "node ./scripts/build-hpux-prototypes-embed.mjs",
     "build:rhacs": "node ./scripts/build-rhacs-embed.mjs",
     "build:ocp5-cluster-update": "node ./scripts/build-ocp5-cluster-update-embed.mjs",
     "sync:jira-manifest": "node ./scripts/sync-jira-manifest.mjs",
-    "build": "tsc -b && vite build && cp dist/index.html dist/404.html",
+    "build": "npm run sync:hpux-private-ids && tsc -b && vite build && cp dist/index.html dist/404.html",
     "preview": "vite preview",
     "lint": "eslint . --max-warnings 0"
   },

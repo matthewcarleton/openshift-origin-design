@@ -32,7 +32,7 @@ Ask:
 Ask (skip what they already answered):
 
 2. **Which entry?** — hub card title, `jiraKey`, team page, `prototypeUrl`, or path under `hpux-prototypes/`.
-3. **What changes?** — hub manifest only (`prototypes.manifest.json`), prototype code/assets, embed URL, copy/metadata (title, persona, Jira link), or several of these.
+3. **What changes?** — hub manifest only (`prototypes.manifest.json`), prototype code/assets, embed URL, copy/metadata (title, persona, Jira link, design doc / recording URLs), or several of these.
 4. **Jira** — does the ticket / fixVersion / workflow status need refreshing on the card? Run **`npm run sync:jira-manifest`** from `hub/` after manifest edits (needs `~/.jira-token`).
 
 Then: locate the manifest entry (and code paths if any), apply edits, bump `updatedAt`, run checks from **Running locally** if relevant, draft commit + MR notes.
@@ -46,7 +46,9 @@ Ask (skip what they already answered):
 4. **What they’re shipping** — e.g. PatternFly prototype under `hpux-prototypes/` (embed link), static/site URL, OME/OSAC-style embed route, or **manifest-only** until hosted (`prototypeUrl: null`).
 5. **Jira** — real issue key and `https://redhat.atlassian.net/browse/…` or `https://issues.redhat.com/browse/…` (avoid using registry slugs as `jiraKey` when a real ticket exists).
 6. **Persona** (optional) — one line for the card; use **admin** not **administrator** per team wording norms.
-7. **Author** — full name; **updatedAt** — `YYYY-MM-DD` for today or last meaningful change.
+7. **Design doc** (optional) — `designDocUrl`: link to the UX spec / problem statement (Confluence, Google Doc, in-repo doc, etc.).
+8. **Recording** (optional) — `prototypeRecordingUrl`: link to a short walkthrough (Loom, Meet recording, Drive, etc.).
+9. **Author** — full name; **updatedAt** — `YYYY-MM-DD` for today or last meaningful change.
 
 Then: add the `prototypes` entry (and register in hpux or wire URL/embed as needed), follow **Manifest structure** and repo layout, draft commit + MR.
 
@@ -118,11 +120,13 @@ Append to `prototypes` (and optionally `teams`). Example:
   "updatedAt": "2026-04-28",
   "jiraKey": "ROX-22407",
   "jiraUrl": "https://redhat.atlassian.net/browse/ROX-22407",
-  "prototypeUrl": null
+  "prototypeUrl": null,
+  "designDocUrl": "https://redhat.atlassian.net/wiki/spaces/...",
+  "prototypeRecordingUrl": "https://www.loom.com/share/..."
 }
 ```
 
-**Common fields:** `teamId`, `title` (Jira summary), `author`, `updatedAt`, `jiraKey`, `jiraUrl` (browse URL for the same issue), `prototypeUrl`. Optional: `description`, `persona`. **Do not** add manual `status` / `release`; run **`npm run sync:jira-manifest`** to fill `jiraIssueStatus` and `jiraIssueRelease`. If `jiraKey` / `jiraUrl` are missing or invalid, the hub shows a **Jira ticket needed** warning on the card.
+**Common fields:** `teamId`, `title` (Jira summary), `author`, `updatedAt`, `jiraKey`, `jiraUrl` (browse URL for the same issue), `prototypeUrl`. Optional: `description`, `persona`, **`designDocUrl`** (UX / design doc), **`prototypeRecordingUrl`** (walkthrough or demo recording). Hub cards **always** show both slots; empty fields appear as “Not linked” until URLs are set. **Do not** add manual `status` / `release`; run **`npm run sync:jira-manifest`** to fill `jiraIssueStatus` and `jiraIssueRelease`. If `jiraKey` / `jiraUrl` are missing or invalid, the hub shows a **Jira ticket needed** warning on the card.
 
 Valid **`teamId`** values come from the manifest `teams` array (`acs`, `acm`, `virtualization`, …) **or** a `crossProducts` `id` when the prototype belongs on a cross-lane listing (e.g. **`rbac`** for ACM RBAC fleet/tenant/empty-state builds). New product areas need a `teams` entry and icon from `hub/src/iconImports.tsx`; cross-lanes are already defined under `crossProducts` and use the hub route `/cross-product/<id>`.
 

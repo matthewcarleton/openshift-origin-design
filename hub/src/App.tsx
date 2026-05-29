@@ -1,4 +1,4 @@
-import type { Dispatch, ReactNode, SetStateAction } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
@@ -16,15 +16,20 @@ import {
 } from "react-router-dom";
 
 import ExternalLinkAltIcon from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
-import OutlinedClockIcon from "@patternfly/react-icons/dist/js/icons/outlined-clock-icon";
-import ExclamationTriangleIcon from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
-import UserIcon from "@patternfly/react-icons/dist/js/icons/user-icon";
 
 import manifestRaw from "./data/prototypes.manifest.json";
 import { pfIcon, type PfIconComponent } from "./iconImports";
 
 import type { IconKey } from "./iconImports";
 import type { ManifestCrossProductEntry, ManifestPrototypeEntry, ManifestTeamEntry, PrototypesManifest } from "./manifest.types";
+import {
+  isPublicManifestEntry,
+  manifestPrototypeEntryMatchesSearchQuery,
+  privateManifestEntryMatchesSearchQuery,
+  resolvePrivatePrototypeContact,
+} from "./manifestVisibility";
+import { PrivatePrototypeCard } from "./PrivatePrototypeCard";
+import { PrototypeEntryCard } from "./PrototypeEntryCard";
 
 import {
   Breadcrumb,
@@ -32,7 +37,6 @@ import {
   Brand,
   Button,
   Card,
-  CardBody,
   CardHeader,
   CardTitle,
   Content,
@@ -43,7 +47,6 @@ import {
   Grid,
   GridItem,
   Icon,
-  Label,
   Masthead,
   MastheadBrand,
   MastheadContent,
@@ -55,7 +58,6 @@ import {
   PageSection,
   TextInput,
   Title,
-  Tooltip,
 } from "@patternfly/react-core";
 
 const manifest = manifestRaw as unknown as PrototypesManifest;
@@ -64,15 +66,29 @@ const TEAM_BY_ID = new Map(manifest.teams.map((item) => [item.id, item]));
 
 const CROSS_PRODUCT_BY_ID = new Map(manifest.crossProducts.map((item) => [item.id, item]));
 
+interface TeamPrototypeBucket {
+  public: ManifestPrototypeEntry[];
+  private: ManifestPrototypeEntry[];
+}
+
 const PROTOTYPES_BY_TEAM = (() => {
-  const map = new Map<string, ManifestPrototypeEntry[]>();
+  const map = new Map<string, TeamPrototypeBucket>();
   for (const p of manifest.prototypes) {
-    const list = map.get(p.teamId) ?? [];
-    list.push(p);
-    map.set(p.teamId, list);
+    const bucket = map.get(p.teamId) ?? { public: [], private: [] };
+    if (isPublicManifestEntry(p)) bucket.public.push(p);
+    else bucket.private.push(p);
+    map.set(p.teamId, bucket);
   }
   return map;
 })();
+
+function teamPrototypeBucket(teamId: string): TeamPrototypeBucket {
+  return PROTOTYPES_BY_TEAM.get(teamId) ?? { public: [], private: [] };
+}
+
+function areaMaintainerForTeamId(teamId: string): string | undefined {
+  return TEAM_BY_ID.get(teamId)?.maintainer ?? CROSS_PRODUCT_BY_ID.get(teamId)?.maintainer;
+}
 
 /** Cross-product lanes that list hub prototypes use the same detail UI as product teams. */
 function crossProductToTeamEntry(item: ManifestCrossProductEntry): ManifestTeamEntry {
@@ -83,36 +99,6 @@ function crossProductToTeamEntry(item: ManifestCrossProductEntry): ManifestTeamE
     lastUpdated: "2026-05-05",
     maintainer: item.maintainer,
   };
-}
-
-const JIRA_ISSUE_KEY_IN_URL_RE = /\/browse\/([A-Za-z][A-Za-z0-9_]+-\d+)/;
-const JIRA_ISSUE_KEY_STANDALONE_RE = /^[A-Z][A-Z0-9_]+-\d+$/;
-
-function parseManifestJiraIssueKey(entry: ManifestPrototypeEntry): string | null {
-  const url = typeof entry.jiraUrl === "string" ? entry.jiraUrl.trim() : "";
-  const fromUrl = url.match(JIRA_ISSUE_KEY_IN_URL_RE);
-  if (fromUrl) return fromUrl[1].toUpperCase();
-  const k = typeof entry.jiraKey === "string" ? entry.jiraKey.trim() : "";
-  if (JIRA_ISSUE_KEY_STANDALONE_RE.test(k)) return k;
-  return null;
-}
-
-function manifestEntryHasLinkedJira(entry: ManifestPrototypeEntry): boolean {
-  return parseManifestJiraIssueKey(entry) !== null;
-}
-
-type HubJiraStatusLabelColor = "blue" | "green" | "grey" | "orange" | "purple" | "red" | "teal" | "orangered" | "yellow";
-
-function jiraWorkflowStatusToLabel(
-  jiraStatus: string,
-): { label: string; color: HubJiraStatusLabelColor } {
-  const s = jiraStatus.toLowerCase();
-  if (/(done|closed|complete|resolved|released)/.test(s)) return { label: jiraStatus, color: "green" };
-  if (/(in progress|implementation|development)/.test(s)) return { label: jiraStatus, color: "blue" };
-  if (/(review|triage|pending|qa|verification)/.test(s)) return { label: jiraStatus, color: "orange" };
-  if (/(block|on hold|waiting|stuck)/.test(s)) return { label: jiraStatus, color: "red" };
-  if (/(backlog|open|new|to do|todo|draft|selected|ready)/.test(s)) return { label: jiraStatus, color: "grey" };
-  return { label: jiraStatus, color: "grey" };
 }
 
 const openshiftMarkSrc = `${import.meta.env.BASE_URL}openshift-mark.png`;
@@ -130,11 +116,6 @@ function formatDisplayedDate(raw: string) {
     month: "short",
     day: "numeric",
   });
-}
-
-function isHubInternalPrototypePath(href: string | undefined | null): boolean {
-  if (!href) return false;
-  return href.startsWith("/") && !href.startsWith("//");
 }
 
 function useEmbedFullscreenChrome() {
@@ -265,7 +246,15 @@ function TeamPfIcon({
   );
 }
 
-function TeamListingCard({ team, prototypeCount }: { team: ManifestTeamEntry; prototypeCount: number }) {
+function TeamListingCard({
+  team,
+  publicCount,
+  privateCount,
+}: {
+  team: ManifestTeamEntry;
+  publicCount: number;
+  privateCount: number;
+}) {
   return (
     <Card isCompact isFullHeight ouiaSafe isClickable>
       <CardHeader>
@@ -276,8 +265,13 @@ function TeamListingCard({ team, prototypeCount }: { team: ManifestTeamEntry; pr
           <FlexItem grow={{ default: "grow" }}>
             <CardTitle>{team.name}</CardTitle>
             <Content component={ContentVariants.small}>
-              {prototypeCount === 1 ? "1 prototype" : `${prototypeCount} prototypes`}
+              {publicCount === 1 ? "1 prototype" : `${publicCount} prototypes`}
             </Content>
+            {privateCount > 0 ? (
+              <Content component={ContentVariants.small}>
+                {privateCount === 1 ? "1 private prototype" : `${privateCount} private prototypes`}
+              </Content>
+            ) : null}
             <Content component={ContentVariants.small}>Last updated {formatDisplayedDate(team.lastUpdated)}</Content>
             <Content component={ContentVariants.small}>
               Maintainer: {team.maintainer}
@@ -290,7 +284,9 @@ function TeamListingCard({ team, prototypeCount }: { team: ManifestTeamEntry; pr
 }
 
 function CrossProductCard({ item }: { item: ManifestCrossProductEntry }) {
-  const hubListed = (PROTOTYPES_BY_TEAM.get(item.id) ?? []).length;
+  const bucket = teamPrototypeBucket(item.id);
+  const hubListed = bucket.public.length;
+  const hubPrivate = bucket.private.length;
   const IconStyle: PfIconComponent = pfIcon(item.icon);
 
   return (
@@ -313,170 +309,17 @@ function CrossProductCard({ item }: { item: ManifestCrossProductEntry }) {
               <Content component={ContentVariants.small}>
                 {hubListed === 1 ? "1 prototype" : `${hubListed} prototypes`}
               </Content>
+              {hubPrivate > 0 ? (
+                <Content component={ContentVariants.small}>
+                  {hubPrivate === 1 ? "1 private prototype" : `${hubPrivate} private prototypes`}
+                </Content>
+              ) : null}
               <Content component={ContentVariants.small}>Maintainer: {item.maintainer}</Content>
             </FlexItem>
           </Flex>
         </CardHeader>
       </Card>
     </Link>
-  );
-}
-
-function PrototypeEntryCard({ entry }: { entry: ManifestPrototypeEntry }) {
-  const primaryHref = entry.prototypeUrl ?? entry.jiraUrl ?? "";
-  const jiraSeparate = Boolean(entry.prototypeUrl && entry.jiraUrl);
-  const internalPrimary = isHubInternalPrototypePath(entry.prototypeUrl);
-  const isExternalPrimary = !internalPrimary && /^https?:\/\//.test(primaryHref);
-  const openLabel = entry.prototypeUrl ? "Open prototype" : "View prototype";
-  const persona = typeof entry.persona === "string" ? entry.persona.trim() : "";
-  const personaLabel = persona.length > 0 ? persona : null;
-  const description =
-    typeof entry.description === "string" && entry.description.trim().length > 0 ? entry.description.trim() : null;
-
-  const rowIcon = (glyph: ReactNode) => (
-    <FlexItem className="ops-hub-prototype-card__row-icon">
-      <Icon size="bodySm" iconSize="sm" status="custom" isInline aria-hidden>
-        {glyph}
-      </Icon>
-    </FlexItem>
-  );
-
-  const primaryButton = internalPrimary ? (
-      <Button
-        className="ops-hub-prototype-card__open-btn"
-        variant="secondary"
-        size="sm"
-        {...({
-          component: Link,
-          to: entry.prototypeUrl as string,
-          children: openLabel,
-        } as Parameters<typeof Button>[0])}
-      />
-    ) : (
-      <Button
-        className="ops-hub-prototype-card__open-btn"
-        component="a"
-        variant="secondary"
-        href={primaryHref}
-        target={isExternalPrimary ? "_blank" : undefined}
-        rel={isExternalPrimary ? "noopener noreferrer" : undefined}
-        size="sm"
-      >
-        {openLabel}
-      </Button>
-    );
-
-  return (
-    <Card isCompact isFullHeight ouiaSafe className="ops-hub-prototype-card">
-      <CardBody className="ops-hub-prototype-card__body">
-        <Flex
-          className="ops-hub-prototype-card__layout"
-          direction={{ default: "column" }}
-          gap={{ default: "gapMd" }}
-        >
-          <FlexItem grow={{ default: "grow" }} className="ops-hub-prototype-card__main">
-            <Flex direction={{ default: "column" }} gap={{ default: "gapMd" }}>
-              <Flex direction={{ default: "column" }} gap={{ default: "gapSm" }} alignItems={{ default: "alignItemsFlexStart" }}>
-                <Flex
-                  className="ops-hub-prototype-card-meta"
-                  gap={{ default: "gapSm" }}
-                  alignItems={{ default: "alignItemsCenter" }}
-                  flexWrap={{ default: "wrap" }}
-                >
-                  {!manifestEntryHasLinkedJira(entry) ? (
-                    <FlexItem>
-                      <Tooltip content="Jira ticket needed">
-                        <Icon size="sm" iconSize="md" status="warning" isInline aria-label="Jira ticket needed">
-                          <ExclamationTriangleIcon />
-                        </Icon>
-                      </Tooltip>
-                    </FlexItem>
-                  ) : null}
-                  {manifestEntryHasLinkedJira(entry) && typeof entry.jiraIssueStatus === "string" && entry.jiraIssueStatus.trim().length > 0 ? (
-                    <FlexItem>
-                      {(() => {
-                        const st = jiraWorkflowStatusToLabel(entry.jiraIssueStatus.trim());
-                        return (
-                          <Label color={st.color} isCompact>
-                            {st.label}
-                          </Label>
-                        );
-                      })()}
-                    </FlexItem>
-                  ) : null}
-                  {manifestEntryHasLinkedJira(entry) ? (
-                    <FlexItem>
-                      <Label color={entry.jiraIssueRelease && entry.jiraIssueRelease.trim().length > 0 ? "teal" : "grey"} isCompact variant="outline">
-                        {entry.jiraIssueRelease && entry.jiraIssueRelease.trim().length > 0 ? entry.jiraIssueRelease.trim() : "No release"}
-                      </Label>
-                    </FlexItem>
-                  ) : null}
-                  {(jiraSeparate || (!entry.prototypeUrl && entry.jiraUrl)) && entry.jiraUrl ? (
-                    <FlexItem>
-                      <Button
-                        isInline
-                        component="a"
-                        variant="link"
-                        href={entry.jiraUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        size="sm"
-                      >
-                        {entry.jiraKey}
-                      </Button>
-                    </FlexItem>
-                  ) : null}
-                </Flex>
-                <div className="ops-hub-prototype-card__title-block">
-                  <Title headingLevel="h3" size="md">
-                    {entry.title}
-                  </Title>
-                </div>
-                {description ? (
-                  <Content
-                    component={ContentVariants.p}
-                    className="ops-hub-prototype-card__description"
-                  >
-                    {description}
-                  </Content>
-                ) : null}
-              </Flex>
-              <Flex
-                flexWrap={{ default: "wrap" }}
-                gap={{ default: "gapMd" }}
-                alignItems={{ default: "alignItemsFlexStart" }}
-              >
-                {rowIcon(<UserIcon />)}
-                <FlexItem>
-                  <Content component={ContentVariants.small}>By {entry.author}</Content>
-                </FlexItem>
-                {rowIcon(<OutlinedClockIcon />)}
-                <FlexItem grow={{ default: "grow" }}>
-                  <Content component={ContentVariants.small}>
-                    <time dateTime={entry.updatedAt}>{formatDisplayedDate(entry.updatedAt)}</time>
-                  </Content>
-                </FlexItem>
-              </Flex>
-            </Flex>
-          </FlexItem>
-          <Flex
-            className="ops-hub-prototype-card__footer"
-            alignItems={{ default: "alignItemsCenter" }}
-            flexWrap={{ default: "wrap" }}
-            gap={{ default: "gapMd" }}
-            style={{ width: "100%" }}
-          >
-            {personaLabel ? (
-              <FlexItem style={{ minWidth: 0 }}>
-                <span className="ops-hub-prototype-card__persona">{personaLabel}</span>
-              </FlexItem>
-            ) : null}
-            <FlexItem grow={{ default: "grow" }} style={{ minWidth: 0 }} />
-            <FlexItem>{primaryButton}</FlexItem>
-          </Flex>
-        </Flex>
-      </CardBody>
-    </Card>
   );
 }
 
@@ -589,29 +432,31 @@ function HubMasthead({
 
 function TeamDetailView({
   team,
-  entries,
+  publicEntries,
+  privateEntries,
   onNavigateHome,
   query,
 }: {
   team: ManifestTeamEntry;
-  entries: ManifestPrototypeEntry[];
+  publicEntries: ManifestPrototypeEntry[];
+  privateEntries: ManifestPrototypeEntry[];
   onNavigateHome: () => void;
   query: string;
 }) {
   const q = query.trim().toLowerCase();
 
-  const filtered = useMemo(() => {
-    if (!q) return entries;
-    return entries.filter(
-      (p) =>
-        p.title.toLowerCase().includes(q) ||
-        p.author.toLowerCase().includes(q) ||
-        p.jiraKey.toLowerCase().includes(q) ||
-        (p.description ?? "").toLowerCase().includes(q) ||
-        (p.jiraIssueStatus ?? "").toLowerCase().includes(q) ||
-        (p.jiraIssueRelease ?? "").toLowerCase().includes(q),
-    );
-  }, [entries, q]);
+  const filteredPublic = useMemo(() => {
+    if (!q) return publicEntries;
+    return publicEntries.filter((p) => manifestPrototypeEntryMatchesSearchQuery(p, q));
+  }, [publicEntries, q]);
+
+  const filteredPrivate = useMemo(() => {
+    if (!q) return privateEntries;
+    return privateEntries.filter((p) => privateManifestEntryMatchesSearchQuery(p, team.maintainer, q));
+  }, [privateEntries, q, team.maintainer]);
+
+  const totalListed = publicEntries.length + privateEntries.length;
+  const visibleCount = filteredPublic.length + filteredPrivate.length;
 
   return (
     <>
@@ -636,21 +481,29 @@ function TeamDetailView({
           {team.name} prototypes
         </Title>
         <Content component={ContentVariants.p}>
-          {filtered.length} of {entries.length}{" "}
-          {entries.length === 1 ? "prototype listed" : "prototypes listed"} for this area (use masthead search to filter).
+          {visibleCount} of {totalListed}{" "}
+          {totalListed === 1 ? "entry listed" : "entries listed"} for this area (use masthead search to filter).
+          {privateEntries.length > 0 ? (
+            <>
+              {" "}
+              {privateEntries.length === 1 ? "1 is a private prototype" : `${privateEntries.length} are private prototypes`}
+              {" "}
+              (restricted on the public hub).
+            </>
+          ) : null}
         </Content>
       </PageSection>
 
       <PageSection variant="default" isWidthLimited>
-        {filtered.length === 0 ? (
+        {visibleCount === 0 ? (
           <Content component={ContentVariants.p} style={{ marginTop: "var(--pf-t--global--spacer--md)" }}>
             Nothing matches &quot;{query}&quot;.
           </Content>
         ) : (
           <Grid hasGutter style={{ marginTop: "var(--pf-t--global--spacer--md)" }}>
-            {filtered.map((p) => (
+            {filteredPublic.map((p) => (
               <GridItem
-                key={`${team.id}:${p.title}:${p.jiraKey}:${p.updatedAt}`}
+                key={`public:${team.id}:${p.title}:${p.jiraKey}:${p.updatedAt}`}
                 span={12}
                 md={6}
                 lg={6}
@@ -658,6 +511,21 @@ function TeamDetailView({
                 style={{ display: "flex" }}
               >
                 <PrototypeEntryCard entry={p} />
+              </GridItem>
+            ))}
+            {filteredPrivate.map((entry) => (
+              <GridItem
+                key={`private:${team.id}:${entry.title}:${entry.jiraKey}:${entry.updatedAt}`}
+                span={12}
+                md={6}
+                lg={6}
+                xl={4}
+                style={{ display: "flex" }}
+              >
+                <PrivatePrototypeCard
+                  entry={entry}
+                  contactLabel={resolvePrivatePrototypeContact(entry, team.maintainer)}
+                />
               </GridItem>
             ))}
           </Grid>
@@ -763,14 +631,11 @@ function HubHomePage() {
 
   const filteredCross = useMemo(() => {
     const protoMatchesArea = (areaId: string) => {
-      return (PROTOTYPES_BY_TEAM.get(areaId) ?? []).some(
-        (p) =>
-          p.title.toLowerCase().includes(q) ||
-          p.author.toLowerCase().includes(q) ||
-          p.jiraKey.toLowerCase().includes(q) ||
-          (p.description ?? "").toLowerCase().includes(q) ||
-          (p.jiraIssueStatus ?? "").toLowerCase().includes(q) ||
-          (p.jiraIssueRelease ?? "").toLowerCase().includes(q),
+      const bucket = teamPrototypeBucket(areaId);
+      const maintainer = areaMaintainerForTeamId(areaId);
+      return (
+        bucket.public.some((p) => manifestPrototypeEntryMatchesSearchQuery(p, q)) ||
+        bucket.private.some((p) => privateManifestEntryMatchesSearchQuery(p, maintainer, q))
       );
     };
     if (!q) return manifest.crossProducts;
@@ -828,11 +693,11 @@ function HubHomePage() {
         ) : (
           <Grid hasGutter style={{ marginTop: "var(--pf-t--global--spacer--md)" }}>
             {filteredTeams.map((team) => {
-              const prototypeCount = (PROTOTYPES_BY_TEAM.get(team.id) ?? []).length;
+              const bucket = teamPrototypeBucket(team.id);
               return (
                 <GridItem key={team.id} span={12} md={6} lg={6} xl={4}>
                   <Link to={`/team/${team.id}`} className="ops-hub-team-card-link" aria-label={`Open prototypes for ${team.name}`}>
-                    <TeamListingCard team={team} prototypeCount={prototypeCount} />
+                    <TeamListingCard team={team} publicCount={bucket.public.length} privateCount={bucket.private.length} />
                   </Link>
                 </GridItem>
               );
@@ -927,6 +792,11 @@ function HubContributingPage() {
               </Button>
             </FlexItem>
             <FlexItem>
+              <Button variant="link" component="a" href="#record-meet" isInline size="sm">
+                Record (Meet)
+              </Button>
+            </FlexItem>
+            <FlexItem>
               <Button variant="link" component="a" href="#need-help" isInline size="sm">
                 Need help?
               </Button>
@@ -969,6 +839,12 @@ function HubContributingPage() {
               <em>I need to add to the design repo</em>, <em>help me add a prototype</em>, <em>set up my branch</em>,{" "}
               <em>register my prototype in the hub</em>, or <em>commit and push my changes</em>. It knows the conventions and
               manifest so you don’t have to.
+            </Content>
+            <Content component={ContentVariants.p} style={{ ...STEP_GAP, ...MW }}>
+              Prototype cards always show two slots — <strong>Design doc</strong> and <strong>Recording</strong>. They become
+              clickable links when the manifest entry includes <Code>designDocUrl</Code> and <Code>prototypeRecordingUrl</Code>;
+              otherwise they read <em>Not linked</em> until you add full URLs (Confluence, Google Docs, Loom, Drive, etc.). Ask the
+              skill to add or update those fields when you register or refresh a listing.
             </Content>
           </FlexItem>
         </Flex>
@@ -1075,6 +951,47 @@ function HubContributingPage() {
         </Content>
         <Content component={ContentVariants.p} style={{ ...STEP_GAP, ...MW }}>
           Screenshots or a short Loom are still useful when you only need a quick async opinion.
+        </Content>
+
+        <span id="record-meet" />
+        <SectionSpacer />
+        <Title headingLevel="h3" size="xl">
+          Record a walkthrough with Google Meet
+        </Title>
+        <Content component={ContentVariants.p} style={{ ...STEP_GAP, ...MW }}>
+          Record a short demo in Meet, then let Cursor do the wiring. You need a Google account where Meet can save to Drive — if
+          you don&apos;t see <strong>Record meeting</strong>, your admin may have it off; use another tool or ask IT.
+        </Content>
+        <Content component="ol" style={MW}>
+          <li>
+            Go to{" "}
+            <a href="https://meet.google.com/new" target="_blank" rel="noopener noreferrer">
+              meet.google.com
+            </a>{" "}
+            and start an instant meeting (only you need to join).
+          </li>
+          <li>
+            Click <strong>Present now</strong> → choose <strong>A window</strong> or <strong>A tab</strong> — pick the browser
+            window or tab that shows your prototype.
+          </li>
+          <li>
+            Open the meeting menu (<strong>⋮</strong> three dots, bottom of the call) → <strong>Record meeting</strong> → confirm.
+            A red <strong>REC</strong> indicator means it&apos;s recording.
+          </li>
+          <li>
+            Walk through the flow slowly; talk if it helps. A few clear minutes beats a long ramble.
+          </li>
+          <li>
+            Open the menu again → <strong>Stop recording</strong>, then leave the call. Meet puts the video in your
+            {" "}<strong>Google Drive</strong> (look in <strong>Meet Recordings</strong>).
+          </li>
+          <li>
+            In Drive, open the recording → <strong>Share</strong> → set access to <strong>Anyone with the link</strong> (or
+            whatever your team allows) → copy the link. Open <strong>Cursor</strong> chat and tell the assistant to{" "}
+            <strong>attach the recording to your prototype</strong> on the hub listing. <strong>Paste the recording link</strong>{" "}
+            into the chat. The <strong>prototype-contributor</strong> skill updates the manifest so the card <strong>Recording</strong>{" "}
+            button points at it.
+          </li>
         </Content>
 
         <SectionSpacer />
@@ -1404,11 +1321,17 @@ function HubCrossProductDetailPage() {
   const item = crossProductId ? CROSS_PRODUCT_BY_ID.get(crossProductId) : undefined;
   if (!item) return <Navigate to="/" replace />;
 
-  const entries = PROTOTYPES_BY_TEAM.get(item.id) ?? [];
+  const bucket = teamPrototypeBucket(item.id);
   const pseudoTeam = crossProductToTeamEntry(item);
 
   return (
-    <TeamDetailView team={pseudoTeam} entries={entries} onNavigateHome={() => setQuery("")} query={query} />
+    <TeamDetailView
+      team={pseudoTeam}
+      publicEntries={bucket.public}
+      privateEntries={bucket.private}
+      onNavigateHome={() => setQuery("")}
+      query={query}
+    />
   );
 }
 
@@ -1419,12 +1342,13 @@ function HubTeamDetailPage() {
   const team = teamId ? TEAM_BY_ID.get(teamId) : undefined;
   if (!team) return <Navigate to="/" replace />;
 
-  const entries = PROTOTYPES_BY_TEAM.get(team.id) ?? [];
+  const bucket = teamPrototypeBucket(team.id);
 
   return (
     <TeamDetailView
       team={team}
-      entries={entries}
+      publicEntries={bucket.public}
+      privateEntries={bucket.private}
       onNavigateHome={() => setQuery("")}
       query={query}
     />

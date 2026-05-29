@@ -10,6 +10,15 @@ remote_theme: "pmarsceill/just-the-docs@v0.2.7"
 #       path: "designs"
 #     values:
 #       permalink: /:title
+exclude:
+  - "*/node_modules"
+  - "node_modules"
+  - hpux-prototypes
+  - hub
+  - ome-console
+  - osac-demo
+  - rhacs-ux-prototypes
+
 aux_links:
   "GitHub repo":
     - "//github.com/openshift/openshift-origin-design"

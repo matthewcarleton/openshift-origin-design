@@ -42,6 +42,9 @@ export const config: PrototypeConfig = {
   
   // Tags for filtering and discovery
   tags: ['Draft', 'Template', 'Example'],
+
+  // Optional: hide from launcher / hub listing while keeping direct URL access
+  // private: true,
   
   // Metadata
   createdAt: '2025-01-10',

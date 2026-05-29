@@ -26,6 +26,11 @@ fs.rmSync(outDir, { recursive: true, force: true });
 
 execSync("npm ci", { cwd: hpuxRoot, stdio: "inherit" });
 
+execSync("node ./scripts/discover-hpux-private-prototypes.mjs", {
+  cwd: hubRoot,
+  stdio: "inherit",
+});
+
 /** Webpack: `ASSET_PATH` trailing slash); hub iframe loads `hpux-prototypes/index.html`. */
 execSync("npm run build", {
   cwd: hpuxRoot,

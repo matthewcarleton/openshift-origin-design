@@ -87,8 +87,8 @@ export const PrototypeProvider: React.FC<PrototypeProviderProps> = ({ children }
           return;
         }
 
-        const prototypes = prototypeRegistry.getAll();
-        console.log(`📦 Loaded ${prototypes.length} prototypes`, prototypes.map((p) => p.config.id));
+        const prototypes = prototypeRegistry.getListed();
+        console.log(`📦 Loaded ${prototypes.length} listed prototypes`, prototypes.map((p) => p.config.id));
         setAvailablePrototypes(prototypes);
 
         const params = new URLSearchParams(window.location.search);

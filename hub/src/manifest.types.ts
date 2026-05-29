@@ -34,11 +34,25 @@ export interface ManifestPrototypeEntry {
   /** Comma-separated Jira fixVersion names. Null/omitted when none. Filled by sync script. */
   jiraIssueRelease?: string | null;
   author: string;
+  /** Optional access contact when the card is private (falls back to author, then area maintainer). */
+  owner?: string;
+  designer?: string;
+  contact?: string;
+  team?: string;
   updatedAt: string;
   jiraKey: string;
   /** Issue or repo link; omit when the card should only show the prototype button (no secondary link). */
   jiraUrl?: string;
   prototypeUrl: string | null;
+  /** Design spec / UX doc (Confluence, Google Doc, markdown in repo, etc.). Opens in a new tab from the card when set. */
+  designDocUrl?: string | null;
+  /** Walkthrough or demo recording (Loom, Drive, etc.). Opens in a new tab from the card when set. */
+  prototypeRecordingUrl?: string | null;
+  /**
+   * When true, hide from hub listings and search. Use for embed-only cards without an hpux-prototypes config,
+   * or alongside `private: true` in hpux `prototype.config.ts` (hub also reads generated private-id list).
+   */
+  private?: boolean;
 }
 
 export interface PrototypesManifest {

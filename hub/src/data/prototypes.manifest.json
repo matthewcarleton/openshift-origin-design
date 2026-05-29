@@ -170,6 +170,7 @@
     },
     {
       "teamId": "sovereign-cloud",
+      "private": true,
       "title": "Develop OSAC Demo UI for Summit – Second Iteration",
       "description": "Bootstrap the environment, manage bare metal, and make Red Hat cloud-ready. Opens the separate Open Sovereign AI Cloud (enclave) prototype — same target as the legacy OSAC landing Infra Admin tile.",
       "persona": "Infrastructure admin",
@@ -183,6 +184,7 @@
     },
     {
       "teamId": "sovereign-cloud",
+      "private": true,
       "title": "Develop OSAC Demo UI for Summit – Second Iteration",
       "description": "Vertexa Cloud Solutions sign-in → full provider admin shell: tenants, platform services, infrastructure, and global policies (embedded OSAC bundle with ?entry=provider).",
       "persona": "Cloud provider operator",
@@ -196,6 +198,7 @@
     },
     {
       "teamId": "sovereign-cloud",
+      "private": true,
       "title": "Develop OSAC Demo UI for Summit – Second Iteration",
       "description": "Configure organization resources, users, quotas, and shared services for the North Summit tenant (dark-theme bank admin shell).",
       "persona": "Tenant admin",
@@ -209,6 +212,7 @@
     },
     {
       "teamId": "sovereign-cloud",
+      "private": true,
       "title": "Develop Landing Zone \"Bootstrap\" Demo UI - Second Iteration",
       "description": "Same tenant admin experience for the BlueSolace / Evergreen institution (light-theme shell).",
       "persona": "Tenant admin",
@@ -222,6 +226,7 @@
     },
     {
       "teamId": "sovereign-cloud",
+      "private": true,
       "title": "Develop OSAC Demo UI for Summit – Second Iteration",
       "description": "VM-as-a-Service workspace to create and manage virtual machines — North Summit line-of-business user path.",
       "persona": "Tenant user",
@@ -235,6 +240,7 @@
     },
     {
       "teamId": "sovereign-cloud",
+      "private": true,
       "title": "Develop Landing Zone \"Bootstrap\" Demo UI - Second Iteration",
       "description": "Same tenant user VM workspace for the BlueSolace institution.",
       "persona": "Tenant user",

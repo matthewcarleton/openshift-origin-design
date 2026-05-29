@@ -78,6 +78,11 @@ export interface PrototypeConfig {
   // Metadata
   createdAt: string;
   updatedAt: string;
+
+  /**
+   * When true, hide from launcher / index listings; prototype remains loadable via direct URL (?prototype= or path match).
+   */
+  private?: boolean;
   
   // Optional custom branding
   branding?: {
@@ -85,6 +90,11 @@ export interface PrototypeConfig {
     color?: string;
     banner?: string;
   };
+}
+
+/** Whether a prototype should appear in discovery UI (launcher, filters, hub-synced listings). */
+export function isPrototypeListed(config: PrototypeConfig): boolean {
+  return config.private !== true;
 }
 
 /**
