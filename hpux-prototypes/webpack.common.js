@@ -14,7 +14,7 @@ function assetPublicPath() {
   if (typeof raw === 'string' && raw.length > 0) {
     return raw.endsWith('/') ? raw : `${raw}/`;
   }
-  return process.env.NODE_ENV === 'production' ? '/HPUX-Prototypes/' : '/';
+  return process.env.NODE_ENV === 'production' ? '/openshift-origin-design/hpux-prototypes/' : '/';
 }
 
 /** React Router basename: no trailing slash; empty string = site root (dev). Must match stripping in deepLinkUtils. */

@@ -2,8 +2,8 @@
   "name": "acm-user-interface",
   "version": "1.0.0",
   "description": "Advanced Cluster Management User Interface with PatternFly",
-  "repository": "https://github.com/kuklas/HPUX-Prototypes.git",
-  "homepage": "https://kuklas.github.io/HPUX-Prototypes",
+  "repository": "https://github.com/matthewcarleton/openshift-origin-design.git",
+  "homepage": "https://matthewcarleton.github.io/openshift-origin-design/hpux-prototypes",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -24,7 +24,8 @@
     "build:bundle-profile": "webpack --config webpack.prod.js --profile --json > stats.json",
     "bundle-profile:analyze": "npm run build:bundle-profile && webpack-bundle-analyzer ./stats.json",
     "clean": "rimraf dist",
-    "deploy": "npm run build && gh-pages -d dist --add",
+    "build:pages": "ASSET_PATH=/openshift-origin-design/hpux-prototypes/ npm run build",
+    "deploy": "npm run build:pages && gh-pages -d dist --dest hpux-prototypes",
     "create-prototype": "node scripts/create-prototype.cjs",
     "create-draft": "node scripts/create-prototype.cjs",
     "new-prototype": "node scripts/create-prototype.cjs"

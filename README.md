@@ -10,7 +10,7 @@ This is an **internal design and prototyping workspace**, not a customer-facing 
 |----------|-----|
 | **Design documentation** (Jekyll) | [openshift.github.io/openshift-origin-design](https://openshift.github.io/openshift-origin-design/) |
 | **Prototype hub** (`hub/`) | Branch previews via GitHub Actions: `https://<owner>.github.io/<repo>/preview/<branch-slug>/` (see [Hub branch preview workflow](.github/workflows/hub-github-pages-preview.yml); open the latest run's job summary for the exact link) |
-| **HPUX Prototypes** (`hpux-prototypes/`) | [kuklas.github.io/HPUX-Prototypes](https://kuklas.github.io/HPUX-Prototypes/) (standalone GitHub Pages; also embedded in the hub) |
+| **HPUX Prototypes** (`hpux-prototypes/`) | [matthewcarleton.github.io/openshift-origin-design/hpux-prototypes](https://matthewcarleton.github.io/openshift-origin-design/hpux-prototypes/) (standalone GitHub Pages; also embedded in the hub) |
 
 The Jekyll site uses `baseurl: /openshift-origin-design/` (see `_config.yml`). Prototype apps under this tree are excluded from the Jekyll build and ship separately.
 

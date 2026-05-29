@@ -1,6 +1,6 @@
 # Vendoring / OpenShift UX hub embed
 
-Upstream source of truth remains **[github.com/kuklas/HPUX-Prototypes](https://github.com/kuklas/HPUX-Prototypes)** (`ux-prototypes` branch, GitHub Pages at [kuklas.github.io/HPUX-Prototypes](https://kuklas.github.io/HPUX-Prototypes/)).
+Upstream source of truth remains **[github.com/kuklas/HPUX-Prototypes](https://github.com/kuklas/HPUX-Prototypes)** (`ux-prototypes` branch). Standalone deploy for this vendored copy is **[matthewcarleton.github.io/openshift-origin-design/hpux-prototypes](https://matthewcarleton.github.io/openshift-origin-design/hpux-prototypes/)** (not kuklas Pages).
 
 This copy lives under **`openshift-origin-design/hpux-prototypes/`** next to **`hub/`**.
 
@@ -15,4 +15,4 @@ Merge or cherry-pick from `kuklas/HPUX-Prototypes` (`ux-prototypes`), resolve co
 
 ## Standalone deploy (outside the hub)
 
-Unchanged defaults: **`ASSET_PATH`** unset → production build still uses **`/HPUX-Prototypes/`** for GitHub Pages.
+Standalone GitHub Pages: **`ASSET_PATH`** unset → production build uses **`/openshift-origin-design/hpux-prototypes/`** (see **`webpack.common.js`**). Hub embed builds set **`ASSET_PATH`** via **`hub/scripts/build-hpux-prototypes-embed.mjs`**.

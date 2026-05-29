@@ -1,0 +1,66 @@
+# Standalone HPUX Prototypes on GitHub Pages (monorepo path).
+# Requires Pages source: branch gh-pages, folder / (same as hub previews).
+# Live URL: https://<owner>.github.io/<repo>/hpux-prototypes/
+name: HPUX Prototypes (GitHub Pages)
+
+on:
+  push:
+    branches:
+      - design-repo-2026
+      - main
+      - master
+    paths:
+      - "hpux-prototypes/**"
+      - ".github/workflows/hpux-prototypes-github-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hpux-prototypes-pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: hpux-prototypes/package-lock.json
+
+      - name: Build hpux-prototypes
+        working-directory: hpux-prototypes
+        env:
+          NODE_ENV: production
+          ASSET_PATH: /${{ github.event.repository.name }}/hpux-prototypes/
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: hpux-prototypes/dist
+          destination_dir: hpux-prototypes
+          keep_files: true
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
+
+      - name: Write site URL to job summary
+        shell: bash
+        run: |
+          owner="${{ github.repository_owner }}"
+          repo="${{ github.event.repository.name }}"
+          {
+            echo "## HPUX Prototypes published"
+            echo ""
+            echo "**Site:** https://${owner}.github.io/${repo}/hpux-prototypes/"
+          } >> "$GITHUB_STEP_SUMMARY"

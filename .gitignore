@@ -15,7 +15,7 @@ ome-console/dist/
 osac-demo/node_modules/
 osac-demo/dist/
 
-# HPUX Prototypes (kuklas) — vendored app; see hpux-prototypes/VENDOR.md
+# HPUX Prototypes — vendored app; see hpux-prototypes/VENDOR.md
 hpux-prototypes/node_modules/
 hpux-prototypes/dist/
 

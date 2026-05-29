@@ -43,7 +43,7 @@ const AppContent: React.FunctionComponent = () => {
 const App: React.FunctionComponent = () => {
   console.log('App component rendering');
 
-  /** Webpack replaces `__ROUTER_BASENAME__` (/HPUX-Prototypes hub deploy, /{prefix}/hpux-prototypes when embedded). */
+  /** Webpack replaces `__ROUTER_BASENAME__` (/openshift-origin-design/hpux-prototypes standalone, /{hubBase}/hpux-prototypes when embedded). */
   const basename = typeof __ROUTER_BASENAME__ !== 'undefined' ? __ROUTER_BASENAME__ : '';
 
   return (
