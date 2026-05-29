@@ -29,6 +29,7 @@ export default merge(common('development'), {
         include: [
           ...stylePaths,
           path.resolve('./node_modules/@patternfly/chatbot'),
+          path.resolve('./node_modules/highlight.js'),
         ],
         use: ['style-loader', 'css-loader'],
       },

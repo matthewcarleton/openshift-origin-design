@@ -34,6 +34,7 @@ export default merge(common('production'), {
         include: [
           ...stylePaths,
           path.resolve('./node_modules/@patternfly/chatbot'),
+          path.resolve('./node_modules/highlight.js'),
         ],
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
