@@ -37,6 +37,13 @@
     "dist",
     "**/*.bundle.js",
     "**/*.map",
-    "src/app/prototypes/shiri-alerting-ui-v2/data/monitoring-plugin"
+    "src/app/prototypes/shiri-alerting-ui-v2/data/monitoring-plugin",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/__tests__/**",
+    "**/setupTests*",
+    "**/__mocks__/**"
   ]
 }
