@@ -1295,7 +1295,10 @@ function HpuxPrototypesEmbedFullscreenPage() {
   const { backTo, backLabel, versionOptions } = resolveHpuxEmbedVersionContext(prototype);
   const hubBase = import.meta.env.BASE_URL;
   const iframeQs = new URLSearchParams({ prototype });
-  const src = `${hubBase}hpux-prototypes/index.html?${iframeQs.toString()}`;
+  // Use the directory URL (trailing slash), not the explicit index.html path.
+  // With `index.html` in the path, React Router strips the basename and is left with
+  // `/index.html`, which hits the catch-all blank route instead of `/` → redirect.
+  const src = `${hubBase}hpux-prototypes/?${iframeQs.toString()}`;
   const label = `Shared HPUX Prototypes: ${prototype}`;
 
   return (
