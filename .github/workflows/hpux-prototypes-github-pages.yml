@@ -56,6 +56,20 @@ jobs:
           user_name: github-actions[bot]
           user_email: github-actions[bot]@users.noreply.github.com
 
+      - name: Prepare root 404.html temp dir
+        run: |
+          mkdir -p hpux-prototypes/root-404-deploy
+          cp hpux-prototypes/root-404.html hpux-prototypes/root-404-deploy/404.html
+
+      - name: Deploy root 404.html to gh-pages root
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: hpux-prototypes/root-404-deploy
+          keep_files: true
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
+
       - name: Write site URL to job summary
         shell: bash
         run: |
