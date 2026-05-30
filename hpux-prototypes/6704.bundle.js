@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkacm_user_interface=self.webpackChunkacm_user_interface||[]).push([[6704],{46704(e,r,t){t.d(r,{routes:()=>n});var a=t(96540);const n=[{path:"/core/home/overview",element:a.createElement(()=>a.createElement(a.Fragment,null),null),label:"Overview",title:"Overview",navigation:{group:"Home",order:1}}]}}]);
+//# sourceMappingURL=6704.bundle.js.map
