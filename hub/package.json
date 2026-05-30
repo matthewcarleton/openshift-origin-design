@@ -12,7 +12,7 @@
     "build:rhacs": "node ./scripts/build-rhacs-embed.mjs",
     "build:ocp5-cluster-update": "node ./scripts/build-ocp5-cluster-update-embed.mjs",
     "sync:jira-manifest": "node ./scripts/sync-jira-manifest.mjs",
-    "build": "npm run sync:hpux-private-ids && tsc -b && vite build && cp dist/index.html dist/404.html",
+    "build": "npm run sync:hpux-private-ids && npm run build:rhacs && npm run build:osac && npm run build:ome && tsc -b && vite build && cp dist/index.html dist/404.html",
     "preview": "vite preview",
     "lint": "eslint . --max-warnings 0"
   },
