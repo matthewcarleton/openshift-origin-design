@@ -79,9 +79,12 @@ function patchRhacsAbsolutePaths(savedFiltersRoot) {
     }
   }
 
-  // Patch main JS bundle (basename, mockServiceWorker path, SVG asset URLs)
+  // Patch ALL index-*.js chunks (basename, mockServiceWorker path, SVG asset URLs).
+  // The vendored build splits into several index-*.js files (main entry + lazy route chunks)
+  // so we must iterate all of them rather than stopping at the first one found.
   const staticDir = path.join(savedFiltersRoot, "static");
   if (!fs.existsSync(staticDir)) return;
+  let patchedBundleCount = 0;
   for (const name of fs.readdirSync(staticDir)) {
     if (!/^index-.*\.js$/.test(name)) continue;
     const bundlePath = path.join(staticDir, name);
@@ -94,10 +97,11 @@ function patchRhacsAbsolutePaths(savedFiltersRoot) {
     if (patched !== s) {
       fs.writeFileSync(bundlePath, patched);
       console.log(`RHACS: patched absolute paths in JS bundle (${name})`);
-    } else {
-      console.log(`RHACS: no absolute-path replacements needed in ${name}`);
+      patchedBundleCount++;
     }
-    break; // only one main bundle
+  }
+  if (patchedBundleCount === 0) {
+    console.log(`RHACS: no absolute-path replacements needed in any index-*.js bundle`);
   }
 }
 
