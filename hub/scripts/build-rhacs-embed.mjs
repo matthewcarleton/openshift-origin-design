@@ -7,6 +7,21 @@ const hubRoot = path.join(__dirname, "..");
 const rhacsRoot = path.join(hubRoot, "..", "rhacs-ux-prototypes");
 const outDir = path.join(hubRoot, "public", "rhacs-ux-prototypes");
 
+/** Respect the same BASE_PATH convention the hub and other embed scripts use. */
+const rawHubBase = process.env.BASE_PATH ?? "/";
+const hubBase = rawHubBase === "/" ? "/" : rawHubBase.endsWith("/") ? rawHubBase : `${rawHubBase}/`;
+
+/**
+ * The absolute URL prefix for all RHACS saved-filters assets and the React Router
+ * basename. The vendored bundle was originally built with base "/rhacs-ux-prototypes/saved-filters/"
+ * which only works when deployed at the server root. For subdirectory previews (e.g.
+ * /openshift-origin-design/preview/design-repo-2026/) we must patch this to the full path.
+ */
+const rhacsBase =
+  hubBase === "/"
+    ? "/rhacs-ux-prototypes/saved-filters"
+    : `${hubBase.replace(/\/$/, "")}/rhacs-ux-prototypes/saved-filters`;
+
 /** Remove in-app Baseline / Saved filters toggle; hub lists separate cards with fixed URLs. */
 function patchRhacsHidePrototypeSwitcher(savedFiltersRoot) {
   const staticDir = path.join(savedFiltersRoot, "static");
@@ -35,6 +50,73 @@ function patchRhacsHidePrototypeSwitcher(savedFiltersRoot) {
   }
 }
 
+/**
+ * Patch absolute /rhacs-ux-prototypes/saved-filters paths in the vendored bundle so
+ * the prototype works when the hub is deployed to a subdirectory (GitHub Pages preview).
+ *
+ * The vendored static build hardcodes the original deployment base as absolute paths in:
+ *   - index.html / 404.html  (script src, link href)
+ *   - the main JS bundle     (React Router basename, mockServiceWorker path, SVG asset URLs)
+ *
+ * When BASE_PATH == "/" the replacement is a no-op, so local dev is unaffected.
+ */
+function patchRhacsAbsolutePaths(savedFiltersRoot) {
+  const originalBase = "/rhacs-ux-prototypes/saved-filters";
+  if (originalBase === rhacsBase) {
+    console.log("RHACS: base path matches original; no absolute-path patching needed");
+    return;
+  }
+
+  // Patch HTML files (index.html, 404.html)
+  for (const name of ["index.html", "404.html"]) {
+    const htmlPath = path.join(savedFiltersRoot, name);
+    if (!fs.existsSync(htmlPath)) continue;
+    let html = fs.readFileSync(htmlPath, "utf8");
+    const patched = html.replaceAll(`${originalBase}/`, `${rhacsBase}/`);
+    if (patched !== html) {
+      fs.writeFileSync(htmlPath, patched);
+      console.log(`RHACS: patched absolute asset paths in ${name}`);
+    }
+  }
+
+  // Patch main JS bundle (basename, mockServiceWorker path, SVG asset URLs)
+  const staticDir = path.join(savedFiltersRoot, "static");
+  if (!fs.existsSync(staticDir)) return;
+  for (const name of fs.readdirSync(staticDir)) {
+    if (!/^index-.*\.js$/.test(name)) continue;
+    const bundlePath = path.join(staticDir, name);
+    let s = fs.readFileSync(bundlePath, "utf8");
+    // Replace both the base with trailing slash and without (for the basename string)
+    let patched = s.replaceAll(`${originalBase}/`, `${rhacsBase}/`);
+    // Basename is stored without trailing slash — replace occurrences bounded by quote/comma/whitespace
+    patched = patched.replaceAll(`"${originalBase}"`, `"${rhacsBase}"`);
+    patched = patched.replaceAll(`'${originalBase}'`, `'${rhacsBase}'`);
+    if (patched !== s) {
+      fs.writeFileSync(bundlePath, patched);
+      console.log(`RHACS: patched absolute paths in JS bundle (${name})`);
+    } else {
+      console.log(`RHACS: no absolute-path replacements needed in ${name}`);
+    }
+    break; // only one main bundle
+  }
+}
+
+/**
+ * GitHub Pages cannot fall back to index.html for deep SPA routes. Copy the (already
+ * patched) index.html to every route path the hub iframe links to directly, so GitHub
+ * Pages finds a real file and the RHACS React Router boots at the correct location.
+ */
+function createRhacsDeepRouteIndex(savedFiltersRoot) {
+  const srcHtml = path.join(savedFiltersRoot, "index.html");
+  if (!fs.existsSync(srcHtml)) return;
+
+  // hub/src/App.tsx links to: rhacs-ux-prototypes/saved-filters/main/vulnerabilities/user-workloads
+  const deepPath = path.join(savedFiltersRoot, "main", "vulnerabilities", "user-workloads");
+  fs.mkdirSync(deepPath, { recursive: true });
+  fs.copyFileSync(srcHtml, path.join(deepPath, "index.html"));
+  console.log(`RHACS: created SPA fallback at main/vulnerabilities/user-workloads/index.html`);
+}
+
 if (!fs.existsSync(path.join(rhacsRoot, "saved-filters", "index.html"))) {
   console.error(`RHACS UX prototypes not found at ${rhacsRoot} (expected saved-filters/index.html)`);
   process.exit(1);
@@ -43,5 +125,10 @@ if (!fs.existsSync(path.join(rhacsRoot, "saved-filters", "index.html"))) {
 fs.rmSync(outDir, { recursive: true, force: true });
 fs.mkdirSync(path.dirname(outDir), { recursive: true });
 fs.cpSync(rhacsRoot, outDir, { recursive: true });
-patchRhacsHidePrototypeSwitcher(path.join(outDir, "saved-filters"));
-console.log(`Embedded RHACS UX Prototypes static site → ${outDir}`);
+
+const savedFiltersOut = path.join(outDir, "saved-filters");
+patchRhacsHidePrototypeSwitcher(savedFiltersOut);
+patchRhacsAbsolutePaths(savedFiltersOut);
+createRhacsDeepRouteIndex(savedFiltersOut);
+
+console.log(`Embedded RHACS UX Prototypes static site → ${outDir} (RHACS base ${rhacsBase})`);

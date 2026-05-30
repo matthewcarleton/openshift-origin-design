@@ -12,9 +12,9 @@
     "build:hpux:if-missing": "node -e \"const fs=require('fs'); if(!fs.existsSync('public/hpux-prototypes/index.html')){process.exit(1)}\" || npm run build:hpux",
     "build:ocp5-cluster-update": "node ./scripts/build-ocp5-cluster-update-embed.mjs",
     "sync:jira-manifest": "node ./scripts/sync-jira-manifest.mjs",
-    "dev": "npm run build:rhacs && npm run build:osac && npm run build:ome && npm run build:hpux:if-missing && npm run sync:hpux-private-ids && vite",
-    "dev:full": "npm run build:rhacs && npm run build:osac && npm run build:ome && npm run build:hpux && npm run sync:hpux-private-ids && vite",
-    "build": "npm run sync:hpux-private-ids && npm run build:rhacs && npm run build:osac && npm run build:ome && npm run build:hpux && tsc -b && vite build && cp dist/index.html dist/404.html",
+    "dev": "npm run build:rhacs && npm run build:osac && npm run build:ome && npm run build:hpux:if-missing && npm run build:ocp5-cluster-update && npm run sync:hpux-private-ids && vite",
+    "dev:full": "npm run build:rhacs && npm run build:osac && npm run build:ome && npm run build:hpux && npm run build:ocp5-cluster-update && npm run sync:hpux-private-ids && vite",
+    "build": "npm run sync:hpux-private-ids && npm run build:rhacs && npm run build:osac && npm run build:ome && npm run build:hpux && npm run build:ocp5-cluster-update && tsc -b && vite build && cp dist/index.html dist/404.html",
     "preview": "vite preview",
     "lint": "eslint . --max-warnings 0"
   },
