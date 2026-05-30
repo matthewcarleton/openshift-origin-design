@@ -83,7 +83,29 @@ export interface PrototypeConfig {
    * When true, hide from launcher / index listings; prototype remains loadable via direct URL (?prototype= or path match).
    */
   private?: boolean;
-  
+
+  /**
+   * Optional per-prototype design notes.
+   * When present, a "Design Notes" button appears in the masthead and opens a side drawer.
+   */
+  designNotes?: {
+    /** General overview / context for this prototype */
+    overview?: string;
+    /** Per-page notes */
+    pages?: Array<{
+      /** Display name, e.g. "Alert List" */
+      name: string;
+      /** Optional route path shown as a badge, e.g. "/observe/alerting" */
+      path?: string;
+      /** Design intent, open questions, known issues, etc. */
+      notes: string;
+    }>;
+    /** Figma file URL — renders a "View in Figma" link at the bottom of the drawer */
+    figmaUrl?: string;
+    /** Jira epic URL — renders a "View Jira Epic" link at the bottom of the drawer */
+    jiraUrl?: string;
+  };
+
   // Optional custom branding
   branding?: {
     icon?: string;
