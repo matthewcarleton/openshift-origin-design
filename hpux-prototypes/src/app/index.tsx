@@ -1,7 +1,7 @@
 import * as React from 'react';
 import '@patternfly/react-core/dist/styles/base.css';
 import '@patternfly/react-styles/css/components/Wizard/wizard.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { PrototypeProvider, usePrototype } from '@app/core/PrototypeContext';
 import '@app/app.css';
 
@@ -43,11 +43,8 @@ const AppContent: React.FunctionComponent = () => {
 const App: React.FunctionComponent = () => {
   console.log('App component rendering');
 
-  /** Webpack replaces `__ROUTER_BASENAME__` (/openshift-origin-design/hpux-prototypes standalone, /{hubBase}/hpux-prototypes when embedded). */
-  const basename = typeof __ROUTER_BASENAME__ !== 'undefined' ? __ROUTER_BASENAME__ : '';
-
   return (
-    <Router basename={basename || undefined}>
+    <Router>
       <PrototypeProvider>
         <AppContent />
       </PrototypeProvider>
