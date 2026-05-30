@@ -35,14 +35,16 @@ jobs:
           cache: npm
           cache-dependency-path: hpux-prototypes/package-lock.json
 
+      - name: Install dependencies
+        working-directory: hpux-prototypes
+        run: npm ci
+
       - name: Build hpux-prototypes
         working-directory: hpux-prototypes
         env:
           NODE_ENV: production
           ASSET_PATH: /${{ github.event.repository.name }}/hpux-prototypes/
-        run: |
-          npm ci
-          npm run build
+        run: npm run build
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
