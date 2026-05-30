@@ -1293,10 +1293,9 @@ function HpuxPrototypesEmbedFullscreenPage() {
   }
 
   const { backTo, backLabel, versionOptions } = resolveHpuxEmbedVersionContext(prototype);
-  const hpuxBase =
-    import.meta.env.VITE_HPUX_PROTOTYPES_BASE_URL || `${import.meta.env.BASE_URL}hpux-prototypes/`;
+  const hubBase = import.meta.env.BASE_URL;
   const iframeQs = new URLSearchParams({ prototype });
-  const src = `${hpuxBase}index.html?${iframeQs.toString()}`;
+  const src = `${hubBase}hpux-prototypes/index.html?${iframeQs.toString()}`;
   const label = `Shared HPUX Prototypes: ${prototype}`;
 
   return (
