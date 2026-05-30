@@ -1,0 +1,1 @@
+const s=["Past hour","Past 8 hours","Past day","Past week","Past month","All time"],t={DAY:"1 Day",WEEK:"1 Week",MONTH:"1 Month",UNSET:"Indefinite"},o={HOUR:"3600s",DAY:"86400s",WEEK:"604800s",MONTH:"2592000s",UNSET:"0"};export{o as d,t as s,s as t};

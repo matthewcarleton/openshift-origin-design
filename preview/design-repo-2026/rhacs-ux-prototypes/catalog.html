@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RHACS UX Prototypes</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%230066cc' d='M437.2 403.5L320 215V64h8c13.3 0 24-10.7 24-24V24c0-13.3-10.7-24-24-24H120c-13.3 0-24 10.7-24 24v16c0 13.3 10.7 24 24 24h8v151L10.8 403.5C-18.5 450.6 15.3 512 70.9 512h306.2c55.7 0 89.4-61.5 60.1-108.5zM137.9 320l48.2-77.6c3.7-5.2 5.8-11.6 5.8-18.4V64h64v160c0 6.9 2.2 13.2 5.8 18.4l48.2 77.6h-172z'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@6.4.0/patternfly.min.css" crossorigin="anonymous" />
+  <style>
+    html, body { height: 100%; margin: 0; }
+
+    .qs-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--pf-t--global--background--color--secondary--default);
+      font-family: var(--pf-t--global--font--family--body);
+    }
+
+    /* ── Masthead ── */
+    .qs-masthead {
+      background-color: var(--pf-t--global--background--color--primary--default);
+      border-bottom: 1px solid var(--pf-t--global--border--color--default);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-shrink: 0;
+    }
+    .qs-masthead__brand { display: flex; align-items: center; text-decoration: none; }
+    .qs-masthead__brand img { height: 40px; width: auto; display: block; }
+    .qs-masthead__sep { width: 1px; height: 24px; background: var(--pf-t--global--border--color--default); margin: 0 16px; }
+    .qs-masthead__sub { font-size: 14px; color: var(--pf-t--global--text--color--subtle); }
+
+    /* ── Nav tabs bar ── */
+    .qs-nav-bar {
+      background-color: var(--pf-t--global--background--color--primary--default);
+      border-bottom: 1px solid var(--pf-t--global--border--color--default);
+      padding: 0 24px;
+    }
+    .qs-nav-bar .pf-v6-c-tabs { --pf-v6-c-tabs--before--BorderColor: transparent; }
+    .qs-nav-bar .pf-v6-c-tabs__link { font-size: 14px; }
+
+    /* ── Toolbar ── */
+    .qs-toolbar {
+      padding: 16px 24px 0;
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .qs-toolbar__search {
+      position: relative;
+      flex: 0 0 300px;
+    }
+    .qs-toolbar__search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      fill: var(--pf-t--global--text--color--subtle);
+      pointer-events: none;
+    }
+    .qs-toolbar__input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 7px 10px 7px 32px;
+      border: 1px solid var(--pf-t--global--border--color--default);
+      border-radius: var(--pf-t--global--border--radius--small);
+      font-size: 14px;
+      font-family: inherit;
+      background: var(--pf-t--global--background--color--primary--default);
+      color: var(--pf-t--global--text--color--regular);
+    }
+    .qs-toolbar__input:focus { outline: 2px solid var(--pf-t--global--color--brand--default); outline-offset: 1px; border-color: transparent; }
+    .qs-toolbar__input::placeholder { color: var(--pf-t--global--text--color--placeholder); }
+
+    .qs-filter-chips {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .qs-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-family: inherit;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--pf-t--global--border--color--default);
+      background: var(--pf-t--global--background--color--primary--default);
+      color: var(--pf-t--global--text--color--subtle);
+      cursor: pointer;
+      transition: background 0.12s, border-color 0.12s, color 0.12s;
+      user-select: none;
+    }
+    .qs-chip:hover { border-color: var(--pf-t--global--color--brand--default); color: var(--pf-t--global--color--brand--default); }
+    .qs-chip.active {
+      background: var(--pf-t--global--background--color--brand--default);
+      border-color: var(--pf-t--global--color--brand--default);
+      color: var(--pf-t--global--color--brand--default);
+      font-weight: 600;
+    }
+    .qs-chip__dot {
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+    }
+
+    /* ── Body ── */
+    .qs-body {
+      flex: 1;
+      padding: 20px 24px 64px;
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+    .qs-result-count { font-size: 13px; color: var(--pf-t--global--text--color--subtle); margin-bottom: 16px; }
+
+    /* ── Gallery ── */
+    .qs-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+    .qs-card-wrapper { display: contents; }
+    .qs-card-wrapper.hidden { display: none; }
+
+    /* ── Card ── */
+    .qs-card {
+      background: var(--pf-t--global--background--color--primary--default);
+      border: 1px solid var(--pf-t--global--border--color--default);
+      border-radius: var(--pf-t--global--border--radius--medium);
+      display: flex; flex-direction: column;
+      text-decoration: none; color: inherit; overflow: hidden;
+      transition: box-shadow 0.15s, border-color 0.15s;
+      height: 100%;
+    }
+    .qs-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); border-color: var(--pf-t--global--border--color--brand--default); text-decoration: none; }
+
+    .qs-card__header { padding: 20px 20px 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .qs-card__icon {
+      width: 40px; height: 40px; border-radius: 6px;
+      background: var(--pf-t--global--color--brand--default);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .qs-card__icon svg { width: 22px; height: 22px; fill: #fff; }
+
+    /* Status badge top-right of card */
+    .qs-status {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 600; padding: 3px 9px;
+      border-radius: 20px; white-space: nowrap;
+    }
+    .qs-status__dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .qs-status--in-progress { background: #e7f1fa; color: #0066cc; }
+    .qs-status--in-progress .qs-status__dot { background: #0066cc; }
+    .qs-status--done { background: #f3faf2; color: #1e7e34; }
+    .qs-status--done .qs-status__dot { background: #3e8635; }
+    .qs-status--planning { background: #f5f5f5; color: #6a6e73; }
+    .qs-status--planning .qs-status__dot { background: #8a8d90; }
+    .qs-status--review { background: #fdf7e7; color: #795600; }
+    .qs-status--review .qs-status__dot { background: #f0ab00; }
+
+    .qs-card__body { padding: 14px 20px 0; flex: 1; }
+    .qs-card__title { font-size: 16px; font-weight: 700; color: var(--pf-t--global--text--color--regular); margin-bottom: 8px; line-height: 1.3; }
+    .qs-card__desc { font-size: 13px; color: var(--pf-t--global--text--color--subtle); line-height: 1.6; }
+
+    .qs-card__footer { padding: 12px 20px 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .qs-label {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; color: var(--pf-t--global--text--color--subtle);
+      background: var(--pf-t--global--background--color--secondary--default);
+      border: 1px solid var(--pf-t--global--border--color--default);
+      border-radius: 20px; padding: 2px 9px; white-space: nowrap;
+    }
+    .qs-label svg { width: 11px; height: 11px; fill: var(--pf-t--global--text--color--subtle); flex-shrink: 0; }
+
+    .qs-card__cta { padding: 14px 20px 20px; }
+    .qs-card__cta-btn {
+      display: block; width: 100%; text-align: center;
+      font-size: 14px; font-weight: 600;
+      color: var(--pf-t--global--color--brand--default);
+      background: transparent;
+      border: 1px solid var(--pf-t--global--color--brand--default);
+      border-radius: var(--pf-t--global--border--radius--small);
+      padding: 7px 16px; cursor: pointer; font-family: inherit;
+      transition: background 0.12s, color 0.12s; box-sizing: border-box;
+    }
+    .qs-card:hover .qs-card__cta-btn { background: var(--pf-t--global--color--brand--default); color: #fff; }
+
+    /* Empty state */
+    .qs-empty { padding: 48px 24px; text-align: center; color: var(--pf-t--global--text--color--subtle); font-size: 14px; display: none; }
+
+    /* ── Footer ── */
+    .qs-footer {
+      padding: 16px 24px; font-size: 12px;
+      color: var(--pf-t--global--text--color--subtle);
+      border-top: 1px solid var(--pf-t--global--border--color--default);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="qs-page">
+
+    <!-- Masthead -->
+    <header class="qs-masthead">
+      <a class="qs-masthead__brand" href="/rhacs-ux-prototypes/">
+        <img src="/rhacs-ux-prototypes/saved-filters/static/RHACS-Logo-ClrdE4Z_.svg" alt="RHACS" height="26" />
+      </a>
+      <div class="qs-masthead__sep"></div>
+      <span class="qs-masthead__sub">UX Prototypes</span>
+    </header>
+
+    <!-- Nav tabs as navigation (PF6 pf-v6-c-tabs pf-m-nav) — mirrors the ACS left sidebar -->
+    <div class="qs-nav-bar">
+      <nav class="pf-v6-c-tabs pf-m-nav pf-m-scrollable" aria-label="Feature area navigation">
+        <button class="pf-v6-c-tabs__scroll-button" aria-label="Scroll left" aria-hidden="true" disabled tabindex="-1">
+          <svg fill="currentColor" viewBox="0 0 320 512" aria-hidden="true" style="width:1em;height:1em"><path d="M34.52 239.03L228.87 44.69c9.37-9.37 24.57-9.37 33.94 0l22.67 22.67c9.36 9.36 9.37 24.52.04 33.9L131.49 256l154.03 154.75c9.34 9.38 9.32 24.54-.04 33.9l-22.67 22.67c-9.37 9.37-24.57 9.37-33.94 0L34.52 272.97c-9.37-9.37-9.37-24.57 0-33.94z"/></svg>
+        </button>
+        <ul class="pf-v6-c-tabs__list" role="list">
+          <li class="pf-v6-c-tabs__item pf-m-current" data-tab="all">
+            <a class="pf-v6-c-tabs__link" href="#all" aria-current="page">
+              <span class="pf-v6-c-tabs__item-text">All</span>
+            </a>
+          </li>
+          <li class="pf-v6-c-tabs__item" data-tab="dashboard">
+            <a class="pf-v6-c-tabs__link" href="#dashboard">
+              <span class="pf-v6-c-tabs__item-text">Dashboard</span>
+            </a>
+          </li>
+          <li class="pf-v6-c-tabs__item" data-tab="network">
+            <a class="pf-v6-c-tabs__link" href="#network">
+              <span class="pf-v6-c-tabs__item-text">Network</span>
+            </a>
+          </li>
+          <li class="pf-v6-c-tabs__item" data-tab="violations">
+            <a class="pf-v6-c-tabs__link" href="#violations">
+              <span class="pf-v6-c-tabs__item-text">Violations</span>
+            </a>
+          </li>
+          <li class="pf-v6-c-tabs__item" data-tab="compliance">
+            <a class="pf-v6-c-tabs__link" href="#compliance">
+              <span class="pf-v6-c-tabs__item-text">Compliance</span>
+            </a>
+          </li>
+          <li class="pf-v6-c-tabs__item" data-tab="vulnerability-management">
+            <a class="pf-v6-c-tabs__link" href="#vulnerability-management">
+              <span class="pf-v6-c-tabs__item-text">Vulnerability Management</span>
+            </a>
+          </li>
+          <li class="pf-v6-c-tabs__item" data-tab="configuration-management">
+            <a class="pf-v6-c-tabs__link" href="#configuration-management">
+              <span class="pf-v6-c-tabs__item-text">Configuration Management</span>
+            </a>
+          </li>
+          <li class="pf-v6-c-tabs__item" data-tab="risk">
+            <a class="pf-v6-c-tabs__link" href="#risk">
+              <span class="pf-v6-c-tabs__item-text">Risk</span>
+            </a>
+          </li>
+          <li class="pf-v6-c-tabs__item" data-tab="platform-configuration">
+            <a class="pf-v6-c-tabs__link" href="#platform-configuration">
+              <span class="pf-v6-c-tabs__item-text">Platform Configuration</span>
+            </a>
+          </li>
+        </ul>
+        <button class="pf-v6-c-tabs__scroll-button" aria-label="Scroll right" aria-hidden="true" tabindex="-1">
+          <svg fill="currentColor" viewBox="0 0 320 512" aria-hidden="true" style="width:1em;height:1em"><path d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"/></svg>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Toolbar: search + status filter chips -->
+    <div class="qs-toolbar">
+      <div class="qs-toolbar__search">
+        <svg class="qs-toolbar__search-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        </svg>
+        <input class="qs-toolbar__input" type="search" id="search-input" placeholder="Search prototypes…" aria-label="Search prototypes" />
+      </div>
+
+      <div class="qs-filter-chips" aria-label="Filter by status">
+        <span style="font-size:12px;color:var(--pf-t--global--text--color--subtle);margin-right:2px;">Status:</span>
+        <button class="qs-chip active" data-filter="all" type="button">All</button>
+        <button class="qs-chip" data-filter="in-progress" type="button">
+          <span class="qs-chip__dot" style="background:#0066cc;"></span>In progress
+        </button>
+        <button class="qs-chip" data-filter="review" type="button">
+          <span class="qs-chip__dot" style="background:#f0ab00;"></span>In review
+        </button>
+        <button class="qs-chip" data-filter="done" type="button">
+          <span class="qs-chip__dot" style="background:#3e8635;"></span>Done
+        </button>
+        <button class="qs-chip" data-filter="planning" type="button">
+          <span class="qs-chip__dot" style="background:#8a8d90;"></span>Planning
+        </button>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <main class="qs-body">
+      <p class="qs-result-count" id="result-count"></p>
+
+      <div class="qs-gallery" id="gallery">
+
+        <!-- Card: Saved Filters -->
+        <div class="qs-card-wrapper"
+             data-area="vulnerability-management"
+             data-status="done"
+             data-title="Saved Filters"
+             data-desc="Persistent filter toolbar on the Vulnerability Results page. Save, name, and recall filter sets across sessions without re-entering criteria.">
+          <a class="qs-card" href="/rhacs-ux-prototypes/saved-filters/?prototype=v1">
+            <div class="qs-card__header">
+              <div class="qs-card__icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>
+                </svg>
+              </div>
+              <span class="qs-status qs-status--done">
+                <span class="qs-status__dot"></span>Done
+              </span>
+            </div>
+
+            <div class="qs-card__body">
+              <div class="qs-card__title">Saved Filters — v1</div>
+              <div class="qs-card__desc">
+                Persistent filter toolbar on the Vulnerability Results page. Save, name, and recall filter sets across sessions without re-entering criteria.
+              </div>
+            </div>
+
+            <div class="qs-card__footer">
+              <span class="qs-label">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58s1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41s-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>
+                </svg>
+                Vulnerability Management
+              </span>
+              <span class="qs-label">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27-7.38 5.74zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16z"/>
+                </svg>
+                Workload CVEs
+              </span>
+            </div>
+
+            <div class="qs-card__cta">
+              <span class="qs-card__cta-btn">View prototype</span>
+            </div>
+          </a>
+        </div>
+
+        <!-- Future cards: copy the qs-card-wrapper block above and update data-area, data-status, data-title, data-desc -->
+
+      </div>
+
+      <div class="qs-empty" id="empty-state">No prototypes match your search or filter.</div>
+    </main>
+
+    <footer class="qs-footer">
+      RHACS UX · Internal prototype demos · Not for production use
+    </footer>
+  </div>
+
+  <script>
+    // ── Tab nav filtering ──
+    const tabList = document.querySelector('.pf-v6-c-tabs__list');
+    const tabs = document.querySelectorAll('.pf-v6-c-tabs__item');
+    tabs.forEach(tab => {
+      tab.querySelector('.pf-v6-c-tabs__link').addEventListener('click', function(e) {
+        e.preventDefault();
+        tabs.forEach(t => { t.classList.remove('pf-m-current'); t.querySelector('.pf-v6-c-tabs__link').removeAttribute('aria-current'); });
+        tab.classList.add('pf-m-current');
+        this.setAttribute('aria-current', 'page');
+        activeTab = tab.dataset.tab;
+        applyFilters();
+      });
+    });
+
+    // Scroll buttons
+    const [scrollLeft, scrollRight] = document.querySelectorAll('.pf-v6-c-tabs__scroll-button');
+    scrollLeft.addEventListener('click', () => tabList.scrollBy({ left: -200, behavior: 'smooth' }));
+    scrollRight.addEventListener('click', () => tabList.scrollBy({ left: 200, behavior: 'smooth' }));
+
+    // ── Status chip filtering ──
+    const chips = document.querySelectorAll('.qs-chip');
+    chips.forEach(chip => {
+      chip.addEventListener('click', function() {
+        chips.forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        activeStatus = this.dataset.filter;
+        applyFilters();
+      });
+    });
+
+    // ── Search ──
+    const searchInput = document.getElementById('search-input');
+    searchInput.addEventListener('input', function() {
+      searchTerm = this.value.toLowerCase().trim();
+      applyFilters();
+    });
+
+    // ── State ──
+    let activeTab = 'all';
+    let activeStatus = 'all';
+    let searchTerm = '';
+
+    function applyFilters() {
+      const wrappers = document.querySelectorAll('.qs-card-wrapper');
+      let visible = 0;
+      wrappers.forEach(w => {
+        const area = w.dataset.area || '';
+        const status = w.dataset.status || '';
+        const title = (w.dataset.title || '').toLowerCase();
+        const desc = (w.dataset.desc || '').toLowerCase();
+
+        const tabMatch = activeTab === 'all' || area === activeTab;
+        const statusMatch = activeStatus === 'all' || status === activeStatus;
+        const searchMatch = !searchTerm || title.includes(searchTerm) || desc.includes(searchTerm);
+
+        if (tabMatch && statusMatch && searchMatch) {
+          w.classList.remove('hidden'); visible++;
+        } else {
+          w.classList.add('hidden');
+        }
+      });
+
+      const count = document.getElementById('result-count');
+      const empty = document.getElementById('empty-state');
+      count.textContent = visible === 1 ? '1 prototype' : visible + ' prototypes';
+      empty.style.display = visible === 0 ? 'block' : 'none';
+    }
+
+    // Init count on load
+    applyFilters();
+  </script>
+</body>
+</html>

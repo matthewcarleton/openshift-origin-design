@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000" />
+    <!-- Tell browsers not to cache the HTML shell so chunk references are always fresh -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!--
+            Notice the use of %PUBLIC_URL% in the tags above.
+            It will be replaced with the URL of the `public` folder during the build.
+            Only files inside the `public` folder can be referenced from the HTML.
+
+            Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+            work correctly both with client-side routing and a non-root public URL.
+            Learn how to configure a non-root public URL by running `npm run build`.
+        -->
+    <title></title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%230066cc' d='M437.2 403.5L320 215V64h8c13.3 0 24-10.7 24-24V24c0-13.3-10.7-24-24-24H120c-13.3 0-24 10.7-24 24v16c0 13.3 10.7 24 24 24h8v151L10.8 403.5C-18.5 450.6 15.3 512 70.9 512h306.2c55.7 0 89.4-61.5 60.1-108.5zM137.9 320l48.2-77.6c3.7-5.2 5.8-11.6 5.8-18.4V64h64v160c0 6.9 2.2 13.2 5.8 18.4l48.2 77.6h-172z'/%3E%3C/svg%3E" />
+    <!-- Chunk-load error recovery: fires before React boots, safe to call multiple times -->
+    <script>
+      (function () {
+        var SESSION_KEY = '__acs_chunk_recovery_v1__';
+        function recoverFromStaleChunks() {
+          if (sessionStorage.getItem(SESSION_KEY)) return; // already tried once this session
+          sessionStorage.setItem(SESSION_KEY, '1');
+          var sw = navigator.serviceWorker
+            ? navigator.serviceWorker.getRegistrations().then(function (rs) {
+                return Promise.all(rs.map(function (r) { return r.unregister(); }));
+              })
+            : Promise.resolve();
+          var cc = typeof caches !== 'undefined'
+            ? caches.keys().then(function (ks) {
+                return Promise.all(ks.map(function (k) { return caches.delete(k); }));
+              })
+            : Promise.resolve();
+          Promise.all([sw, cc]).then(function () { window.location.reload(); });
+        }
+        // Catch failed <script> tag loads (Vite lazy chunks returning 404)
+        window.addEventListener('error', function (e) {
+          if (e.target && e.target.nodeName === 'SCRIPT') { recoverFromStaleChunks(); }
+        }, true);
+        // Expose for the JS-level handler in index.tsx
+        window.__recoverFromStaleChunks__ = recoverFromStaleChunks;
+      })();
+    </script>
+  <script type="module" crossorigin src="/rhacs-ux-prototypes/saved-filters/static/index-CWMzBAx8.js"></script>
+  <link rel="modulepreload" crossorigin href="/rhacs-ux-prototypes/saved-filters/static/react-pF2EnNv3.js">
+  <link rel="modulepreload" crossorigin href="/rhacs-ux-prototypes/saved-filters/static/lodash-JMWJiBov.js">
+  <link rel="modulepreload" crossorigin href="/rhacs-ux-prototypes/saved-filters/static/apollo-BxVF6eGb.js">
+  <link rel="stylesheet" crossorigin href="/rhacs-ux-prototypes/saved-filters/static/index-CSRBboj1.css">
+</head>
+
+<body>
+    <noscript> You need to enable JavaScript to run this app. </noscript>
+    <div id="root"></div>
+    <!--
+            This HTML file is a template.
+            If you open it directly in the browser, you will see an empty page.
+
+            You can add webfonts, meta tags, or analytics to this file.
+            The build step will place the bundled scripts into the <body> tag.
+
+            To begin the development, run `npm start` or `yarn start`.
+            To create a production bundle, use `npm run build` or `yarn build`.
+        -->
+</body>
+
+</html>

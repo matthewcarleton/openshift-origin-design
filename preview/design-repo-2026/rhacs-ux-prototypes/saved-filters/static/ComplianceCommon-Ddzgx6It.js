@@ -1,0 +1,1 @@
+import{dX as i,cb as c,a1 as u}from"./index-CWMzBAx8.js";const l="/v2/compliance";function y({page:a,perPage:r,sortOption:e,searchFilter:t={}}){const s=i(t),o=c({page:a,perPage:r,sortOption:e}),n={query:{query:s,pagination:o}};return u.stringify(n,{arrayFormat:"repeat",allowDots:!0})}export{y as b,l as c};
