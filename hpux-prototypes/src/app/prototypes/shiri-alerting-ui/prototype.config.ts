@@ -47,23 +47,21 @@ export const config: PrototypeConfig = {
   updatedAt: '2025-12-24',
 
   designNotes: {
-    overview:
-      'This prototype explores multi-cluster alerting UX — how a Fleet Administrator monitors and responds to alerts firing across many clusters simultaneously. Key research question: does the heatmap + drill-down pattern reduce time-to-triage vs. a flat list?',
-    pages: [
+    summary:
+      'This prototype (v1) explores multi-cluster alerting UX — how a Fleet Administrator monitors and responds to alerts firing across many clusters simultaneously, using a heatmap + drill-down pattern.',
+    pagesToReview: [
       {
         name: 'Clusters Health',
         path: '/observe/alerting',
-        notes:
-          'Heatmap shows at-a-glance cluster health. Severity color bands (Critical / Warning / Info) should be distinct enough for colorblind users — validate with axe. Open question: should clusters with 0 alerts be shown or hidden?',
+        description:
+          'Heatmap shows at-a-glance cluster health. Severity color bands (Critical / Warning / Info) are the primary scannable signal.',
       },
       {
         name: 'Single Cluster Detail',
         path: '/observe/alerting/cluster/:id',
-        notes:
-          'Drill-down from heatmap. The Firing Alerts table mirrors the OCP 4.x alerting UI so operators feel at home. Consider adding a "Silence" quick-action in the row — not currently designed.',
+        description:
+          'Drill-down from heatmap. The Firing Alerts table mirrors the OCP 4.x alerting UI so operators feel at home.',
       },
     ],
-    figmaUrl: 'https://www.figma.com/file/placeholder-shiri-alerting',
-    jiraUrl: 'https://issues.redhat.com/browse/ACM-00000',
   },
 };

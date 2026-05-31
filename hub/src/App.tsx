@@ -73,10 +73,8 @@ const manifest = manifestRaw as unknown as PrototypesManifest;
 
 /** Mirror of hpux-prototypes' PrototypeConfig.designNotes shape, received via postMessage. */
 interface HpuxDesignNotesData {
-  overview?: string;
-  pages?: Array<{ name: string; path?: string; notes: string }>;
-  figmaUrl?: string;
-  jiraUrl?: string;
+  summary: string;
+  pagesToReview?: Array<{ name: string; path?: string; description?: string }>;
 }
 
 const TEAM_BY_ID = new Map(manifest.teams.map((item) => [item.id, item]));
@@ -1385,45 +1383,36 @@ function HpuxPrototypesEmbedFullscreenPage() {
         </DrawerActions>
       </DrawerHead>
       <DrawerPanelBody>
-        {designNotes.overview && (
+        {designNotes.summary && (
           <Content component="p" style={{ marginBottom: "var(--pf-t--global--spacer--lg)" }}>
-            {designNotes.overview}
+            {designNotes.summary}
           </Content>
         )}
-        {designNotes.pages && designNotes.pages.length > 0 && (
+        {designNotes.pagesToReview && designNotes.pagesToReview.length > 0 && (
           <div>
-            {designNotes.pages.map((page, index) => (
+            <Title headingLevel="h3" size="md" style={{ marginBottom: "var(--pf-t--global--spacer--md)" }}>
+              Pages to review
+            </Title>
+            {designNotes.pagesToReview.map((page, index) => (
               <div key={index} style={{ marginBottom: "var(--pf-t--global--spacer--lg)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "var(--pf-t--global--spacer--sm)", marginBottom: "var(--pf-t--global--spacer--xs)" }}>
-                  <Title headingLevel="h3" size="md">{page.name}</Title>
+                  <strong>{page.name}</strong>
                   {page.path && (
                     <Label isCompact variant="outline" color="blue">
                       <code style={{ fontSize: "11px" }}>{page.path}</code>
                     </Label>
                   )}
                 </div>
-                <Content component="p" style={{ color: "var(--pf-t--global--text--color--subtle)" }}>
-                  {page.notes}
-                </Content>
-                {index < designNotes.pages!.length - 1 && (
+                {page.description && (
+                  <Content component="p" style={{ color: "var(--pf-t--global--text--color--subtle)" }}>
+                    {page.description}
+                  </Content>
+                )}
+                {index < designNotes.pagesToReview!.length - 1 && (
                   <Divider style={{ marginTop: "var(--pf-t--global--spacer--md)" }} />
                 )}
               </div>
             ))}
-          </div>
-        )}
-        {(designNotes.figmaUrl || designNotes.jiraUrl) && (
-          <div style={{ marginTop: "var(--pf-t--global--spacer--lg)", paddingTop: "var(--pf-t--global--spacer--md)", borderTop: "1px solid var(--pf-t--global--border--color--default)", display: "flex", flexDirection: "column", gap: "var(--pf-t--global--spacer--xs)" }}>
-            {designNotes.figmaUrl && (
-              <Button component="a" href={designNotes.figmaUrl} target="_blank" rel="noopener noreferrer" variant="link" isInline icon={<ExternalLinkAltIcon aria-hidden />} iconPosition="end">
-                View in Figma
-              </Button>
-            )}
-            {designNotes.jiraUrl && (
-              <Button component="a" href={designNotes.jiraUrl} target="_blank" rel="noopener noreferrer" variant="link" isInline icon={<ExternalLinkAltIcon aria-hidden />} iconPosition="end">
-                View Jira Epic
-              </Button>
-            )}
           </div>
         )}
       </DrawerPanelBody>

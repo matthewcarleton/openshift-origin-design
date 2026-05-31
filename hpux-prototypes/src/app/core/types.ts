@@ -89,21 +89,17 @@ export interface PrototypeConfig {
    * When present, a "Design Notes" button appears in the masthead and opens a side drawer.
    */
   designNotes?: {
-    /** General overview / context for this prototype */
-    overview?: string;
-    /** Per-page notes */
-    pages?: Array<{
-      /** Display name, e.g. "Alert List" */
+    /** What this design is covering / the design intent */
+    summary: string;
+    /** Ordered list of pages the viewer should look at */
+    pagesToReview?: Array<{
+      /** Page or screen name, e.g. "Alert List" */
       name: string;
-      /** Optional route path shown as a badge, e.g. "/observe/alerting" */
+      /** Optional route path hint shown as a badge, e.g. "/observe/alerting" */
       path?: string;
-      /** Design intent, open questions, known issues, etc. */
-      notes: string;
+      /** What to look for / focus on in this page */
+      description?: string;
     }>;
-    /** Figma file URL — renders a "View in Figma" link at the bottom of the drawer */
-    figmaUrl?: string;
-    /** Jira epic URL — renders a "View Jira Epic" link at the bottom of the drawer */
-    jiraUrl?: string;
   };
 
   // Optional custom branding
