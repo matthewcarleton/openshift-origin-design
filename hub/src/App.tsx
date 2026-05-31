@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   Link,
@@ -1306,6 +1306,8 @@ function HpuxPrototypesEmbedFullscreenPage() {
   const [isDesignNotesOpen, setIsDesignNotesOpen] = useState(false);
   const [prototypeStatus, setPrototypeStatus] = useState<string | undefined>(undefined);
 
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
   const prototype = searchParams.get("prototype")?.trim() ?? "";
   const valid = prototype.length > 0 && HPUX_PROTOTYPE_ID_RE.test(prototype);
 
@@ -1326,6 +1328,16 @@ function HpuxPrototypesEmbedFullscreenPage() {
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
   }, []);
+
+  // Fix race condition: after the prototype iframe (re)loads, ping it so it re-sends its data
+  // even if its postMessage fired before our listener was registered.
+  useEffect(() => {
+    if (!valid) return;
+    const t = setTimeout(() => {
+      iframeRef.current?.contentWindow?.postMessage({ type: "hpux-hub-ready" }, "*");
+    }, 100);
+    return () => clearTimeout(t);
+  }, [prototype, valid]);
 
   // Reset design notes and status when the prototype param changes so stale data never shows.
   useEffect(() => {
@@ -1436,7 +1448,7 @@ function HpuxPrototypesEmbedFullscreenPage() {
         className="ops-hub-design-notes-drawer"
       >
         <DrawerContent panelContent={designNotesPanelContent}>
-          <iframe key={src} title={label} className="ops-hub-embed-fullscreen-frame" src={src} />
+          <iframe ref={iframeRef} key={src} title={label} className="ops-hub-embed-fullscreen-frame" src={src} />
         </DrawerContent>
       </Drawer>
     </div>

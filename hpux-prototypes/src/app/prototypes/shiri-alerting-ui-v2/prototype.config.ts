@@ -45,4 +45,23 @@ export const config: PrototypeConfig = {
   // Metadata
   createdAt: '2025-12-24',
   updatedAt: '2025-12-24',
+
+  designNotes: {
+    overview:
+      'v2 of the Multi-cluster Alerting UI. Navigation moves from a dedicated Alerting page to a filtering model: clicking a cluster in the heatmap filters the Firing alerts tab in place. Keeps the SRE in one context rather than bouncing between views.',
+    pages: [
+      {
+        name: 'Clusters Health',
+        path: '/fleet-management/alerting',
+        notes:
+          'Heatmap entry point. Each cluster cell is clickable and sets the active filter for the Firing Alerts tab. Severity bands and cluster status badges are the primary scannable signal.',
+      },
+      {
+        name: 'Firing Alerts',
+        path: '/fleet-management/alerting/firing',
+        notes:
+          'Full alert table filtered by the selected cluster. Column set, sort order, and bulk-action affordances are open for stakeholder review — confirm with Shiri before finalising.',
+      },
+    ],
+  },
 };

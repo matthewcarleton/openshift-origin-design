@@ -24,6 +24,10 @@ export const PrototypeProvider: React.FC<PrototypeProviderProps> = ({ children }
   const [isBootstrapping, setIsBootstrapping] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
+  // Ref keeps current prototype accessible inside event handlers without stale closures.
+  const currentPrototypeRef = useRef<PrototypeModule | null>(null);
+  currentPrototypeRef.current = currentPrototype;
+
   /**
    * Load a prototype by ID
    */
@@ -83,6 +87,34 @@ export const PrototypeProvider: React.FC<PrototypeProviderProps> = ({ children }
 
   const loadPrototypeRef = useRef(loadPrototype);
   loadPrototypeRef.current = loadPrototype;
+
+  // When embedded in the hub, respond to the hub's ready ping by re-sending prototype data.
+  // This resolves the race where the iframe's postMessage fires before the hub's listener
+  // is registered (common with cached/fast loads).
+  useEffect(() => {
+    if (window.parent === window) return;
+    const handleHubReady = (event: MessageEvent) => {
+      if (
+        event.data !== null &&
+        typeof event.data === 'object' &&
+        event.data.type === 'hpux-hub-ready' &&
+        currentPrototypeRef.current
+      ) {
+        const proto = currentPrototypeRef.current;
+        window.parent.postMessage(
+          {
+            type: 'hpux-prototype-loaded',
+            designNotes: proto.config.designNotes ?? null,
+            prototypeName: proto.config.name,
+            status: proto.config.status,
+          },
+          '*',
+        );
+      }
+    };
+    window.addEventListener('message', handleHubReady);
+    return () => window.removeEventListener('message', handleHubReady);
+  }, []);
 
   /**
    * Initialize registry, then load prototype from (in order): ?prototype=, URL path match,
