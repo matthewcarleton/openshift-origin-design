@@ -624,10 +624,12 @@ body.ops-hub-embed-fullscreen-active {
   animation: design-notes-glow 3.5s ease-in-out infinite;
 }
 
-.ops-hub-design-notes-btn:focus,
-.ops-hub-design-notes-btn:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
+.pf-v6-c-button.ops-hub-design-notes-btn:focus,
+.pf-v6-c-button.ops-hub-design-notes-btn:focus-visible,
+.pf-v5-c-button.ops-hub-design-notes-btn:focus,
+.pf-v5-c-button.ops-hub-design-notes-btn:focus-visible {
+  outline: 0 !important;
+  box-shadow: 0 0 8px 3px rgba(201, 25, 11, 0.5) !important;
   border: 1px solid #c9190b !important;
 }
 
