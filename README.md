@@ -50,34 +50,3 @@ The fastest way to add a prototype is with **Cursor** and the built-in skill. No
    Cursor will walk you through everything: product area, Jira ticket, persona, design notes, design doc link, and recording link.
 
 The repo ships with a `prototype-contributor` skill at `.cursor/skills/prototype-contributor/` that loads automatically when you open this folder in Cursor. It handles branching, scaffolding, registering the prototype in the hub, and opening a pull request.
-
-### Manual workflow (without the Cursor skill)
-
-1. Work in `hpux-prototypes/` (see `guides/` for architecture and setup).
-2. Scaffold from the template: `npm run create-prototype` (runs `scripts/create-prototype.cjs`).
-3. Follow branch and safety practices in [hpux-prototypes/SAFE_WORKFLOW.md](hpux-prototypes/SAFE_WORKFLOW.md).
-4. Register the prototype in `hub/src/data/prototypes.manifest.json` so it appears on the hub (or ask a maintainer to add the entry).
-
-**Private prototypes:** set `private: true` in the prototype's `prototype.config.ts` to hide it from the launcher and hub listing while keeping direct URL access. See `hpux-prototypes/src/app/prototypes/_template/prototype.config.ts` for the field.
-
-**Hub embed & deploy:** `hpux-prototypes/` lives in this monorepo; see [hpux-prototypes/VENDOR.md](hpux-prototypes/VENDOR.md) for hub build paths and GitHub Pages deploy.
-
-## Local development
-
-**HPUX Prototypes** (from `hpux-prototypes/`):
-
-```bash
-npm start          # dev server
-npm run type-check # before commit
-```
-
-**Hub** (from `hub/`):
-
-```bash
-npm run dev        # local dev server
-npm run build      # bundles hpux-prototypes, rhacs-ux-prototypes, ome-console, osac-demo into hub/dist/
-```
-
-## Reviewing prototype PRs
-
-When reviewing pull requests with images, the [GitHub PR Image Inserter](https://andybraren.com/tools/gh-pr-image-inserter.html) utility makes inline image review easier.
