@@ -1152,6 +1152,24 @@ function OsacEmbedFullscreenPage() {
 const HPUX_PROTOTYPE_ID_RE = /^[a-z][a-z0-9._-]{0,79}$/i;
 
 /**
+ * Look up design doc and recording URLs from the manifest for a given hpux prototype id.
+ * Matches by checking whether the entry's `prototypeUrl` contains `prototype=<id>`.
+ * Returns undefined for each field when the entry has no value so callers can safely coalesce.
+ */
+function lookupManifestLinks(prototypeId: string): { designDocUrl?: string | null; recordingUrl?: string | null } {
+  if (!prototypeId) return {};
+  const param = `prototype=${prototypeId}`;
+  const entry = manifest.prototypes.find(
+    (p) => typeof p.prototypeUrl === "string" && p.prototypeUrl.includes(param),
+  );
+  if (!entry) return {};
+  return {
+    designDocUrl: entry.designDocUrl,
+    recordingUrl: entry.prototypeRecordingUrl,
+  };
+}
+
+/**
  * Prototypes that share one hub embed with a version dropdown (see {@link HpuxPrototypesEmbedFullscreenPage}).
  * Order: newest / preferred first. Designers register new rows here when shipping a new listed iteration — see prototype-contributor skill.
  */
@@ -1367,6 +1385,8 @@ function HpuxPrototypesEmbedFullscreenPage() {
     return <Navigate to="/" replace />;
   }
 
+  const manifestLinks = useMemo(() => lookupManifestLinks(prototype), [prototype]);
+
   const { backTo, backLabel, versionOptions } = resolveHpuxEmbedVersionContext(prototype);
   const hubBase = import.meta.env.BASE_URL;
   const iframeQs = new URLSearchParams({ prototype });
@@ -1466,58 +1486,63 @@ function HpuxPrototypesEmbedFullscreenPage() {
           </div>
         )}
 
-        {/* External resource links */}
-        {(designNotes.designDocUrl || designNotes.recordingUrl || designNotes.jiraUrl) && (
-          <div>
-            <Title headingLevel="h3" size="md" style={{ marginBottom: "var(--pf-t--global--spacer--sm)" }}>
-              Resources
-            </Title>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--pf-t--global--spacer--xs)" }}>
-              {designNotes.designDocUrl && (
-                <Button
-                  variant="link"
-                  icon={<ExternalLinkAltIcon aria-hidden />}
-                  iconPosition="end"
-                  component="a"
-                  href={designNotes.designDocUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ paddingLeft: 0 }}
-                >
-                  Design doc
-                </Button>
-              )}
-              {designNotes.recordingUrl && (
-                <Button
-                  variant="link"
-                  icon={<ExternalLinkAltIcon aria-hidden />}
-                  iconPosition="end"
-                  component="a"
-                  href={designNotes.recordingUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ paddingLeft: 0 }}
-                >
-                  Recording
-                </Button>
-              )}
-              {designNotes.jiraUrl && (
-                <Button
-                  variant="link"
-                  icon={<ExternalLinkAltIcon aria-hidden />}
-                  iconPosition="end"
-                  component="a"
-                  href={designNotes.jiraUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ paddingLeft: 0 }}
-                >
-                  Jira ticket
-                </Button>
-              )}
+        {/* External resource links — postMessage values take priority; manifest fills gaps. */}
+        {(() => {
+          const effectiveDesignDocUrl = designNotes.designDocUrl ?? manifestLinks.designDocUrl;
+          const effectiveRecordingUrl = designNotes.recordingUrl ?? manifestLinks.recordingUrl;
+          if (!effectiveDesignDocUrl && !effectiveRecordingUrl && !designNotes.jiraUrl) return null;
+          return (
+            <div>
+              <Title headingLevel="h3" size="md" style={{ marginBottom: "var(--pf-t--global--spacer--sm)" }}>
+                Resources
+              </Title>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--pf-t--global--spacer--xs)" }}>
+                {effectiveDesignDocUrl && (
+                  <Button
+                    variant="link"
+                    icon={<ExternalLinkAltIcon aria-hidden />}
+                    iconPosition="end"
+                    component="a"
+                    href={effectiveDesignDocUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ paddingLeft: 0 }}
+                  >
+                    Design doc
+                  </Button>
+                )}
+                {effectiveRecordingUrl && (
+                  <Button
+                    variant="link"
+                    icon={<ExternalLinkAltIcon aria-hidden />}
+                    iconPosition="end"
+                    component="a"
+                    href={effectiveRecordingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ paddingLeft: 0 }}
+                  >
+                    Recording
+                  </Button>
+                )}
+                {designNotes.jiraUrl && (
+                  <Button
+                    variant="link"
+                    icon={<ExternalLinkAltIcon aria-hidden />}
+                    iconPosition="end"
+                    component="a"
+                    href={designNotes.jiraUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ paddingLeft: 0 }}
+                  >
+                    Jira ticket
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
       </DrawerPanelBody>
     </DrawerPanelContent>
   ) : <></>;
