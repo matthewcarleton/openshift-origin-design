@@ -5,19 +5,12 @@
  * live in the hub fullscreen top bar (`/embed/hpux-prototypes`).
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import {
-  PageSection,
-  Button,
-  Drawer,
-  DrawerContent,
-} from '@patternfly/react-core';
-import { OutlinedStickyNoteIcon } from '@patternfly/react-icons';
+import { PageSection } from '@patternfly/react-core';
 import { AppLayout } from '@app/AppLayout/AppLayout';
 import { PrototypeModule } from './types';
 import { QuotasProvider } from '@app/shared/contexts/QuotasContext';
-import { DesignNotesDrawerPanel } from './DesignNotesDrawer';
 
 interface PrototypeLayoutProps {
   prototype: PrototypeModule;
@@ -26,7 +19,6 @@ interface PrototypeLayoutProps {
 export const PrototypeLayout: React.FC<PrototypeLayoutProps> = ({ prototype }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const ownerDisplayName = prototype.config.owner.slack
     ? `${prototype.config.owner.name} (slack ${prototype.config.owner.slack})`
@@ -89,60 +81,27 @@ export const PrototypeLayout: React.FC<PrototypeLayoutProps> = ({ prototype }) =
     }
   }, [location.pathname, location.search, location.hash, prototype.routes, prototype.config.id, navigate]);
 
-  const hasDesignNotes = Boolean(prototype.config.designNotes);
-
-  const designNotesButton = hasDesignNotes ? (
-    <Button
-      variant="primary"
-      size="sm"
-      icon={<OutlinedStickyNoteIcon />}
-      onClick={() => setIsDrawerOpen(prev => !prev)}
-      aria-expanded={isDrawerOpen}
-    >
-      Design Notes
-    </Button>
-  ) : null;
-
-  const drawerPanelContent = hasDesignNotes ? (
-    <DesignNotesDrawerPanel
-      prototype={prototype}
-      onClose={() => setIsDrawerOpen(false)}
-    />
-  ) : <></>;
-
   return (
     <QuotasProvider>
-      <Drawer
-        isExpanded={isDrawerOpen && hasDesignNotes}
-        position="end"
-        style={{ height: '100vh' }}
+      <AppLayout
+        useCaseTitle={ownerDisplayName}
+        useCasePersona={prototype.config.persona.name}
+        enabledPerspectives={prototype.config.perspectives}
+        currentPrototypeId={prototype.config.id}
       >
-        <DrawerContent
-          panelContent={drawerPanelContent}
-          style={{ height: '100%', overflow: 'hidden' }}
-        >
-          <AppLayout
-            useCaseTitle={ownerDisplayName}
-            useCasePersona={prototype.config.persona.name}
-            enabledPerspectives={prototype.config.perspectives}
-            currentPrototypeId={prototype.config.id}
-            customToolbarItems={designNotesButton}
-          >
-            <Routes>
-              {prototype.routes.map((route, index) => (
-                <Route
-                  key={route.path || index}
-                  path={route.path}
-                  element={route.element}
-                />
-              ))}
+        <Routes>
+          {prototype.routes.map((route, index) => (
+            <Route
+              key={route.path || index}
+              path={route.path}
+              element={route.element}
+            />
+          ))}
 
-              {/* Fallback / catch-all route - show blank page instead of defaulting to first route */}
-              <Route path="*" element={<PageSection />} />
-            </Routes>
-          </AppLayout>
-        </DrawerContent>
-      </Drawer>
+          {/* Fallback / catch-all route - show blank page instead of defaulting to first route */}
+          <Route path="*" element={<PageSection />} />
+        </Routes>
+      </AppLayout>
     </QuotasProvider>
   );
 };

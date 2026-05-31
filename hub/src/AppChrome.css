@@ -547,6 +547,20 @@ body.ops-hub-embed-fullscreen-active {
   text-decoration: underline;
 }
 
+/* Design Notes drawer fills the space below the top bar, panel slides in from end */
+.ops-hub-design-notes-drawer {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Make DrawerContent a flex column so the iframe fills it via flex: 1 */
+.ops-hub-design-notes-drawer > .pf-v6-c-drawer__main > .pf-v6-c-drawer__content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .ops-hub-embed-fullscreen-frame {
   flex: 1;
   width: 100%;

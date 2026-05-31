@@ -55,6 +55,18 @@ export const PrototypeProvider: React.FC<PrototypeProviderProps> = ({ children }
 
       setCurrentPrototype(prototype);
 
+      // Notify the parent hub window so it can show the Design Notes button in its top bar.
+      if (window.parent !== window) {
+        window.parent.postMessage(
+          {
+            type: 'hpux-prototype-loaded',
+            designNotes: prototype.config.designNotes ?? null,
+            prototypeName: prototype.config.name,
+          },
+          '*',
+        );
+      }
+
       // Store in sessionStorage for persistence across page reloads
       sessionStorage.setItem('activePrototypeId', id);
 

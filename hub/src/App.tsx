@@ -16,6 +16,7 @@ import {
 } from "react-router-dom";
 
 import ExternalLinkAltIcon from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
+import OutlinedStickyNoteIcon from "@patternfly/react-icons/dist/js/icons/outlined-sticky-note-icon";
 
 import manifestRaw from "./data/prototypes.manifest.json";
 import { pfIcon, type PfIconComponent } from "./iconImports";
@@ -42,11 +43,19 @@ import {
   Content,
   ContentVariants,
   Divider,
+  Drawer,
+  DrawerActions,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerHead,
+  DrawerPanelBody,
+  DrawerPanelContent,
   Flex,
   FlexItem,
   Grid,
   GridItem,
   Icon,
+  Label,
   Masthead,
   MastheadBrand,
   MastheadContent,
@@ -61,6 +70,14 @@ import {
 } from "@patternfly/react-core";
 
 const manifest = manifestRaw as unknown as PrototypesManifest;
+
+/** Mirror of hpux-prototypes' PrototypeConfig.designNotes shape, received via postMessage. */
+interface HpuxDesignNotesData {
+  overview?: string;
+  pages?: Array<{ name: string; path?: string; notes: string }>;
+  figmaUrl?: string;
+  jiraUrl?: string;
+}
 
 const TEAM_BY_ID = new Map(manifest.teams.map((item) => [item.id, item]));
 
@@ -200,6 +217,7 @@ function EmbedFullscreenTopBar({
   onVersionChange,
   versionAriaLabel,
   copyTabUrl = false,
+  extraActions,
 }: {
   backTo: string;
   backLabel: string;
@@ -209,6 +227,8 @@ function EmbedFullscreenTopBar({
   versionAriaLabel?: string;
   /** When true, copies the current browser tab URL (hub embed page). */
   copyTabUrl?: boolean;
+  /** Optional extra controls rendered beside the version switcher (e.g. Design Notes button). */
+  extraActions?: React.ReactNode;
 }) {
   return (
     <header className="ops-hub-embed-top-bar">
@@ -224,6 +244,7 @@ function EmbedFullscreenTopBar({
             ariaLabel={versionAriaLabel}
           />
           {copyTabUrl ? <EmbedCopyTabUrlControl /> : null}
+          {extraActions ?? null}
         </div>
       </div>
     </header>
@@ -1285,8 +1306,35 @@ function HpuxPrototypesEmbedFullscreenPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   useEmbedFullscreenChrome();
 
+  const [designNotes, setDesignNotes] = useState<HpuxDesignNotesData | null>(null);
+  const [designNotesPrototypeName, setDesignNotesPrototypeName] = useState<string>("");
+  const [isDesignNotesOpen, setIsDesignNotesOpen] = useState(false);
+
   const prototype = searchParams.get("prototype")?.trim() ?? "";
   const valid = prototype.length > 0 && HPUX_PROTOTYPE_ID_RE.test(prototype);
+
+  // Listen for design notes data posted from the hpux-prototypes iframe on load.
+  useEffect(() => {
+    const handler = (event: MessageEvent) => {
+      if (
+        event.data !== null &&
+        typeof event.data === "object" &&
+        event.data.type === "hpux-prototype-loaded"
+      ) {
+        setDesignNotes((event.data.designNotes as HpuxDesignNotesData | null) ?? null);
+        setDesignNotesPrototypeName(typeof event.data.prototypeName === "string" ? event.data.prototypeName : "");
+        setIsDesignNotesOpen(false);
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, []);
+
+  // Reset design notes when the prototype param changes so stale data never shows.
+  useEffect(() => {
+    setDesignNotes(null);
+    setIsDesignNotesOpen(false);
+  }, [prototype]);
 
   if (!valid) {
     return <Navigate to="/" replace />;
@@ -1301,6 +1349,77 @@ function HpuxPrototypesEmbedFullscreenPage() {
   const src = `${hubBase}hpux-prototypes/?${iframeQs.toString()}`;
   const label = `Shared HPUX Prototypes: ${prototype}`;
 
+  const designNotesButton = designNotes ? (
+    <Button
+      variant="secondary"
+      size="sm"
+      icon={<OutlinedStickyNoteIcon aria-hidden />}
+      onClick={() => setIsDesignNotesOpen((prev) => !prev)}
+      aria-expanded={isDesignNotesOpen}
+    >
+      Design Notes
+    </Button>
+  ) : null;
+
+  const designNotesPanelContent = designNotes ? (
+    <DrawerPanelContent defaultSize="420px" minSize="350px">
+      <DrawerHead>
+        <div>
+          <Title headingLevel="h2" size="xl">Design Notes</Title>
+          <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)" }}>
+            {designNotesPrototypeName}
+          </Content>
+        </div>
+        <DrawerActions>
+          <DrawerCloseButton onClick={() => setIsDesignNotesOpen(false)} />
+        </DrawerActions>
+      </DrawerHead>
+      <DrawerPanelBody>
+        {designNotes.overview && (
+          <Content component="p" style={{ marginBottom: "var(--pf-t--global--spacer--lg)" }}>
+            {designNotes.overview}
+          </Content>
+        )}
+        {designNotes.pages && designNotes.pages.length > 0 && (
+          <div>
+            {designNotes.pages.map((page, index) => (
+              <div key={index} style={{ marginBottom: "var(--pf-t--global--spacer--lg)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "var(--pf-t--global--spacer--sm)", marginBottom: "var(--pf-t--global--spacer--xs)" }}>
+                  <Title headingLevel="h3" size="md">{page.name}</Title>
+                  {page.path && (
+                    <Label isCompact variant="outline" color="blue">
+                      <code style={{ fontSize: "11px" }}>{page.path}</code>
+                    </Label>
+                  )}
+                </div>
+                <Content component="p" style={{ color: "var(--pf-t--global--text--color--subtle)" }}>
+                  {page.notes}
+                </Content>
+                {index < designNotes.pages!.length - 1 && (
+                  <Divider style={{ marginTop: "var(--pf-t--global--spacer--md)" }} />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+        {(designNotes.figmaUrl || designNotes.jiraUrl) && (
+          <div style={{ marginTop: "var(--pf-t--global--spacer--lg)", paddingTop: "var(--pf-t--global--spacer--md)", borderTop: "1px solid var(--pf-t--global--border--color--default)", display: "flex", flexDirection: "column", gap: "var(--pf-t--global--spacer--xs)" }}>
+            {designNotes.figmaUrl && (
+              <Button component="a" href={designNotes.figmaUrl} target="_blank" rel="noopener noreferrer" variant="link" isInline icon={<ExternalLinkAltIcon aria-hidden />} iconPosition="end">
+                View in Figma
+              </Button>
+            )}
+            {designNotes.jiraUrl && (
+              <Button component="a" href={designNotes.jiraUrl} target="_blank" rel="noopener noreferrer" variant="link" isInline icon={<ExternalLinkAltIcon aria-hidden />} iconPosition="end">
+                View Jira Epic
+              </Button>
+            )}
+          </div>
+        )}
+      </DrawerPanelBody>
+    </DrawerPanelContent>
+  ) : <></>;
+
   return (
     <div className="ops-hub-embed-fullscreen-root">
       <EmbedFullscreenTopBar
@@ -1311,8 +1430,17 @@ function HpuxPrototypesEmbedFullscreenPage() {
         onVersionChange={(id) => setSearchParams({ prototype: id }, { replace: true })}
         versionAriaLabel="Prototype build"
         copyTabUrl
+        extraActions={designNotesButton}
       />
-      <iframe key={src} title={label} className="ops-hub-embed-fullscreen-frame" src={src} />
+      <Drawer
+        isExpanded={isDesignNotesOpen && designNotes !== null}
+        position="end"
+        className="ops-hub-design-notes-drawer"
+      >
+        <DrawerContent panelContent={designNotesPanelContent}>
+          <iframe key={src} title={label} className="ops-hub-embed-fullscreen-frame" src={src} />
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }
