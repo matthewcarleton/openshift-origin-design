@@ -1423,29 +1423,46 @@ function HpuxPrototypesEmbedFullscreenPage() {
         </DrawerActions>
       </DrawerHead>
       <DrawerPanelBody>
-        {/* Persona + Designer callout */}
+        {/* Resources row — compact, at top */}
+        {(() => {
+          const effectiveDesignDocUrl = designNotes.designDocUrl ?? manifestLinks.designDocUrl;
+          const effectiveRecordingUrl = designNotes.recordingUrl ?? manifestLinks.recordingUrl;
+          const linkStyle: React.CSSProperties = { paddingLeft: 0, paddingRight: 0, fontSize: "var(--pf-t--global--font--size--sm)" };
+          return (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--pf-t--global--spacer--md)", alignItems: "center", marginBottom: "var(--pf-t--global--spacer--md)", paddingBottom: "var(--pf-t--global--spacer--md)", borderBottom: "1px solid var(--pf-t--global--border--color--default)" }}>
+              {effectiveDesignDocUrl ? (
+                <Button variant="link" isInline icon={<ExternalLinkAltIcon aria-hidden />} iconPosition="end" component="a" href={effectiveDesignDocUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>Design doc</Button>
+              ) : (
+                <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)" }}>Design doc — Not linked</Content>
+              )}
+              {effectiveRecordingUrl ? (
+                <Button variant="link" isInline icon={<ExternalLinkAltIcon aria-hidden />} iconPosition="end" component="a" href={effectiveRecordingUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>Recording</Button>
+              ) : (
+                <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)" }}>Recording — Not linked</Content>
+              )}
+              {designNotes.jiraUrl && (
+                <Button variant="link" isInline icon={<ExternalLinkAltIcon aria-hidden />} iconPosition="end" component="a" href={designNotes.jiraUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>Jira</Button>
+              )}
+            </div>
+          );
+        })()}
+
+        {/* Persona + Designer — single compact row */}
         {(designNotes.personaName || designNotes.ownerName) && (
-          <div style={{ marginBottom: "var(--pf-t--global--spacer--xl)", display: "flex", flexDirection: "column", gap: "var(--pf-t--global--spacer--sm)" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--pf-t--global--spacer--sm)", alignItems: "center", marginBottom: "var(--pf-t--global--spacer--lg)" }}>
             {designNotes.personaName && (
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--pf-t--global--spacer--sm)" }}>
-                <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)", minWidth: "4.5rem" }}>Persona</Content>
-                <Label isCompact color="purple">{designNotes.personaName}</Label>
-              </div>
+              <Label isCompact color="purple">{designNotes.personaName}</Label>
             )}
             {designNotes.ownerName && (
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--pf-t--global--spacer--sm)" }}>
-                <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)", minWidth: "4.5rem" }}>Designer</Content>
-                <Content component="small">
-                  {designNotes.ownerName}
-                  {designNotes.ownerSlack && ` — ${designNotes.ownerSlack}`}
-                </Content>
-              </div>
+              <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)" }}>
+                {designNotes.ownerName}{designNotes.ownerSlack ? ` — @${designNotes.ownerSlack}` : ""}
+              </Content>
             )}
           </div>
         )}
 
         {designNotes.designerNotes && (
-          <div style={{ marginBottom: "var(--pf-t--global--spacer--xl)" }}>
+          <div style={{ marginBottom: "var(--pf-t--global--spacer--md)" }}>
             <Title headingLevel="h3" size="md" style={{ marginBottom: "var(--pf-t--global--spacer--sm)" }}>
               Designer Notes
             </Title>
@@ -1456,13 +1473,13 @@ function HpuxPrototypesEmbedFullscreenPage() {
         )}
 
         {designNotes.navigationGuide && designNotes.navigationGuide.length > 0 && (
-          <div style={{ marginBottom: "var(--pf-t--global--spacer--xl)" }}>
-            <Title headingLevel="h3" size="md" style={{ marginBottom: "var(--pf-t--global--spacer--md)" }}>
+          <div style={{ marginBottom: "var(--pf-t--global--spacer--md)" }}>
+            <Title headingLevel="h3" size="md" style={{ marginBottom: "var(--pf-t--global--spacer--sm)" }}>
               Where to navigate
             </Title>
             <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>
               {designNotes.navigationGuide.map((entry, index) => (
-                <li key={index} style={{ marginBottom: "var(--pf-t--global--spacer--lg)" }}>
+                <li key={index} style={{ marginBottom: "var(--pf-t--global--spacer--md)" }}>
                   <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "var(--pf-t--global--spacer--sm)", marginBottom: entry.notes ? "var(--pf-t--global--spacer--xs)" : 0 }}>
                     <span style={{ minWidth: "1.25rem", fontWeight: 700, color: "var(--pf-t--global--text--color--subtle)" }}>
                       {index + 1}.
@@ -1473,79 +1490,18 @@ function HpuxPrototypesEmbedFullscreenPage() {
                     </Label>
                   </div>
                   {entry.notes && (
-                    <Content component="p" style={{ color: "var(--pf-t--global--text--color--subtle)", paddingLeft: "1.75rem" }}>
+                    <Content component="p" style={{ color: "var(--pf-t--global--text--color--subtle)", paddingLeft: "1.75rem", fontSize: "var(--pf-t--global--font--size--sm)" }}>
                       {entry.notes}
                     </Content>
                   )}
                   {index < designNotes.navigationGuide!.length - 1 && (
-                    <Divider style={{ marginTop: "var(--pf-t--global--spacer--md)" }} />
+                    <Divider style={{ marginTop: "var(--pf-t--global--spacer--sm)" }} />
                   )}
                 </li>
               ))}
             </ol>
           </div>
         )}
-
-        {/* External resource links — postMessage values take priority; manifest fills gaps. */}
-        {(() => {
-          const effectiveDesignDocUrl = designNotes.designDocUrl ?? manifestLinks.designDocUrl;
-          const effectiveRecordingUrl = designNotes.recordingUrl ?? manifestLinks.recordingUrl;
-          return (
-            <div>
-              <Title headingLevel="h3" size="md" style={{ marginBottom: "var(--pf-t--global--spacer--sm)" }}>
-                Resources
-              </Title>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--pf-t--global--spacer--xs)" }}>
-                {effectiveDesignDocUrl ? (
-                  <Button
-                    variant="link"
-                    icon={<ExternalLinkAltIcon aria-hidden />}
-                    iconPosition="end"
-                    component="a"
-                    href={effectiveDesignDocUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ paddingLeft: 0 }}
-                  >
-                    Design doc
-                  </Button>
-                ) : (
-                  <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)" }}>Design doc — Not linked</Content>
-                )}
-                {effectiveRecordingUrl ? (
-                  <Button
-                    variant="link"
-                    icon={<ExternalLinkAltIcon aria-hidden />}
-                    iconPosition="end"
-                    component="a"
-                    href={effectiveRecordingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ paddingLeft: 0 }}
-                  >
-                    Recording
-                  </Button>
-                ) : (
-                  <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)" }}>Recording — Not linked</Content>
-                )}
-                {designNotes.jiraUrl && (
-                  <Button
-                    variant="link"
-                    icon={<ExternalLinkAltIcon aria-hidden />}
-                    iconPosition="end"
-                    component="a"
-                    href={designNotes.jiraUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ paddingLeft: 0 }}
-                  >
-                    Jira ticket
-                  </Button>
-                )}
-              </div>
-            </div>
-          );
-        })()}
       </DrawerPanelBody>
     </DrawerPanelContent>
   ) : <></>;
