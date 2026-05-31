@@ -908,6 +908,43 @@ function HubContributingPage() {
 
         <SectionSpacer />
         <Title headingLevel="h3" size="xl">
+          Start the dev server
+        </Title>
+        <Content component={ContentVariants.p} style={{ ...STEP_GAP, ...MW }}>
+          Open Cursor&apos;s built-in terminal (<strong>Terminal → New Terminal</strong>) and run:
+        </Content>
+        <Content component={ContentVariants.p} style={{ ...STEP_GAP, ...MW }}>
+          <Code>cd hub && npm run dev</Code>
+        </Content>
+        <Content component={ContentVariants.p} style={{ ...STEP_GAP, ...MW }}>
+          This starts the prototype hub at{" "}
+          <a href="http://localhost:5173" target="_blank" rel="noopener noreferrer">
+            http://localhost:5173
+          </a>
+          . Keep it running while you work — changes appear automatically without a page refresh.
+        </Content>
+
+        <SectionSpacer />
+        <Title headingLevel="h3" size="xl">
+          Create your prototype
+        </Title>
+        <Content component={ContentVariants.p} style={{ ...STEP_GAP, ...MW }}>
+          With the dev server running, open Cursor&apos;s chat panel and type:
+        </Content>
+        <Content
+          component={ContentVariants.p}
+          style={{ ...STEP_GAP, ...MW, fontStyle: "italic", paddingLeft: "var(--pf-t--global--spacer--md)", borderLeft: "3px solid var(--pf-t--global--border--color--default)" }}
+        >
+          I want to create a prototype
+        </Content>
+        <Content component={ContentVariants.p} style={{ ...STEP_GAP, ...MW }}>
+          The <strong>prototype-contributor</strong> skill will ask you for: product area, Jira ticket, persona, design notes,
+          design doc link, and recording link — then scaffold the prototype, register it in the hub manifest, and guide you
+          through committing and opening a pull request.
+        </Content>
+
+        <SectionSpacer />
+        <Title headingLevel="h3" size="xl">
           Create your branch
         </Title>
         <Content component={ContentVariants.p} style={{ ...STEP_GAP, ...MW }}>

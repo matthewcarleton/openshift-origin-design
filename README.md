@@ -39,7 +39,34 @@ openshift-origin-design/
 
 Edit Markdown under `designs/`, `conventions/`, or `research/`. The published site is built from the upstream [openshift/openshift-origin-design](https://github.com/openshift/openshift-origin-design) GitHub Pages configuration.
 
-### New interactive prototype
+### Contributing a prototype
+
+The fastest way to add a prototype is with **Cursor** and the built-in skill. No memorizing manifest fields or npm scripts.
+
+1. **Clone the repo**
+   ```bash
+   git clone git@github.com:matthewcarleton/openshift-origin-design.git
+   cd openshift-origin-design
+   ```
+
+2. **Open in Cursor** — `File → Open Folder`, select the `openshift-origin-design/` directory.
+
+3. **Start the dev server**
+   ```bash
+   cd hub && npm run dev
+   ```
+   Opens the prototype hub at [http://localhost:5173](http://localhost:5173).
+
+4. **Create your prototype** — in Cursor's chat panel, type:
+   > I want to create a prototype
+
+   Cursor will walk you through everything: product area, Jira ticket, persona, design notes, design doc link, and recording link.
+
+The repo ships with a `prototype-contributor` skill at `.cursor/skills/prototype-contributor/` that loads automatically when you open this folder in Cursor. It handles branching, scaffolding, registering the prototype in the hub, and opening a pull request.
+
+### New interactive prototype (manual)
+
+If you prefer working without the Cursor skill:
 
 1. Work in `hpux-prototypes/` (see `guides/` for architecture and setup).
 2. Scaffold from the template: `npm run create-prototype` (runs `scripts/create-prototype.cjs`).
