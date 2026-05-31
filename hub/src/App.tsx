@@ -233,7 +233,7 @@ function EmbedFullscreenTopBar({
             ariaLabel={versionAriaLabel}
           />
           {badgeProps ? (
-            <Label isCompact color={badgeProps.color} variant={badgeProps.variant ?? "filled"}>
+            <Label className="ops-hub-embed-status-badge" color={badgeProps.color} variant={badgeProps.variant ?? "filled"}>
               {statusBadge}
             </Label>
           ) : null}

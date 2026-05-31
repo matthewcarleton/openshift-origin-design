@@ -612,6 +612,15 @@ body.ops-hub-embed-fullscreen-active {
 }
 
 /* Design Notes button — solid Red Hat red */
+
+.ops-hub-embed-status-badge.pf-v6-c-label,
+.ops-hub-embed-status-badge {
+  height: auto !important;
+  padding: 4px 14px !important;
+  border-radius: 30px !important;
+  font-size: var(--pf-t--global--font--size--sm) !important;
+}
+
 .ops-hub-design-notes-btn.pf-v6-c-button,
 .ops-hub-design-notes-btn {
   background-color: #c9190b !important;
