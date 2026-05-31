@@ -40,7 +40,6 @@ import {
   TabTitleText,
   Card,
   CardBody,
-  Label,
   Divider,
   DescriptionList,
   DescriptionListGroup,
@@ -109,7 +108,7 @@ const CorePlatformsIcon: React.FC<{ size?: string }> = ({ size = '20px' }) => (
   </svg>
 );
 
-const AppLayout: React.FunctionComponent<IAppLayout> = ({ children, customToolbarItems, useCaseTitle, useCasePersona, topBanner, enabledPerspectives, currentPrototypeId }) => {
+const AppLayout: React.FunctionComponent<IAppLayout> = ({ children, customToolbarItems, useCasePersona, topBanner, enabledPerspectives, currentPrototypeId }) => {
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
   const [perspectiveOpen, setPerspectiveOpen] = React.useState(false);
   const [activePerspective, setActivePerspective] = React.useState('Fleet management');
@@ -500,16 +499,6 @@ const AppLayout: React.FunctionComponent<IAppLayout> = ({ children, customToolba
         <MastheadBrand>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <img src={redHatOpenShiftLogo} alt="Red Hat OpenShift" style={{ height: '40px' }} />
-            <Label color="orange" isCompact>UXD prototype - work in progress</Label>
-            <span style={{ fontSize: '14px', color: 'var(--pf-t--global--text--color--regular)' }}>
-              Contact: {useCaseTitle && useCaseTitle.trim() !== ''
-                ? useCaseTitle
-                : useCase === 'use-case-aaq' || useCase === 'use-case-aaq-empty-states' 
-                ? 'Anna Walker (slack @Anna Walker)' 
-                : useCase === 'use-case-operator-lifecycle'
-                ? 'Kevin Hatchoua (slack @Kevin Hatchoua)'
-                : 'Stefan Kukla (slack @stefan)'}
-            </span>
           </div>
         </MastheadBrand>
       </MastheadMain>
