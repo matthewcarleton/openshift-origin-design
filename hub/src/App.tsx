@@ -1490,14 +1490,13 @@ function HpuxPrototypesEmbedFullscreenPage() {
         {(() => {
           const effectiveDesignDocUrl = designNotes.designDocUrl ?? manifestLinks.designDocUrl;
           const effectiveRecordingUrl = designNotes.recordingUrl ?? manifestLinks.recordingUrl;
-          if (!effectiveDesignDocUrl && !effectiveRecordingUrl && !designNotes.jiraUrl) return null;
           return (
             <div>
               <Title headingLevel="h3" size="md" style={{ marginBottom: "var(--pf-t--global--spacer--sm)" }}>
                 Resources
               </Title>
               <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--pf-t--global--spacer--xs)" }}>
-                {effectiveDesignDocUrl && (
+                {effectiveDesignDocUrl ? (
                   <Button
                     variant="link"
                     icon={<ExternalLinkAltIcon aria-hidden />}
@@ -1510,8 +1509,10 @@ function HpuxPrototypesEmbedFullscreenPage() {
                   >
                     Design doc
                   </Button>
+                ) : (
+                  <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)" }}>Design doc — Not linked</Content>
                 )}
-                {effectiveRecordingUrl && (
+                {effectiveRecordingUrl ? (
                   <Button
                     variant="link"
                     icon={<ExternalLinkAltIcon aria-hidden />}
@@ -1524,6 +1525,8 @@ function HpuxPrototypesEmbedFullscreenPage() {
                   >
                     Recording
                   </Button>
+                ) : (
+                  <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)" }}>Recording — Not linked</Content>
                 )}
                 {designNotes.jiraUrl && (
                   <Button
