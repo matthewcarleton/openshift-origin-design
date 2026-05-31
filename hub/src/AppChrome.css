@@ -617,18 +617,20 @@ body.ops-hub-embed-fullscreen-active {
   50% { box-shadow: 0 0 10px 3px rgba(201, 25, 11, 0.5); }
 }
 
-.ops-hub-design-notes-btn {
+.ops-hub-design-notes-btn,
+.ops-hub-design-notes-btn:focus,
+.ops-hub-design-notes-btn:focus-visible,
+.ops-hub-design-notes-btn::before,
+.ops-hub-design-notes-btn::after {
   background-color: #c9190b !important;
   color: #fff !important;
-  border-color: #c9190b !important;
+  border: none !important;
   outline: none !important;
-  box-shadow: none;
   animation: design-notes-glow 3.5s ease-in-out infinite;
 }
 
 .ops-hub-design-notes-btn:hover {
   background-color: #a30000 !important;
-  border-color: #a30000 !important;
 }
 
 .ops-hub-design-notes-btn svg {
