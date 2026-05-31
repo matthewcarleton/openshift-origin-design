@@ -22,24 +22,25 @@ export const config: PrototypeConfig = {
   updatedAt: '2026-04-23',
 
   designNotes: {
-    summary:
+    designerNotes:
       'Summit demo prototype for AI-assisted troubleshooting in the Observability stack. The agent guides an SRE through a structured investigation flow — gathering evidence, correlating signals, and surfacing recommended next steps — without requiring deep Prometheus/OCP expertise.',
-    pagesToReview: [
+    navigationGuide: [
       {
-        name: 'AI Hub entry point',
+        page: 'AI Hub entry point',
         path: '/core/observe/ai-hub',
-        description:
+        notes:
           'Landing page for the agentic session. Look for the "start new investigation" CTA and the recent sessions list — confirm with Foday whether session history is in scope for Summit.',
       },
       {
-        name: 'Active Investigation',
+        page: 'Active Investigation',
         path: '/core/observe/ai-hub/investigation',
-        description:
+        notes:
           'Chat-style interface with step cards. Each agent action (query metrics, check events, correlate) surfaces as a collapsible card so the SRE can follow the reasoning chain.',
       },
       {
-        name: 'Evidence Panel',
-        description:
+        page: 'Evidence Panel',
+        path: '/core/observe/ai-hub/investigation/evidence',
+        notes:
           'Side panel showing raw signal data the agent gathered. Review whether this should be a persistent panel or an on-demand drawer.',
       },
     ],

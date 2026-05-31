@@ -16,6 +16,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const readline = require('readline');
 
 // Get prototype name from command line arguments
 const prototypeName = process.argv[2];
@@ -130,15 +131,76 @@ routesContent = routesContent.replace(
 );
 fs.writeFileSync(routesPath, routesContent, 'utf8');
 
-console.log(`✅ Prototype "${prototypeName}" created successfully!`);
-console.log(`\n📁 Location: ${targetDir}`);
-console.log(`\n📝 Next steps:`);
-console.log(`   1. Edit ${path.join(targetDir, 'prototype.config.ts')}`);
-console.log(`      - Update owner.name, owner.slack, owner.email`);
-console.log(`      - Update persona.name and persona.role`);
-console.log(`      - Add relevant tags`);
-console.log(`   2. Build your pages in ${path.join(targetDir, 'pages')}`);
-console.log(`   3. Update routes in ${path.join(targetDir, 'routes.tsx')}`);
-console.log(`   4. Refresh your browser - it will appear in the Draft tab!`);
-console.log(`\n🎉 Happy prototyping!`);
+// Prompt for design notes
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+
+function ask(question) {
+  return new Promise((resolve) => rl.question(question, resolve));
+}
+
+async function promptDesignNotes() {
+  console.log('\n📝 Design Notes (shown in the "Design Notes" panel for reviewers)');
+  console.log('   Press Enter to skip any prompt and use placeholder text.\n');
+
+  const designerNotes = await ask('   Designer notes summary (what this design explores, key decisions): ');
+  const firstPagePath = await ask('   First page to navigate to (path, e.g. /observe/alerting): ');
+  const firstPageName = firstPagePath
+    ? await ask('   Name of that page (e.g. "Alert List"): ')
+    : '';
+  const firstPageNotes = firstPagePath
+    ? await ask('   What should the reviewer look for on that page? (or Enter to skip): ')
+    : '';
+
+  rl.close();
+
+  const resolvedDesignerNotes = designerNotes.trim() ||
+    'TODO: Describe what this design is exploring and key design decisions.';
+
+  let navigationGuideBlock = '';
+  if (firstPagePath.trim()) {
+    const resolvedPageName = firstPageName.trim() || 'TODO: Page name';
+    const resolvedPageNotes = firstPageNotes.trim();
+    navigationGuideBlock = `
+  navigationGuide: [
+    {
+      page: '${resolvedPageName}',
+      path: '${firstPagePath.trim()}',${resolvedPageNotes ? `\n      notes: '${resolvedPageNotes}',` : ''}
+    },
+  ],`;
+  } else {
+    navigationGuideBlock = `
+  navigationGuide: [
+    {
+      page: 'TODO: Page name',
+      path: '/todo/path',
+      notes: 'TODO: What to look for on this page.',
+    },
+  ],`;
+  }
+
+  // Inject designNotes block before closing brace of config object
+  let updatedConfig = fs.readFileSync(configPath, 'utf8');
+  const designNotesBlock = `\n  designNotes: {\n    designerNotes: '${resolvedDesignerNotes}',${navigationGuideBlock}\n  },\n`;
+  updatedConfig = updatedConfig.replace(/(\n};)$/, `${designNotesBlock}};`);
+  fs.writeFileSync(configPath, updatedConfig, 'utf8');
+
+  console.log(`\n✅ Prototype "${prototypeName}" created successfully!`);
+  console.log(`\n📁 Location: ${targetDir}`);
+  console.log(`\n📝 Next steps:`);
+  console.log(`   1. Edit ${path.join(targetDir, 'prototype.config.ts')}`);
+  console.log(`      - Update owner.name, owner.slack, owner.email`);
+  console.log(`      - Update persona.name and persona.role`);
+  console.log(`      - Add relevant tags`);
+  console.log(`      - Finish filling in designNotes`);
+  console.log(`   2. Build your pages in ${path.join(targetDir, 'pages')}`);
+  console.log(`   3. Update routes in ${path.join(targetDir, 'routes.tsx')}`);
+  console.log(`   4. Refresh your browser - it will appear in the Draft tab!`);
+  console.log(`\n🎉 Happy prototyping!`);
+}
+
+promptDesignNotes().catch((err) => {
+  console.error('Error during design notes prompts:', err);
+  rl.close();
+  process.exit(1);
+});
 

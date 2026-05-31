@@ -49,4 +49,15 @@ export const config: PrototypeConfig = {
   // Metadata
   createdAt: '2025-01-10',
   updatedAt: '2025-01-10',
+
+  designNotes: {
+    designerNotes: 'TODO: Describe what this design is exploring and key design decisions.',
+    navigationGuide: [
+      {
+        page: 'TODO: Page name',
+        path: '/todo/path',
+        notes: 'TODO: What to look for on this page.',
+      },
+    ],
+  },
 };

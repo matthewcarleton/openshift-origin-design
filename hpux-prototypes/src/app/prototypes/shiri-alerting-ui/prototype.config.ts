@@ -47,19 +47,19 @@ export const config: PrototypeConfig = {
   updatedAt: '2025-12-24',
 
   designNotes: {
-    summary:
+    designerNotes:
       'This prototype (v1) explores multi-cluster alerting UX — how a Fleet Administrator monitors and responds to alerts firing across many clusters simultaneously, using a heatmap + drill-down pattern.',
-    pagesToReview: [
+    navigationGuide: [
       {
-        name: 'Clusters Health',
+        page: 'Clusters Health',
         path: '/observe/alerting',
-        description:
+        notes:
           'Heatmap shows at-a-glance cluster health. Severity color bands (Critical / Warning / Info) are the primary scannable signal.',
       },
       {
-        name: 'Single Cluster Detail',
+        page: 'Single Cluster Detail',
         path: '/observe/alerting/cluster/:id',
-        description:
+        notes:
           'Drill-down from heatmap. The Firing Alerts table mirrors the OCP 4.x alerting UI so operators feel at home.',
       },
     ],

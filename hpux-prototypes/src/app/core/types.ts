@@ -89,16 +89,16 @@ export interface PrototypeConfig {
    * When present, a "Design Notes" button appears in the masthead and opens a side drawer.
    */
   designNotes?: {
-    /** What this design is covering / the design intent */
-    summary: string;
-    /** Ordered list of pages the viewer should look at */
-    pagesToReview?: Array<{
-      /** Page or screen name, e.g. "Alert List" */
-      name: string;
-      /** Optional route path hint shown as a badge, e.g. "/observe/alerting" */
-      path?: string;
-      /** What to look for / focus on in this page */
-      description?: string;
+    /** Free-form notes from the designer about design decisions, intent, open questions */
+    designerNotes: string;
+    /** Ordered list of pages/screens the reviewer should navigate to */
+    navigationGuide?: Array<{
+      /** Page name, e.g. "Alert List" */
+      page: string;
+      /** The route path to navigate to, e.g. /observe/alerting */
+      path: string;
+      /** What to look at or focus on when on this page */
+      notes?: string;
     }>;
   };
 
