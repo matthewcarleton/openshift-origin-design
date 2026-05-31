@@ -1359,7 +1359,7 @@ function HpuxPrototypesEmbedFullscreenPage() {
 
   const designNotesButton = designNotes ? (
     <Button
-      variant="secondary"
+      variant="plain"
       size="sm"
       icon={<OutlinedStickyNoteIcon aria-hidden />}
       onClick={() => setIsDesignNotesOpen((prev) => !prev)}

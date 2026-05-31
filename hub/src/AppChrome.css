@@ -617,10 +617,13 @@ body.ops-hub-embed-fullscreen-active {
   50% { box-shadow: 0 0 10px 3px rgba(201, 25, 11, 0.5); }
 }
 
+.ops-hub-design-notes-btn.pf-v6-c-button,
 .ops-hub-design-notes-btn {
   background-color: #c9190b !important;
   color: #fff !important;
-  border: 1px solid #c9190b !important;
+  border: none !important;
+  padding: 4px 14px !important;
+  border-radius: 30px !important;
   animation: design-notes-glow 3.5s ease-in-out infinite;
 }
 
@@ -630,12 +633,11 @@ body.ops-hub-embed-fullscreen-active {
 .pf-v5-c-button.ops-hub-design-notes-btn:focus-visible {
   outline: 0 !important;
   box-shadow: 0 0 8px 3px rgba(201, 25, 11, 0.5) !important;
-  border: 1px solid #c9190b !important;
+  border: none !important;
 }
 
 .ops-hub-design-notes-btn:hover {
   background-color: #a30000 !important;
-  border-color: #a30000 !important;
 }
 
 .ops-hub-design-notes-btn svg,
