@@ -1430,17 +1430,18 @@ function HpuxPrototypesEmbedFullscreenPage() {
           const effectiveDesignDocUrl = designNotes.designDocUrl ?? manifestLinks.designDocUrl;
           const effectiveRecordingUrl = designNotes.recordingUrl ?? manifestLinks.recordingUrl;
           const linkStyle: React.CSSProperties = { paddingLeft: 0, paddingRight: 0, fontSize: "var(--pf-t--global--font--size--sm)" };
+          const notLinkedStyle: React.CSSProperties = { color: "var(--pf-t--global--text--color--subtle)", display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "var(--pf-t--global--font--size--sm)" };
           return (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--pf-t--global--spacer--md)", alignItems: "center", marginBottom: "var(--pf-t--global--spacer--md)", paddingBottom: "var(--pf-t--global--spacer--md)", borderBottom: "1px solid var(--pf-t--global--border--color--default)" }}>
+            <div style={{ display: "flex", flexWrap: "nowrap", gap: "var(--pf-t--global--spacer--lg)", alignItems: "center", marginBottom: "var(--pf-t--global--spacer--md)", paddingBottom: "var(--pf-t--global--spacer--md)", borderBottom: "1px solid var(--pf-t--global--border--color--default)" }}>
               {effectiveDesignDocUrl ? (
-                <Button variant="link" isInline icon={<FileAltIcon aria-hidden />} iconPosition="start" component="a" href={effectiveDesignDocUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>Design Doc</Button>
+                <Button variant="link" isInline icon={<FileAltIcon aria-hidden style={{ color: "#0066cc" }} />} iconPosition="start" component="a" href={effectiveDesignDocUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>Design Doc</Button>
               ) : (
-                <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)", display: "flex", alignItems: "center", gap: "4px" }}><FileAltIcon aria-hidden style={{ opacity: 0.4 }} /> Design doc — Not linked</Content>
+                <span style={notLinkedStyle}><FileAltIcon aria-hidden style={{ color: "#0066cc", opacity: 0.5 }} /> Design doc — Not linked</span>
               )}
               {effectiveRecordingUrl ? (
-                <Button variant="link" isInline icon={<VideoIcon aria-hidden />} iconPosition="start" component="a" href={effectiveRecordingUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>View Recording</Button>
+                <Button variant="link" isInline icon={<VideoIcon aria-hidden style={{ color: "#c9190b" }} />} iconPosition="start" component="a" href={effectiveRecordingUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>View Recording</Button>
               ) : (
-                <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)", display: "flex", alignItems: "center", gap: "4px" }}><VideoIcon aria-hidden style={{ opacity: 0.4 }} /> Recording — Not linked</Content>
+                <span style={notLinkedStyle}><VideoIcon aria-hidden style={{ color: "#c9190b", opacity: 0.5 }} /> Recording — Not linked</span>
               )}
               {designNotes.jiraUrl && (
                 <Button variant="link" isInline icon={<ExternalLinkAltIcon aria-hidden />} iconPosition="end" component="a" href={designNotes.jiraUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>Jira</Button>
