@@ -4,13 +4,6 @@ Interactive prototype workspace for the **Hybrid Platforms UX (HPUX)** design te
 
 This is an **internal design and prototyping workspace**, not a customer-facing product repository.
 
-## Live sites
-
-| Resource | URL |
-|----------|-----|
-| **Prototype hub** (`hub/`) | Branch previews via GitHub Actions: `https://<owner>.github.io/<repo>/preview/<branch-slug>/` (see [Hub branch preview workflow](.github/workflows/hub-github-pages-preview.yml); open the latest run's job summary for the exact link) |
-| **HPUX Prototypes** (`hpux-prototypes/`) | [matthewcarleton.github.io/openshift-origin-design/hpux-prototypes](https://matthewcarleton.github.io/openshift-origin-design/hpux-prototypes/) (standalone GitHub Pages; also embedded in the hub) |
-
 ## Product and team coverage
 
 The **OpenShift Prototype Hub** (`hub/`) indexes prototypes by team and cross-cutting area. Teams in `hub/src/data/prototypes.manifest.json` include ACS, ACM, Virtualization, Core OpenShift, Sovereign Cloud, Migration Advisor, OME, Observability, and OCM. Cross-product groupings include RBAC, Upgrades, Agentic, and Install.
