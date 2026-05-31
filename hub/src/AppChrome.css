@@ -611,20 +611,27 @@ body.ops-hub-embed-fullscreen-active {
   max-width: 100%;
 }
 
-/* Design Notes button — solid Red Hat red with pulsing glow */
+/* Design Notes button — solid Red Hat red with subtle pulsing glow */
 @keyframes design-notes-glow {
-  0%, 100% { box-shadow: 0 0 6px 2px rgba(201, 25, 11, 0.5); }
-  50% { box-shadow: 0 0 14px 5px rgba(201, 25, 11, 0.85); }
+  0%, 100% { box-shadow: 0 0 4px 1px rgba(201, 25, 11, 0.25); }
+  50% { box-shadow: 0 0 10px 3px rgba(201, 25, 11, 0.5); }
 }
 
 .ops-hub-design-notes-btn {
   background-color: #c9190b !important;
   color: #fff !important;
   border-color: #c9190b !important;
-  animation: design-notes-glow 2s ease-in-out infinite;
+  outline: none !important;
+  box-shadow: none;
+  animation: design-notes-glow 3.5s ease-in-out infinite;
 }
 
 .ops-hub-design-notes-btn:hover {
   background-color: #a30000 !important;
   border-color: #a30000 !important;
+}
+
+.ops-hub-design-notes-btn svg {
+  color: #fff !important;
+  fill: #fff !important;
 }
