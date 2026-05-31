@@ -41,6 +41,7 @@ export default defineConfig({
     react(),
     vendoredSpaFallback("/rhacs-ux-prototypes/saved-filters", "rhacs-saved-filters-spa-fallback", "static"),
     vendoredSpaFallback("/ocp5-cluster-update-experience", "ocp5-cluster-update-spa-fallback", "assets"),
+    vendoredSpaFallback("/hpux-prototypes", "hpux-prototypes-spa-fallback", "assets"),
   ],
   base,
   server: {
