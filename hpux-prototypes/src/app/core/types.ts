@@ -102,6 +102,11 @@ export interface PrototypeConfig {
     }>;
   };
 
+  // External links
+  jiraUrl?: string;
+  recordingUrl?: string;
+  designDocUrl?: string;
+
   // Optional custom branding
   branding?: {
     icon?: string;

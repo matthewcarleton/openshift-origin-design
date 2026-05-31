@@ -71,10 +71,16 @@ import {
 
 const manifest = manifestRaw as unknown as PrototypesManifest;
 
-/** Mirror of hpux-prototypes' PrototypeConfig.designNotes shape, received via postMessage. */
+/** Design notes payload received via postMessage from the hpux-prototypes iframe. */
 interface HpuxDesignNotesData {
   designerNotes: string;
   navigationGuide?: Array<{ page: string; path: string; notes?: string }>;
+  ownerName?: string;
+  ownerSlack?: string;
+  personaName?: string;
+  jiraUrl?: string;
+  recordingUrl?: string;
+  designDocUrl?: string;
 }
 
 const TEAM_BY_ID = new Map(manifest.teams.map((item) => [item.id, item]));
@@ -1317,7 +1323,20 @@ function HpuxPrototypesEmbedFullscreenPage() {
         typeof event.data === "object" &&
         event.data.type === "hpux-prototype-loaded"
       ) {
-        setDesignNotes((event.data.designNotes as HpuxDesignNotesData | null) ?? null);
+        const dn = event.data.designNotes as HpuxDesignNotesData | null;
+        setDesignNotes(
+          dn
+            ? {
+                ...dn,
+                ownerName: typeof event.data.ownerName === "string" ? event.data.ownerName : undefined,
+                ownerSlack: typeof event.data.ownerSlack === "string" ? event.data.ownerSlack : undefined,
+                personaName: typeof event.data.personaName === "string" ? event.data.personaName : undefined,
+                jiraUrl: typeof event.data.jiraUrl === "string" ? event.data.jiraUrl : undefined,
+                recordingUrl: typeof event.data.recordingUrl === "string" ? event.data.recordingUrl : undefined,
+                designDocUrl: typeof event.data.designDocUrl === "string" ? event.data.designDocUrl : undefined,
+              }
+            : null,
+        );
         setDesignNotesPrototypeName(typeof event.data.prototypeName === "string" ? event.data.prototypeName : "");
         setPrototypeStatus(typeof event.data.status === "string" ? event.data.status : undefined);
         setIsDesignNotesOpen(false);
@@ -1384,6 +1403,27 @@ function HpuxPrototypesEmbedFullscreenPage() {
         </DrawerActions>
       </DrawerHead>
       <DrawerPanelBody>
+        {/* Persona + Designer callout */}
+        {(designNotes.personaName || designNotes.ownerName) && (
+          <div style={{ marginBottom: "var(--pf-t--global--spacer--xl)", display: "flex", flexDirection: "column", gap: "var(--pf-t--global--spacer--sm)" }}>
+            {designNotes.personaName && (
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--pf-t--global--spacer--sm)" }}>
+                <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)", minWidth: "4.5rem" }}>Persona</Content>
+                <Label isCompact color="purple">{designNotes.personaName}</Label>
+              </div>
+            )}
+            {designNotes.ownerName && (
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--pf-t--global--spacer--sm)" }}>
+                <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)", minWidth: "4.5rem" }}>Designer</Content>
+                <Content component="small">
+                  {designNotes.ownerName}
+                  {designNotes.ownerSlack && ` — ${designNotes.ownerSlack}`}
+                </Content>
+              </div>
+            )}
+          </div>
+        )}
+
         {designNotes.designerNotes && (
           <div style={{ marginBottom: "var(--pf-t--global--spacer--xl)" }}>
             <Title headingLevel="h3" size="md" style={{ marginBottom: "var(--pf-t--global--spacer--sm)" }}>
@@ -1394,8 +1434,9 @@ function HpuxPrototypesEmbedFullscreenPage() {
             </Content>
           </div>
         )}
+
         {designNotes.navigationGuide && designNotes.navigationGuide.length > 0 && (
-          <div>
+          <div style={{ marginBottom: "var(--pf-t--global--spacer--xl)" }}>
             <Title headingLevel="h3" size="md" style={{ marginBottom: "var(--pf-t--global--spacer--md)" }}>
               Where to navigate
             </Title>
@@ -1422,6 +1463,59 @@ function HpuxPrototypesEmbedFullscreenPage() {
                 </li>
               ))}
             </ol>
+          </div>
+        )}
+
+        {/* External resource links */}
+        {(designNotes.designDocUrl || designNotes.recordingUrl || designNotes.jiraUrl) && (
+          <div>
+            <Title headingLevel="h3" size="md" style={{ marginBottom: "var(--pf-t--global--spacer--sm)" }}>
+              Resources
+            </Title>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--pf-t--global--spacer--xs)" }}>
+              {designNotes.designDocUrl && (
+                <Button
+                  variant="link"
+                  icon={<ExternalLinkAltIcon aria-hidden />}
+                  iconPosition="end"
+                  component="a"
+                  href={designNotes.designDocUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ paddingLeft: 0 }}
+                >
+                  Design doc
+                </Button>
+              )}
+              {designNotes.recordingUrl && (
+                <Button
+                  variant="link"
+                  icon={<ExternalLinkAltIcon aria-hidden />}
+                  iconPosition="end"
+                  component="a"
+                  href={designNotes.recordingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ paddingLeft: 0 }}
+                >
+                  Recording
+                </Button>
+              )}
+              {designNotes.jiraUrl && (
+                <Button
+                  variant="link"
+                  icon={<ExternalLinkAltIcon aria-hidden />}
+                  iconPosition="end"
+                  component="a"
+                  href={designNotes.jiraUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ paddingLeft: 0 }}
+                >
+                  Jira ticket
+                </Button>
+              )}
+            </div>
           </div>
         )}
       </DrawerPanelBody>
