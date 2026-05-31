@@ -17,6 +17,8 @@ import {
 
 import ExternalLinkAltIcon from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import OutlinedStickyNoteIcon from "@patternfly/react-icons/dist/js/icons/outlined-sticky-note-icon";
+import FileAltIcon from "@patternfly/react-icons/dist/js/icons/file-alt-icon";
+import VideoIcon from "@patternfly/react-icons/dist/js/icons/video-icon";
 
 import manifestRaw from "./data/prototypes.manifest.json";
 import { pfIcon, type PfIconComponent } from "./iconImports";
@@ -1431,14 +1433,14 @@ function HpuxPrototypesEmbedFullscreenPage() {
           return (
             <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--pf-t--global--spacer--md)", alignItems: "center", marginBottom: "var(--pf-t--global--spacer--md)", paddingBottom: "var(--pf-t--global--spacer--md)", borderBottom: "1px solid var(--pf-t--global--border--color--default)" }}>
               {effectiveDesignDocUrl ? (
-                <Button variant="link" isInline icon={<ExternalLinkAltIcon aria-hidden />} iconPosition="end" component="a" href={effectiveDesignDocUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>Design doc</Button>
+                <Button variant="link" isInline icon={<FileAltIcon aria-hidden />} iconPosition="start" component="a" href={effectiveDesignDocUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>Design Doc</Button>
               ) : (
-                <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)" }}>Design doc — Not linked</Content>
+                <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)", display: "flex", alignItems: "center", gap: "4px" }}><FileAltIcon aria-hidden style={{ opacity: 0.4 }} /> Design doc — Not linked</Content>
               )}
               {effectiveRecordingUrl ? (
-                <Button variant="link" isInline icon={<ExternalLinkAltIcon aria-hidden />} iconPosition="end" component="a" href={effectiveRecordingUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>Recording</Button>
+                <Button variant="link" isInline icon={<VideoIcon aria-hidden />} iconPosition="start" component="a" href={effectiveRecordingUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>View Recording</Button>
               ) : (
-                <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)" }}>Recording — Not linked</Content>
+                <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)", display: "flex", alignItems: "center", gap: "4px" }}><VideoIcon aria-hidden style={{ opacity: 0.4 }} /> Recording — Not linked</Content>
               )}
               {designNotes.jiraUrl && (
                 <Button variant="link" isInline icon={<ExternalLinkAltIcon aria-hidden />} iconPosition="end" component="a" href={designNotes.jiraUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>Jira</Button>
