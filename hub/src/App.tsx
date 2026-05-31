@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   Link,
@@ -186,27 +186,17 @@ function EmbedVersionSwitcher({
   );
 }
 
-function EmbedCopyTabUrlControl() {
-  const [copied, setCopied] = useState(false);
-  const onCopy = useCallback(async () => {
-    const url = window.location.href;
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2500);
-    } catch {
-      window.prompt("Copy this URL:", url);
-    }
-  }, []);
+type StatusBadgeColor = "blue" | "green" | "grey" | "orange";
 
-  return (
-    <span className="ops-hub-embed-top-bar__copy-wrap">
-      <Button variant="link" isInline onClick={() => void onCopy()}>
-        Copy URL
-      </Button>
-      {copied ? <span className="ops-hub-embed-version-readonly">Copied</span> : null}
-    </span>
-  );
+function statusBadgeColor(status: string): { color: StatusBadgeColor; variant?: "outline" | "filled" } {
+  switch (status) {
+    case "in-progress": return { color: "blue" };
+    case "draft":       return { color: "grey" };
+    case "done":        return { color: "green" };
+    case "archived":    return { color: "grey", variant: "outline" };
+    case "paused":      return { color: "orange" };
+    default:            return { color: "grey" };
+  }
 }
 
 function EmbedFullscreenTopBar({
@@ -216,7 +206,7 @@ function EmbedFullscreenTopBar({
   versionValue,
   onVersionChange,
   versionAriaLabel,
-  copyTabUrl = false,
+  statusBadge,
   extraActions,
 }: {
   backTo: string;
@@ -225,11 +215,12 @@ function EmbedFullscreenTopBar({
   versionValue: string;
   onVersionChange: (id: string) => void;
   versionAriaLabel?: string;
-  /** When true, copies the current browser tab URL (hub embed page). */
-  copyTabUrl?: boolean;
+  /** When present, renders a status Label beside the version selector. */
+  statusBadge?: string;
   /** Optional extra controls rendered beside the version switcher (e.g. Design Notes button). */
   extraActions?: React.ReactNode;
 }) {
+  const badgeProps = statusBadge ? statusBadgeColor(statusBadge) : null;
   return (
     <header className="ops-hub-embed-top-bar">
       <Link to={backTo} className="ops-hub-embed-top-bar__link">
@@ -243,7 +234,11 @@ function EmbedFullscreenTopBar({
             onChange={onVersionChange}
             ariaLabel={versionAriaLabel}
           />
-          {copyTabUrl ? <EmbedCopyTabUrlControl /> : null}
+          {badgeProps ? (
+            <Label isCompact color={badgeProps.color} variant={badgeProps.variant ?? "filled"}>
+              {statusBadge}
+            </Label>
+          ) : null}
           {extraActions ?? null}
         </div>
       </div>
@@ -1309,6 +1304,7 @@ function HpuxPrototypesEmbedFullscreenPage() {
   const [designNotes, setDesignNotes] = useState<HpuxDesignNotesData | null>(null);
   const [designNotesPrototypeName, setDesignNotesPrototypeName] = useState<string>("");
   const [isDesignNotesOpen, setIsDesignNotesOpen] = useState(false);
+  const [prototypeStatus, setPrototypeStatus] = useState<string | undefined>(undefined);
 
   const prototype = searchParams.get("prototype")?.trim() ?? "";
   const valid = prototype.length > 0 && HPUX_PROTOTYPE_ID_RE.test(prototype);
@@ -1323,6 +1319,7 @@ function HpuxPrototypesEmbedFullscreenPage() {
       ) {
         setDesignNotes((event.data.designNotes as HpuxDesignNotesData | null) ?? null);
         setDesignNotesPrototypeName(typeof event.data.prototypeName === "string" ? event.data.prototypeName : "");
+        setPrototypeStatus(typeof event.data.status === "string" ? event.data.status : undefined);
         setIsDesignNotesOpen(false);
       }
     };
@@ -1330,10 +1327,11 @@ function HpuxPrototypesEmbedFullscreenPage() {
     return () => window.removeEventListener("message", handler);
   }, []);
 
-  // Reset design notes when the prototype param changes so stale data never shows.
+  // Reset design notes and status when the prototype param changes so stale data never shows.
   useEffect(() => {
     setDesignNotes(null);
     setIsDesignNotesOpen(false);
+    setPrototypeStatus(undefined);
   }, [prototype]);
 
   if (!valid) {
@@ -1429,7 +1427,7 @@ function HpuxPrototypesEmbedFullscreenPage() {
         versionValue={prototype}
         onVersionChange={(id) => setSearchParams({ prototype: id }, { replace: true })}
         versionAriaLabel="Prototype build"
-        copyTabUrl
+        statusBadge={prototypeStatus}
         extraActions={designNotesButton}
       />
       <Drawer
