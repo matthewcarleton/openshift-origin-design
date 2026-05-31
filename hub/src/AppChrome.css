@@ -611,12 +611,7 @@ body.ops-hub-embed-fullscreen-active {
   max-width: 100%;
 }
 
-/* Design Notes button — solid Red Hat red with subtle pulsing glow */
-@keyframes design-notes-glow {
-  0%, 100% { box-shadow: 0 0 4px 1px rgba(201, 25, 11, 0.25); }
-  50% { box-shadow: 0 0 10px 3px rgba(201, 25, 11, 0.5); }
-}
-
+/* Design Notes button — solid Red Hat red */
 .ops-hub-design-notes-btn.pf-v6-c-button,
 .ops-hub-design-notes-btn {
   background-color: #c9190b !important;
@@ -624,7 +619,6 @@ body.ops-hub-embed-fullscreen-active {
   border: none !important;
   padding: 4px 14px !important;
   border-radius: 30px !important;
-  animation: design-notes-glow 3.5s ease-in-out infinite;
 }
 
 .pf-v6-c-button.ops-hub-design-notes-btn:focus,
