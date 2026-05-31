@@ -1364,6 +1364,7 @@ function HpuxPrototypesEmbedFullscreenPage() {
       icon={<OutlinedStickyNoteIcon aria-hidden />}
       onClick={() => setIsDesignNotesOpen((prev) => !prev)}
       aria-expanded={isDesignNotesOpen}
+      className="ops-hub-design-notes-btn"
     >
       Design Notes
     </Button>
