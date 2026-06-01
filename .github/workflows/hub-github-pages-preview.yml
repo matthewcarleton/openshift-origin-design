@@ -33,17 +33,56 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: npm
           cache-dependency-path: hub/package-lock.json
 
-      - name: Install and build hub
+      - name: Install hub dependencies
+        working-directory: hub
+        run: npm ci
+
+      # Add JIRA_TOKEN secret in GitHub repo Settings → Secrets → Actions to enable
+      # auto-sync of Jira status and fix-version labels into the manifest.
+      - name: Sync Jira manifest
+        if: env.JIRA_TOKEN != ''
+        working-directory: hub
+        env:
+          JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
+        run: |
+          echo "$JIRA_TOKEN" > ~/.jira-token
+          npm run sync:jira-manifest || echo "Jira sync skipped (token may be invalid)"
+
+      - name: Cache hpux-prototypes build
+        uses: actions/cache@v4
+        id: hpux-cache
+        with:
+          path: hub/public/hpux-prototypes
+          key: hpux-build-${{ hashFiles('hpux-prototypes/src/**', 'hpux-prototypes/package-lock.json') }}
+          restore-keys: |
+            hpux-build-
+
+      - name: Build hpux-prototypes embed
+        if: steps.hpux-cache.outputs.cache-hit != 'true'
+        working-directory: hub
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/preview/${{ steps.slug.outputs.slug }}/
+          NODE_ENV: production
+        run: npm run build:hpux
+
+      - name: Build hub
         working-directory: hub
         env:
           BASE_PATH: /${{ github.event.repository.name }}/preview/${{ steps.slug.outputs.slug }}/
         run: |
-          npm ci
-          npm run build
+          npm run sync:hpux-private-ids
+          npm run build:rhacs
+          npm run build:osac
+          npm run build:ome
+          npm run build:hpux:if-missing
+          npm run build:ocp5-cluster-update
+          npx tsc -b
+          npx vite build
+          cp dist/index.html dist/404.html
 
       - name: Deploy preview to gh-pages
         uses: peaceiris/actions-gh-pages@v4

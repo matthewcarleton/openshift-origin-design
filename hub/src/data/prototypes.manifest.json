@@ -179,7 +179,7 @@
       "jiraKey": "HPUX-1516",
       "jiraUrl": "https://redhat.atlassian.net/browse/HPUX-1516",
       "prototypeUrl": "https://heyethankim.github.io/enclave-demo/",
-      "jiraIssueStatus": "Review",
+      "jiraIssueStatus": "Closed",
       "jiraIssueRelease": null
     },
     {
@@ -193,7 +193,7 @@
       "jiraKey": "HPUX-1516",
       "jiraUrl": "https://redhat.atlassian.net/browse/HPUX-1516",
       "prototypeUrl": "/embed/osac?entry=provider",
-      "jiraIssueStatus": "Review",
+      "jiraIssueStatus": "Closed",
       "jiraIssueRelease": null
     },
     {
@@ -207,7 +207,7 @@
       "jiraKey": "HPUX-1516",
       "jiraUrl": "https://redhat.atlassian.net/browse/HPUX-1516",
       "prototypeUrl": "/embed/osac?entry=tenant-admin&tenant=northstar",
-      "jiraIssueStatus": "Review",
+      "jiraIssueStatus": "Closed",
       "jiraIssueRelease": null
     },
     {
@@ -221,7 +221,7 @@
       "jiraKey": "HPUX-1517",
       "jiraUrl": "https://redhat.atlassian.net/browse/HPUX-1517",
       "prototypeUrl": "/embed/osac?entry=tenant-admin&tenant=evergreen",
-      "jiraIssueStatus": "Review",
+      "jiraIssueStatus": "Closed",
       "jiraIssueRelease": null
     },
     {
@@ -235,7 +235,7 @@
       "jiraKey": "HPUX-1516",
       "jiraUrl": "https://redhat.atlassian.net/browse/HPUX-1516",
       "prototypeUrl": "/embed/osac?entry=tenant-user&tenant=northstar",
-      "jiraIssueStatus": "Review",
+      "jiraIssueStatus": "Closed",
       "jiraIssueRelease": null
     },
     {
@@ -249,7 +249,7 @@
       "jiraKey": "HPUX-1517",
       "jiraUrl": "https://redhat.atlassian.net/browse/HPUX-1517",
       "prototypeUrl": "/embed/osac?entry=tenant-user&tenant=evergreen",
-      "jiraIssueStatus": "Review",
+      "jiraIssueStatus": "Closed",
       "jiraIssueRelease": null
     },
     {
@@ -301,7 +301,7 @@
       "jiraKey": "HPUX-1480",
       "jiraUrl": "https://redhat.atlassian.net/browse/HPUX-1480",
       "prototypeUrl": "/embed/ocp5-cluster-update-experience",
-      "jiraIssueStatus": "In Progress",
+      "jiraIssueStatus": "Closed",
       "jiraIssueRelease": null
     },
     {
@@ -366,7 +366,7 @@
       "jiraKey": "HPUX-1534",
       "prototypeUrl": "/embed/hpux-prototypes?prototype=observability-agentic-troubleshooting-ai",
       "jiraUrl": "https://redhat.atlassian.net/browse/HPUX-1534",
-      "jiraIssueStatus": "In Progress",
+      "jiraIssueStatus": "Closed",
       "jiraIssueRelease": null,
       "designNotes": {
         "designerNotes": "Summit demo prototype for AI-assisted troubleshooting in the Observability stack. The agent guides an SRE through a structured investigation flow — gathering evidence, correlating signals, and surfacing recommended next steps — without requiring deep Prometheus/OCP expertise.",
@@ -478,7 +478,9 @@
       "updatedAt": "2026-06-01",
       "jiraKey": "HPUX-1173",
       "jiraUrl": "https://redhat.atlassian.net/browse/HPUX-1173",
-      "prototypeUrl": null
+      "prototypeUrl": null,
+      "jiraIssueStatus": "Closed",
+      "jiraIssueRelease": "CNV v4.22.0"
     },
     {
       "teamId": "virtualization",
