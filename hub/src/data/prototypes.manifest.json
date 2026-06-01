@@ -436,6 +436,17 @@
     },
     {
       "teamId": "virtualization",
+      "title": "VM tagging and custom attributes UX",
+      "description": "Redesign of VM metadata management — translating Kubernetes labels/annotations into a user-friendly tagging UX with governance, tag library, and automation patterns.",
+      "persona": "Virt admin",
+      "author": "Stefan Kukla",
+      "updatedAt": "2026-06-01",
+      "jiraKey": "HPUX-1173",
+      "jiraUrl": "https://redhat.atlassian.net/browse/HPUX-1173",
+      "prototypeUrl": null
+    },
+    {
+      "teamId": "virtualization",
       "title": "Cross Cluster live migration Cursor prototype",
       "description": "Move running VMs between clusters ahead of decommission (multi-cluster virtualization scenario).",
       "persona": "Virtualization admin",
