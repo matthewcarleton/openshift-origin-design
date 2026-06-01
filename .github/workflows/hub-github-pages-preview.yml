@@ -35,7 +35,9 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-          cache-dependency-path: hub/package-lock.json
+          cache-dependency-path: |
+            hub/package-lock.json
+            hpux-prototypes/package-lock.json
 
       - name: Install hub dependencies
         working-directory: hub
@@ -60,6 +62,11 @@ jobs:
           key: hpux-build-${{ hashFiles('hpux-prototypes/src/**', 'hpux-prototypes/package-lock.json') }}
           restore-keys: |
             hpux-build-
+
+      - name: Install hpux-prototypes dependencies
+        if: steps.hpux-cache.outputs.cache-hit != 'true'
+        working-directory: hpux-prototypes
+        run: npm ci
 
       - name: Build hpux-prototypes embed
         if: steps.hpux-cache.outputs.cache-hit != 'true'

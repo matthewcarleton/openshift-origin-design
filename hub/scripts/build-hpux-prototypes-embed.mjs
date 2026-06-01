@@ -24,7 +24,9 @@ if (!fs.existsSync(path.join(hpuxRoot, "package.json"))) {
 
 fs.rmSync(outDir, { recursive: true, force: true });
 
-execSync("npm ci", { cwd: hpuxRoot, stdio: "inherit" });
+if (!fs.existsSync(path.join(hpuxRoot, "node_modules"))) {
+  execSync("npm ci", { cwd: hpuxRoot, stdio: "inherit" });
+}
 
 execSync("node ./scripts/discover-hpux-private-prototypes.mjs", {
   cwd: hubRoot,
