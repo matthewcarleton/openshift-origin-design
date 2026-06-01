@@ -1190,23 +1190,6 @@ function OsacEmbedFullscreenPage() {
 /** Allowlist: registry ids are kebab-case; some use dots (e.g. fleet-admin-rbac-v1.1). */
 const HPUX_PROTOTYPE_ID_RE = /^[a-z][a-z0-9._-]{0,79}$/i;
 
-/**
- * Look up design doc and recording URLs from the manifest for a given hpux prototype id.
- * Matches by checking whether the entry's `prototypeUrl` contains `prototype=<id>`.
- * Returns undefined for each field when the entry has no value so callers can safely coalesce.
- */
-function lookupManifestLinks(prototypeId: string): { designDocUrl?: string | null; recordingUrl?: string | null } {
-  if (!prototypeId) return {};
-  const param = `prototype=${prototypeId}`;
-  const entry = manifest.prototypes.find(
-    (p) => typeof p.prototypeUrl === "string" && p.prototypeUrl.includes(param),
-  );
-  if (!entry) return {};
-  return {
-    designDocUrl: entry.designDocUrl,
-    recordingUrl: entry.prototypeRecordingUrl,
-  };
-}
 
 /**
  * Prototypes that share one hub embed with a version dropdown (see {@link HpuxPrototypesEmbedFullscreenPage}).
@@ -1362,8 +1345,9 @@ function HpuxPrototypesEmbedFullscreenPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   useEmbedFullscreenChrome();
 
-  const [designNotes, setDesignNotes] = useState<HpuxDesignNotesData | null>(null);
-  const [designNotesPrototypeName, setDesignNotesPrototypeName] = useState<string>("");
+  // iframeDesignNotes: set by postMessage from the hpux-prototypes iframe after it loads.
+  const [iframeDesignNotes, setIframeDesignNotes] = useState<HpuxDesignNotesData | null>(null);
+  const [iframePrototypeName, setIframePrototypeName] = useState<string>("");
   const [isDesignNotesOpen, setIsDesignNotesOpen] = useState(false);
   const [prototypeStatus, setPrototypeStatus] = useState<string | undefined>(undefined);
 
@@ -1371,6 +1355,45 @@ function HpuxPrototypesEmbedFullscreenPage() {
 
   const prototype = searchParams.get("prototype")?.trim() ?? "";
   const valid = prototype.length > 0 && HPUX_PROTOTYPE_ID_RE.test(prototype);
+
+  // Look up the manifest entry for the active prototype. This is the primary data source for
+  // design notes — available immediately on page load, no iframe postMessage required.
+  const manifestEntry = useMemo(() => {
+    if (!prototype) return undefined;
+    const param = `prototype=${prototype}`;
+    return manifest.prototypes.find(
+      (p) => typeof p.prototypeUrl === "string" && p.prototypeUrl.includes(param),
+    );
+  }, [prototype]);
+
+  // Derive design notes from the manifest entry (available before the iframe loads).
+  const manifestDesignNotes = useMemo((): HpuxDesignNotesData | null => {
+    if (!manifestEntry?.designNotes) return null;
+    return {
+      designerNotes: manifestEntry.designNotes.designerNotes,
+      navigationGuide: manifestEntry.designNotes.navigationGuide,
+      personaName: manifestEntry.persona ?? undefined,
+      designDocUrl: manifestEntry.designDocUrl ?? undefined,
+      recordingUrl: manifestEntry.prototypeRecordingUrl ?? undefined,
+      ownerName: manifestEntry.designer ?? manifestEntry.author,
+    };
+  }, [manifestEntry]);
+
+  // Merge manifest (base) with iframe postMessage data (override). Manifest fills gaps immediately;
+  // the iframe response overwrites individual fields when it arrives.
+  const effectiveDesignNotes = useMemo((): HpuxDesignNotesData | null => {
+    if (!manifestDesignNotes && !iframeDesignNotes) return null;
+    return {
+      designerNotes: iframeDesignNotes?.designerNotes || manifestDesignNotes?.designerNotes || "",
+      navigationGuide: iframeDesignNotes?.navigationGuide ?? manifestDesignNotes?.navigationGuide,
+      ownerName: iframeDesignNotes?.ownerName ?? manifestDesignNotes?.ownerName,
+      ownerSlack: iframeDesignNotes?.ownerSlack ?? manifestDesignNotes?.ownerSlack,
+      personaName: iframeDesignNotes?.personaName ?? manifestDesignNotes?.personaName,
+      jiraUrl: iframeDesignNotes?.jiraUrl ?? manifestDesignNotes?.jiraUrl,
+      recordingUrl: iframeDesignNotes?.recordingUrl ?? manifestDesignNotes?.recordingUrl,
+      designDocUrl: iframeDesignNotes?.designDocUrl ?? manifestDesignNotes?.designDocUrl,
+    };
+  }, [manifestDesignNotes, iframeDesignNotes]);
 
   // Listen for design notes data posted from the hpux-prototypes iframe on load.
   useEffect(() => {
@@ -1381,7 +1404,7 @@ function HpuxPrototypesEmbedFullscreenPage() {
         event.data.type === "hpux-prototype-loaded"
       ) {
         const dn = event.data.designNotes as HpuxDesignNotesData | null;
-        setDesignNotes(
+        setIframeDesignNotes(
           dn
             ? {
                 ...dn,
@@ -1394,7 +1417,7 @@ function HpuxPrototypesEmbedFullscreenPage() {
               }
             : null,
         );
-        setDesignNotesPrototypeName(typeof event.data.prototypeName === "string" ? event.data.prototypeName : "");
+        setIframePrototypeName(typeof event.data.prototypeName === "string" ? event.data.prototypeName : "");
         setPrototypeStatus(typeof event.data.status === "string" ? event.data.status : undefined);
         setIsDesignNotesOpen(false);
       }
@@ -1413,9 +1436,9 @@ function HpuxPrototypesEmbedFullscreenPage() {
     return () => clearTimeout(t);
   }, [prototype, valid]);
 
-  // Reset design notes and status when the prototype param changes so stale data never shows.
+  // Reset iframe-sourced design notes and status when the prototype param changes.
   useEffect(() => {
-    setDesignNotes(null);
+    setIframeDesignNotes(null);
     setIsDesignNotesOpen(false);
     setPrototypeStatus(undefined);
   }, [prototype]);
@@ -1424,7 +1447,7 @@ function HpuxPrototypesEmbedFullscreenPage() {
     return <Navigate to="/" replace />;
   }
 
-  const manifestLinks = useMemo(() => lookupManifestLinks(prototype), [prototype]);
+  const effectivePrototypeName = iframePrototypeName || manifestEntry?.title || "";
 
   const { backTo, backLabel, versionOptions } = resolveHpuxEmbedVersionContext(prototype);
   const hubBase = import.meta.env.BASE_URL;
@@ -1435,7 +1458,7 @@ function HpuxPrototypesEmbedFullscreenPage() {
   const src = `${hubBase}hpux-prototypes/?${iframeQs.toString()}`;
   const label = `Shared HPUX Prototypes: ${prototype}`;
 
-  const designNotesButton = designNotes ? (
+  const designNotesButton = effectiveDesignNotes ? (
     <Button
       variant="plain"
       size="sm"
@@ -1448,13 +1471,13 @@ function HpuxPrototypesEmbedFullscreenPage() {
     </Button>
   ) : null;
 
-  const designNotesPanelContent = designNotes ? (
+  const designNotesPanelContent = effectiveDesignNotes ? (
     <DrawerPanelContent defaultSize="420px" minSize="350px">
       <DrawerHead>
         <div>
           <Title headingLevel="h2" size="xl">Design Notes</Title>
           <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)" }}>
-            {designNotesPrototypeName}
+            {effectivePrototypeName}
           </Content>
         </div>
         <DrawerActions>
@@ -1464,8 +1487,8 @@ function HpuxPrototypesEmbedFullscreenPage() {
       <DrawerPanelBody>
         {/* Resources row — compact, at top */}
         {(() => {
-          const effectiveDesignDocUrl = designNotes.designDocUrl ?? manifestLinks.designDocUrl;
-          const effectiveRecordingUrl = designNotes.recordingUrl ?? manifestLinks.recordingUrl;
+          const effectiveDesignDocUrl = effectiveDesignNotes.designDocUrl;
+          const effectiveRecordingUrl = effectiveDesignNotes.recordingUrl;
           const linkStyle: React.CSSProperties = { paddingLeft: 0, paddingRight: 0, fontSize: "var(--pf-t--global--font--size--sm)" };
           const notLinkedStyle: React.CSSProperties = { color: "var(--pf-t--global--text--color--subtle)", display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "var(--pf-t--global--font--size--sm)" };
           return (
@@ -1480,45 +1503,45 @@ function HpuxPrototypesEmbedFullscreenPage() {
               ) : (
                 <span style={notLinkedStyle}><VideoIcon aria-hidden style={{ color: "#c9190b", opacity: 0.5 }} /> Recording — Not linked</span>
               )}
-              {designNotes.jiraUrl && (
-                <Button variant="link" isInline icon={<ExternalLinkAltIcon aria-hidden />} iconPosition="end" component="a" href={designNotes.jiraUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>Jira</Button>
+              {effectiveDesignNotes.jiraUrl && (
+                <Button variant="link" isInline icon={<ExternalLinkAltIcon aria-hidden />} iconPosition="end" component="a" href={effectiveDesignNotes.jiraUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>Jira</Button>
               )}
             </div>
           );
         })()}
 
         {/* Persona + Designer — single compact row */}
-        {(designNotes.personaName || designNotes.ownerName) && (
+        {(effectiveDesignNotes.personaName || effectiveDesignNotes.ownerName) && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--pf-t--global--spacer--sm)", alignItems: "center", marginBottom: "var(--pf-t--global--spacer--lg)" }}>
-            {designNotes.personaName && (
-              <Label isCompact color="purple">{designNotes.personaName}</Label>
+            {effectiveDesignNotes.personaName && (
+              <Label isCompact color="purple">{effectiveDesignNotes.personaName}</Label>
             )}
-            {designNotes.ownerName && (
+            {effectiveDesignNotes.ownerName && (
               <Content component="small" style={{ color: "var(--pf-t--global--text--color--subtle)" }}>
-                {designNotes.ownerName}{designNotes.ownerSlack ? ` — @${designNotes.ownerSlack}` : ""}
+                {effectiveDesignNotes.ownerName}{effectiveDesignNotes.ownerSlack ? ` — @${effectiveDesignNotes.ownerSlack}` : ""}
               </Content>
             )}
           </div>
         )}
 
-        {designNotes.designerNotes && (
+        {effectiveDesignNotes.designerNotes && (
           <div style={{ marginBottom: "var(--pf-t--global--spacer--md)" }}>
             <Title headingLevel="h3" size="md" style={{ marginBottom: "var(--pf-t--global--spacer--sm)" }}>
               Designer Notes
             </Title>
             <Content component="p">
-              {designNotes.designerNotes}
+              {effectiveDesignNotes.designerNotes}
             </Content>
           </div>
         )}
 
-        {designNotes.navigationGuide && designNotes.navigationGuide.length > 0 && (
+        {effectiveDesignNotes.navigationGuide && effectiveDesignNotes.navigationGuide.length > 0 && (
           <div style={{ marginBottom: "var(--pf-t--global--spacer--md)" }}>
             <Title headingLevel="h3" size="md" style={{ marginBottom: "var(--pf-t--global--spacer--sm)" }}>
               Where to navigate
             </Title>
             <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>
-              {designNotes.navigationGuide.map((entry, index) => (
+              {effectiveDesignNotes.navigationGuide.map((entry, index) => (
                 <li key={index} style={{ marginBottom: "var(--pf-t--global--spacer--md)" }}>
                   <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "var(--pf-t--global--spacer--sm)", marginBottom: entry.notes ? "var(--pf-t--global--spacer--xs)" : 0 }}>
                     <span style={{ minWidth: "1.25rem", fontWeight: 700, color: "var(--pf-t--global--text--color--subtle)" }}>
@@ -1534,7 +1557,7 @@ function HpuxPrototypesEmbedFullscreenPage() {
                       {entry.notes}
                     </Content>
                   )}
-                  {index < designNotes.navigationGuide!.length - 1 && (
+                  {index < effectiveDesignNotes.navigationGuide!.length - 1 && (
                     <Divider style={{ marginTop: "var(--pf-t--global--spacer--sm)" }} />
                   )}
                 </li>
@@ -1559,7 +1582,7 @@ function HpuxPrototypesEmbedFullscreenPage() {
         extraActions={designNotesButton}
       />
       <Drawer
-        isExpanded={isDesignNotesOpen && designNotes !== null}
+        isExpanded={isDesignNotesOpen && effectiveDesignNotes !== null}
         position="end"
         className="ops-hub-design-notes-drawer"
       >

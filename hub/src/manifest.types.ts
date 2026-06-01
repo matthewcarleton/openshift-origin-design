@@ -49,6 +49,24 @@ export interface ManifestPrototypeEntry {
   /** Walkthrough or demo recording (Loom, Drive, etc.). Opens in a new tab from the card when set. */
   prototypeRecordingUrl?: string | null;
   /**
+   * Optional design notes for hpux-prototypes embeds. When present, the hub renders the Design Notes
+   * panel immediately on page load without waiting for a postMessage from the iframe.
+   * Mirrors the `designNotes` shape in `hpux-prototypes/src/app/core/types.ts`.
+   */
+  designNotes?: {
+    /** Free-form notes from the designer about design decisions, intent, and open questions. */
+    designerNotes: string;
+    /** Ordered list of pages/screens the reviewer should navigate through. */
+    navigationGuide?: Array<{
+      /** Page name, e.g. "Alert List" */
+      page: string;
+      /** Route path to navigate to, e.g. /observe/alerting */
+      path: string;
+      /** What to look at or focus on when on this page. */
+      notes?: string;
+    }>;
+  };
+  /**
    * When true, hide from hub listings and search. Use for embed-only cards without an hpux-prototypes config,
    * or alongside `private: true` in hpux `prototype.config.ts` (hub also reads generated private-id list).
    */
